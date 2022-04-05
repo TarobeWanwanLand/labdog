@@ -1,11 +1,17 @@
+# サンプル名
 set(EXAMPLE_NAME "example")
 
+# 実行ファイルを作成
 add_executable(${EXAMPLE_NAME}
     bar.cpp
 )
 
-target_link_libraries(${EXAMPLE_NAME} PRIVATE labdog::labdog)
+# ライブラリをリンク
+target_link_libraries(${EXAMPLE_NAME} PRIVATE 
+    labdog::labdog
+)
 
+# インストール
 install(
   TARGETS ${EXAMPLE_NAME}
   RUNTIME DESTINATION bin
