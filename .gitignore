@@ -2,16 +2,10 @@
 # Created by https://www.toptal.com/developers/gitignore/api/visualstudio,lua,c++,jetbrains
 # Edit at https://www.toptal.com/developers/gitignore?templates=visualstudio,lua,c++,jetbrains
 
-### WX2 ###
-bin/
-bin-int/
-buckup/
-Test/asset/model/
-*.recipe
-*.idb
-*.ifc
-*.ifcast
-*.command
+### Labdog ###
+build/
+install/
+out/
 
 ### C++ ###
 # Prerequisites
