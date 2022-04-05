@@ -13,6 +13,11 @@ if(NOT LIBRARY_FOLDER)
   set(LIBRARY_FOLDER ${PROJECT_NAME_LOWERCASE})
 endif()
 
+# C++バージョンを指定
+set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD_REQUIRED TRUE)
+set(CMAKE_CXX_EXTENSIONS FALSE)
+
 # Make sure different configurations don't collide
 set(CMAKE_DEBUG_POSTFIX "d")
 

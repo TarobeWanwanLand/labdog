@@ -1,40 +1,45 @@
 set(LABDOG_SOURCE_DIR "${CMAKE_SOURCE_DIR}/source")
 set(LABDOG_HEADER_DIR "${CMAKE_SOURCE_DIR}/include")
 
-# Set SOURCES variable
+# ソースファイル
 set(SOURCES
   ${LABDOG_SOURCE_DIR}/foo.cpp
 )
 
-# Set HEADERS_PUBLIC variable
+# 公開するヘッダファイル
 set(HEADERS_PUBLIC
   ${LABDOG_HEADER_DIR}/labdog/foo.hpp
 )
 
-# Set HEADERS_PRIVATE variable
+# 非公開のヘッダファイル
 set(HEADERS_PRIVATE
 )
 
 # Target
 add_library(${LIBRARY_NAME}
-  ${SOURCES}
-  ${HEADERS_PUBLIC}
-  ${HEADERS_PRIVATE}
-  )
+    ${SOURCES}
+    ${HEADERS_PUBLIC}
+    ${HEADERS_PRIVATE}
+)
 
 # Alias:
 #   - labdog::labdog alias of labdog
 add_library(${PROJECT_NAME}::${LIBRARY_NAME} ALIAS ${LIBRARY_NAME})
 
+set(LABDOG_EXTERNAL_DIR "${CMAKE_SOURCE_DIR}/external")
+set(GENERATED_EXTERNAL_DIR
+  "${CMAKE_CURRENT_BINARY_DIR}/external"
+)
+
 # Generated headers folder
-set(GENERATED_HEADERS_DIR
-  "${CMAKE_CURRENT_BINARY_DIR}/generated_headers"
+set(GENERATED_HEADER_DIR
+  "${CMAKE_CURRENT_BINARY_DIR}/header"
 )
 
 # Create 'version.h'
 configure_file(
   "${LABDOG_HEADER_DIR}/labdog/version.hpp.in"
-  "${GENERATED_HEADERS_DIR}/${LIBRARY_FOLDER}/version.hpp"
+  "${GENERATED_HEADER_DIR}/${LIBRARY_FOLDER}/version.hpp"
   @ONLY
 )
 
@@ -42,14 +47,7 @@ include("GenerateExportHeader")
 generate_export_header(${LIBRARY_NAME})
 file(RENAME 
     "${CMAKE_CURRENT_BINARY_DIR}/${LIBRARY_NAME}_export.h"
-    "${GENERATED_HEADERS_DIR}/${LIBRARY_FOLDER}/export.hpp"
-)
-
-# C++バージョンを指定
-set_target_properties(${LIBRARY_NAME} PROPERTIES
-    CXX_STANDARD 20
-    CXX_STANDARD_REQUIRED ON
-    CXX_EXTENSIONS OFF
+    "${GENERATED_HEADER_DIR}/${LIBRARY_FOLDER}/export.hpp"
 )
 
 # Add definitions for targets
@@ -63,12 +61,17 @@ target_compile_definitions(${LIBRARY_NAME} PUBLIC
 # Global includes. Used by all targets
 # Note:
 #   - header can be included by C++ code `#include <labdog/labdog.h>`
-#   - header location in project: ${CMAKE_CURRENT_BINARY_DIR}/generated_headers
-target_include_directories(
-  ${LIBRARY_NAME} PUBLIC
+#   - header location in project: ${CMAKE_CURRENT_BINARY_DIR}/header
+target_include_directories(${LIBRARY_NAME} PUBLIC
     "$<BUILD_INTERFACE:${LABDOG_HEADER_DIR}>"
-    "$<BUILD_INTERFACE:${GENERATED_HEADERS_DIR}>"
+    "$<BUILD_INTERFACE:${EXTERNAL_INCLUDES}>"
+    "$<BUILD_INTERFACE:${GENERATED_HEADER_DIR}>"
     "$<INSTALL_INTERFACE:.>"
+)
+
+# 外部ライブラリをリンク
+target_link_libraries(${LIBRARY_NAME} PRIVATE 
+    $<BUILD_INTERFACE:${EXTERNAL_LIBS}>
 )
 
 # Targets:
@@ -92,17 +95,17 @@ install(
 )
 
 # Headers:
-#   - generated_headers/labdog/version.h -> <prefix>/include/labdog/version.hpp
+#   - header/labdog/version.h -> <prefix>/include/labdog/version.hpp
 install(
-    FILES       "${GENERATED_HEADERS_DIR}/${LIBRARY_FOLDER}/version.hpp"
-    DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}/${LIBRARY_FOLDER}/core"
+    FILES       "${GENERATED_HEADER_DIR}/${LIBRARY_FOLDER}/version.hpp"
+    DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}/${LIBRARY_FOLDER}"
 )
 
 # Headers:
 #   - labdog_export.h -> <prefix>/include/labdog/export.hpp
 install(
-    FILES "${GENERATED_HEADERS_DIR}/${LIBRARY_FOLDER}/export.hpp" 
-    DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}/${LIBRARY_FOLDER}/detail"
+    FILES "${GENERATED_HEADER_DIR}/${LIBRARY_FOLDER}/export.hpp" 
+    DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}/${LIBRARY_FOLDER}"
 )
 
 # Config

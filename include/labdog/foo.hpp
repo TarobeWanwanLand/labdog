@@ -1,5 +1,6 @@
 #pragma once
 
-#include <labdog/version.hpp>
+#include <labdog/export.hpp>
+#include <string_view>
 
-void foo_print_version(void);
+void LABDOG_EXPORT log(std::string_view msg);
