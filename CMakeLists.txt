@@ -3,10 +3,10 @@ cmake_minimum_required(VERSION 3.9)
 # プロジェクト名とバージョンの設定
 project(labdog VERSION 1.0.0)
 
-# vcpkgを利用するようにする
-if(DEFINED ENV{VCPKG_ROOT} AND NOT DEFINED CMAKE_TOOLCHAIN_FILE)
-    set(CMAKE_TOOLCHAIN_FILE $ENV{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake CACHE STRING "")
-endif()
+# C++バージョンを指定
+set(CMAKE_CXX_STANDARD 23)
+set(CMAKE_CXX_STANDARD_REQUIRED TRUE)
+set(CMAKE_CXX_EXTENSIONS FALSE)
 
 # 環境を構築
 include(${PROJECT_SOURCE_DIR}/cmake/SetupEnvironment.cmake)

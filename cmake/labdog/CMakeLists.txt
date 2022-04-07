@@ -2,24 +2,37 @@ set(LABDOG_SOURCE_DIR "${CMAKE_SOURCE_DIR}/source")
 set(LABDOG_HEADER_DIR "${CMAKE_SOURCE_DIR}/include")
 
 # ソースファイル
-set(SOURCES
-    ${LABDOG_SOURCE_DIR}/foo.cpp
+set(LABDOG_SOURCES
+    "${LABDOG_SOURCE_DIR}/embed_resource.cpp"
+    "${LABDOG_SOURCE_DIR}/log.cpp"
 )
 
 # 公開するヘッダファイル
-set(HEADERS_PUBLIC
-    ${LABDOG_HEADER_DIR}/labdog/foo.hpp
+set(LABDOG_HEADERS_PUBLIC
+    "${LABDOG_HEADER_DIR}/labdog/core/common.hpp"
+    "${LABDOG_HEADER_DIR}/labdog/core/platform.hpp"
+    "${LABDOG_HEADER_DIR}/labdog/core/primitive_type.hpp"
+    "${LABDOG_HEADER_DIR}/labdog/core/string.hpp"
+    "${LABDOG_HEADER_DIR}/labdog/core/string_view.hpp"
+    "${LABDOG_HEADER_DIR}/labdog/logging/log.hpp"
+    "${LABDOG_HEADER_DIR}/labdog/math/scalar.hpp"
+    "${LABDOG_HEADER_DIR}/labdog/memory/alignment.hpp"
+    "${LABDOG_HEADER_DIR}/labdog/resource/embed_resource.hpp"
+    "${LABDOG_HEADER_DIR}/labdog/util/assert.hpp"
 )
 
 # 非公開のヘッダファイル
-set(HEADERS_PRIVATE
+set(LABDOG_HEADERS_PRIVATE
+    "${LABDOG_HEADER_DIR}/labdog/core/detail/string.ipp"
+    "${LABDOG_HEADER_DIR}/labdog/core/detail/string_view.ipp"
+    "${LABDOG_HEADER_DIR}/labdog/memory/detail/alignment.ipp"
 )
 
 # ライブラリを作成
 add_library(${LIBRARY_NAME}
-    ${SOURCES}
-    ${HEADERS_PUBLIC}
-    ${HEADERS_PRIVATE}
+    ${LABDOG_SOURCES}
+    ${LABDOG_HEADERS_PUBLIC}
+    ${LABDOG_HEADERS_PRIVATE}
 )
 
 # ライブラリの別名を定義
@@ -77,7 +90,7 @@ install(
 
 # ヘッダをインストール
 install(
-    FILES ${HEADERS_PUBLIC}
+    FILES ${LABDOG_HEADERS_PUBLIC}
     DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}/${LIBRARY_FOLDER}"
 )
 
