@@ -32,14 +32,14 @@ namespace labdog
 		static_assert(alignment > 8, "");
 		static_assert(is_power_of_two(alignment), "2‚Ì—İæ”‚Å‚ ‚é•K—v‚ª‚ ‚è‚Ü‚·B");
 		void* ptr = aligned_malloc(sizeof(Type), alignment);
-		if (!ptr) LABDOG_UNLIKELY
+		if (!ptr) [[unlikely]]
 			throw std::bad_alloc();
 		return new(ptr) Type{ std::forward<Args>(args)... };
 	}
 
 	template <class Type>
 	inline void aligned_delete(Type* ptr) {
-		if (!ptr) LABDOG_UNLIKELY
+		if (!ptr) [[unlikely]]
 			return;
 		ptr->~Type();
 		alined_free(ptr);

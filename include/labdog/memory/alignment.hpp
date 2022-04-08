@@ -14,23 +14,23 @@
 namespace labdog
 {
 	/// @brief アライメントを指定してメモリ領域を確保する
-	///	@param size 確保するメモリ領域のサイズ(bytes)
+	/// @param size 確保するメモリ領域のサイズ(bytes)
 	/// @param alignment アライメント値
 	/// @return 確保したメモリ
 	[[nodiscard]] LABDOG_EXPORT inline void* aligned_malloc(size_t size, size_t alignment) noexcept;
 
 	/// @brief アライメントを指定されたメモリ領域を解放する
-	///	@param ptr 解放するメモリ領域のポインタ
+	/// @param ptr 解放するメモリ領域のポインタ
 	inline void alined_free(void* ptr) noexcept;
 
 	/// @brief メモリ領域が指定したサイズでアライメントされているかを返す
-	///	@param ptr メモリ領域のポインタ
-	///	@param alignment アライメント値
-	///	@return メモリ領域が指定したサイズでアライメントされているか
+	/// @param ptr メモリ領域のポインタ
+	/// @param alignment アライメント値
+	/// @return メモリ領域が指定したサイズでアライメントされているか
 	[[nodiscard]] LABDOG_EXPORT inline bool is_aligned(const void* ptr, size_t alignment) noexcept;
 
 	/// @brief アライメントを指定してメモリ領域を確保し、オブジェクトを構築する
-	///	@param size 確保するメモリ領域のサイズ(bytes)
+	/// @param size 確保するメモリ領域のサイズ(bytes)
 	/// @param alignment アライメント値
 	/// @return 確保したメモリ
 	template <class Type, class... Args>
