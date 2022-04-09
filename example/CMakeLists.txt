@@ -8,7 +8,7 @@ add_executable(${EXAMPLE_NAME}
 
 # ライブラリをリンク
 target_link_libraries(${EXAMPLE_NAME} PRIVATE 
-    labdog::labdog
+    "${PROJECT_NAME}::${LIBRARY_NAME}"
 )
 
 # インストール

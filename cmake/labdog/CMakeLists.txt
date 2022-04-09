@@ -3,7 +3,6 @@ set(LABDOG_HEADER_DIR "${CMAKE_SOURCE_DIR}/include")
 
 # ソースファイル
 set(LABDOG_SOURCES
-    "${LABDOG_SOURCE_DIR}/log.cpp"
 )
 
 # 公開するヘッダファイル
@@ -44,7 +43,7 @@ add_library(${LIBRARY_NAME}
 )
 
 # ライブラリの別名を定義
-add_library(${PROJECT_NAME}::${LIBRARY_NAME} 
+add_library("${PROJECT_NAME}::${LIBRARY_NAME}"
     ALIAS ${LIBRARY_NAME}
 )
 

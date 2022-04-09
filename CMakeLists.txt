@@ -19,3 +19,6 @@ add_subdirectory(cmake/labdog)
 
 # サンプルをビルド
 add_subdirectory(example)
+
+# テストをビルド
+add_subdirectory(test)

@@ -11,7 +11,7 @@
 #pragma once
 #include <cstddef>
 
-namespace wx2
+namespace labdog
 {
 	//=========================================================
 	//	•„†•t‚«®”Œ^
