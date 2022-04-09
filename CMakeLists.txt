@@ -14,20 +14,6 @@ include(${PROJECT_SOURCE_DIR}/cmake/SetupEnvironment.cmake)
 # 外部ライブラリをビルド
 add_subdirectory(external)
 
-# spdlogの情報
-set(SPDLOG_INCLUDE_DIR "${CMAKE_SOURCE_DIR}/external/spdlog/include")
-set(SPDLOG_LIBRARY spdlog::spdlog)
-
-# 外部ライブラリのリスト
-set(EXTERNAL_LIBS
-    ${SPDLOG_LIBRARY}
-)
-
-# 外部ライブラリのインクルードディレクトリのリスト
-set(EXTERNAL_INCLUDES
-    ${SPDLOG_INCLUDE_DIR}
-)
-
 # ライブラリをビルド
 add_subdirectory(cmake/labdog)
 
