@@ -1,6 +1,6 @@
 //=========================================================
 //
-//	log.hpp
+//	test.hpp is part of the labdog framework.
 //	Copyright(c) 2022 Tomomi murakami.
 //
 //	Released under the MIT license.
@@ -8,17 +8,11 @@
 //
 //=========================================================
 
-#pragma once
-#include "../core/common.hpp"
-#include <spdlog/spdlog.h>
+#ifndef LABDOG_TEST_HPP
+#define LABDOG_TEST_HPP
 
-namespace labdog
-{
-	class LABDOG_EXPORT logger final
-	{
-	public:
+#include <gtest/gtest.h>
+#include <labdog/core/string.hpp>
+using namespace labdog;
 
-	private:
-
-	};
-}
+#endif //LABDOG_TEST_HPP

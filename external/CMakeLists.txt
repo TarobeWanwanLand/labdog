@@ -1,12 +1,11 @@
-# ŠO•”ƒ‰ƒCƒuƒ‰ƒŠ‚ÌXV
+# å¤–éƒ¨ãƒ©ã‚¤ãƒ–ãƒ©ãƒªã®æ›´æ–°ã‚’ãƒ—ãƒ«
 execute_process(COMMAND git submodule update --init --recursive)
 
-# GoogleTest‚ğƒrƒ‹ƒh
+# GoogleTestã‚’ãƒ“ãƒ«ãƒ‰
 set(gtest_force_shared_crt ON CACHE BOOL "Always use msvcrt.dll" FORCE)
 add_subdirectory(googletest)
 
-# spdlog‚ğƒrƒ‹ƒh
-set(SPDLOG_USE_STD_FORMAT TRUE)
+# spdlogã‚’ãƒ“ãƒ«ãƒ‰
 set(SPDLOG_WCHAR_FILENAMES TRUE)
 set(SPDLOG_WCHAR_SUPPORT TRUE)
 add_subdirectory(spdlog)

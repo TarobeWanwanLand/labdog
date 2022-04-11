@@ -1,44 +1,38 @@
-# ƒTƒ“ƒvƒ‹–¼
-set(TESTS_NAME "test")
+# ãƒ†ã‚¹ãƒˆãƒ—ãƒ­ã‚°ãƒ©ãƒ å
+set(TESTS_NAME "${PROJECT_NAME}_test")
 
-# ƒŠƒ“ƒN‚·‚éƒ‰ƒCƒuƒ‰ƒŠ‚ÌƒŠƒXƒg
-set(TESTS_LIBS
-    "${PROJECT_NAME}::${LIBRARY_NAME}"
+# ãƒ˜ãƒƒãƒ€ã¨ã‚½ãƒ¼ã‚¹ãƒ•ã‚¡ã‚¤ãƒ«
+set(TESTS_SOURCES
+    # ãƒ˜ãƒƒãƒ€
+    "${CMAKE_CURRENT_SOURCE_DIR}/test.hpp"
+    # ã‚½ãƒ¼ã‚¹
+    "${CMAKE_CURRENT_SOURCE_DIR}/string_test.cpp"
+)
+
+# ãƒ†ã‚¹ãƒˆãƒ—ãƒ­ã‚°ãƒ©ãƒ ã‚’ä½œæˆ
+add_executable(${TESTS_NAME} ${TESTS_SOURCES})
+
+# ãƒ“ãƒ«ãƒ‰ã‚¿ã‚¤ãƒ—ã”ã¨ã®ãƒã‚¹ãƒˆãƒ•ã‚£ãƒƒã‚¯ã‚¹ã‚’è¨­å®š
+set_target_properties(${TESTS_NAME} PROPERTIES
+    DEBUG_POSTFIX "-d"
+    RELEASE_POSTFIX ""
+    MINSIZEREL_POSTFIX "-mr"
+    RELWITHDEBINFO_POSTFIX "-rd"
+)
+
+# ãƒ©ã‚¤ãƒ–ãƒ©ãƒªã‚’ãƒªãƒ³ã‚¯
+target_link_libraries(${TESTS_NAME} PRIVATE
+    ${PROJECT_NAME}::${PROJECT_NAME}
     GTest::gmock
     GTest::gtest
     GTest::gmock_main
 )
 
-# ŠO•”ƒ‰ƒCƒuƒ‰ƒŠ‚ÌƒCƒ“ƒNƒ‹[ƒhƒfƒBƒŒƒNƒgƒŠ‚ÌƒŠƒXƒg
-set(TESTS_INCLUDE_DIRS
-    "${CMAKE_SOURCE_DIR}/external/spdlog/include"
-    "${CMAKE_SOURCE_DIR}/external/googletest/googletest/include"
-    "${CMAKE_SOURCE_DIR}/external/googletest/googlemock/include"
-)
-
-message("dirs : ${TESTS_INCLUDE_DIRS}")
-
-# Àsƒtƒ@ƒCƒ‹‚ğì¬
-add_executable(${TESTS_NAME}
-    "test.cpp"
-)
-
-# ƒ‰ƒCƒuƒ‰ƒŠ‚ğƒŠƒ“ƒN
-target_link_libraries(${TESTS_NAME} PRIVATE 
-    ${TESTS_LIBS}
-)
-
-# ƒCƒ“ƒNƒ‹[ƒhƒfƒBƒŒƒNƒgƒŠ‚ğƒZƒbƒg
-target_include_directories(${TESTS_NAME} PUBLIC
-    ${TESTS_INCLUDE_DIRS}
-)
-
-# GoogleTest‚ÌŠeƒeƒXƒgƒP[ƒX‚²‚Æ‚ÉƒeƒXƒg‚ğì¬‚·‚é
 include(GoogleTest)
 gtest_add_tests(TARGET ${TESTS_NAME})
 
-# ƒCƒ“ƒXƒg[ƒ‹
+# ãƒ—ãƒ­ã‚°ãƒ©ãƒ ã‚’ã‚¤ãƒ³ã‚¹ãƒˆãƒ¼ãƒ«
 install(
-  TARGETS ${EXAMPLE_NAME}
-  RUNTIME DESTINATION bin
+    TARGETS ${TESTS_NAME}
+    RUNTIME DESTINATION bin
 )

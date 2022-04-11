@@ -1,129 +1,70 @@
-set(LABDOG_SOURCE_DIR "${CMAKE_SOURCE_DIR}/source")
-set(LABDOG_HEADER_DIR "${CMAKE_SOURCE_DIR}/include")
+# ãƒ˜ãƒƒãƒ€ã¨ã‚½ãƒ¼ã‚¹ã®ãƒ‡ã‚£ãƒ¬ã‚¯ãƒˆãƒª
+set(LABDOG_HEADER_DIR "${CMAKE_SOURCE_DIR}/labdog/include")
+set(LABDOG_SOURCE_DIR "${CMAKE_SOURCE_DIR}/labdog/source")
 
-# ƒ\[ƒXƒtƒ@ƒCƒ‹
-set(LABDOG_SOURCES
-)
-
-# ŒöŠJ‚·‚éƒwƒbƒ_ƒtƒ@ƒCƒ‹
-set(LABDOG_HEADERS_PUBLIC
+# ãƒ˜ãƒƒãƒ€ãƒ•ã‚¡ã‚¤ãƒ«
+set(LABDOG_HEADERS
     "${LABDOG_HEADER_DIR}/labdog/core/common.hpp"
+    "${LABDOG_HEADER_DIR}/labdog/core/export.hpp"
     "${LABDOG_HEADER_DIR}/labdog/core/platform.hpp"
     "${LABDOG_HEADER_DIR}/labdog/core/primitive_type.hpp"
-    "${LABDOG_HEADER_DIR}/labdog/core/string.hpp"
-    "${LABDOG_HEADER_DIR}/labdog/core/string_view.hpp"
-    "${LABDOG_HEADER_DIR}/labdog/logging/log.hpp"
-    "${LABDOG_HEADER_DIR}/labdog/math/scalar.hpp"
-    "${LABDOG_HEADER_DIR}/labdog/memory/alignment.hpp"
-    "${LABDOG_HEADER_DIR}/labdog/util/assert.hpp"
+#    "${LABDOG_HEADER_DIR}/labdog/core/string.hpp"
 )
 
-# ”ñŒöŠJ‚Ìƒwƒbƒ_ƒtƒ@ƒCƒ‹
-set(LABDOG_HEADERS_PRIVATE
-    "${LABDOG_HEADER_DIR}/labdog/core/detail/string.ipp"
-    "${LABDOG_HEADER_DIR}/labdog/core/detail/string_view.ipp"
-    "${LABDOG_HEADER_DIR}/labdog/memory/detail/alignment.ipp"
+# ã‚½ãƒ¼ã‚¹ãƒ•ã‚¡ã‚¤ãƒ«
+set(LABDOG_SOURCES
+    "${LABDOG_SOURCE_DIR}/string.cpp"
 )
 
-# ŠO•”ƒ‰ƒCƒuƒ‰ƒŠ‚ÌƒŠƒXƒg
-set(LABDOG_EXTERNAL_LIBS
-    spdlog::spdlog
+# ãƒ©ã‚¤ãƒ–ãƒ©ãƒªã‚’ä½œæˆ
+add_library(${PROJECT_NAME} ${LABDOG_SOURCES})
+
+# ãƒ©ã‚¤ãƒ–ãƒ©ãƒªã®åˆ¥åã‚’å®šç¾©
+add_library("${PROJECT_NAME}::${PROJECT_NAME}" ALIAS ${PROJECT_NAME})
+
+# staticãƒ“ãƒ«ãƒ‰æ™‚ã«ãƒã‚¹ãƒˆãƒ•ã‚£ãƒƒã‚¯ã‚¹ã‚’è¨­å®š
+if(BUILD_SHARED_LIBS)
+    target_compile_definitions(${PROJECT_NAME} PRIVATE ${PROJECT_NAME_UPPERCASE}_EXPORTS)
+else()
+    set(STATIC_POSTFIX -static)
+endif()
+
+# ãƒ“ãƒ«ãƒ‰ã‚¿ã‚¤ãƒ—ã”ã¨ã®ãƒã‚¹ãƒˆãƒ•ã‚£ãƒƒã‚¯ã‚¹ã‚’è¨­å®š
+set_target_properties(${PROJECT_NAME} PROPERTIES
+    DEBUG_POSTFIX "${STATIC_POSTFIX}-d"
+    RELEASE_POSTFIX "${STATIC_POSTFIX}"
+    MINSIZEREL_POSTFIX "${STATIC_POSTFIX}-mr"
+    RELWITHDEBINFO_POSTFIX "${STATIC_POSTFIX}-rd"
 )
 
-# ŠO•”ƒ‰ƒCƒuƒ‰ƒŠ‚ÌƒCƒ“ƒNƒ‹[ƒhƒfƒBƒŒƒNƒgƒŠ‚ÌƒŠƒXƒg
-set(LADOG_EXTERNAL_INCLUDES
-    "${CMAKE_SOURCE_DIR}/external/spdlog/include"
+# ã‚½ãƒ¼ã‚¹ãƒ•ã‚¡ã‚¤ãƒ«ã‚’ãƒ©ã‚¤ãƒ–ãƒ©ãƒªã«è¿½åŠ 
+target_sources(${PROJECT_NAME} PRIVATE ${LABDOG_SOURCES})
+
+# ã‚¤ãƒ³ã‚¯ãƒ«ãƒ¼ãƒ‰ãƒ‡ã‚£ãƒ¬ã‚¯ãƒˆãƒªã‚’è¨­å®š
+target_include_directories(${PROJECT_NAME} PUBLIC
+    $<BUILD_INTERFACE:${LABDOG_HEADER_DIR}>
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}>
+    $<INSTALL_INTERFACE:"include">
 )
 
-# ƒ‰ƒCƒuƒ‰ƒŠ‚ðì¬
-add_library(${LIBRARY_NAME}
-    ${LABDOG_SOURCES}
-    ${LABDOG_HEADERS_PUBLIC}
-    ${LABDOG_HEADERS_PRIVATE}
-)
-
-# ƒ‰ƒCƒuƒ‰ƒŠ‚Ì•Ê–¼‚ð’è‹`
-add_library("${PROJECT_NAME}::${LIBRARY_NAME}"
-    ALIAS ${LIBRARY_NAME}
-)
-
-# CMake‚Ì¶¬ƒwƒbƒ_‚ÌƒfƒBƒŒƒNƒgƒŠ
-set(LABDOG_GENERATED_HEADER_DIR
-    "${CMAKE_CURRENT_BINARY_DIR}/header"
-)
-
-# version.hpp‚ðì¬
-configure_file(
-    "${LABDOG_HEADER_DIR}/labdog/version.hpp.in"
-    "${LABDOG_GENERATED_HEADER_DIR}/${LIBRARY_FOLDER}/version.hpp"
-    @ONLY
-)
-
-# export.hpp‚ðì¬
-include("GenerateExportHeader")
-generate_export_header(${LIBRARY_NAME})
-file(RENAME 
-    "${CMAKE_CURRENT_BINARY_DIR}/${LIBRARY_NAME}_export.h"
-    "${LABDOG_GENERATED_HEADER_DIR}/${LIBRARY_FOLDER}/export.hpp"
-)
-
-# DEBUGƒvƒŠƒvƒƒZƒbƒTƒ}ƒNƒ‚Ì’è‹`
-target_compile_definitions(${LIBRARY_NAME} PUBLIC
-    "${PROJECT_NAME_UPPERCASE}_DEBUG=$<CONFIG:Debug>"
-)
-
-# ƒCƒ“ƒNƒ‹[ƒhƒfƒBƒŒƒNƒgƒŠ‚ðÝ’è
-target_include_directories(${LIBRARY_NAME} PUBLIC
-    "$<BUILD_INTERFACE:${LABDOG_HEADER_DIR}>"
-    "$<BUILD_INTERFACE:${LADOG_EXTERNAL_INCLUDES}>"
-    "$<BUILD_INTERFACE:${LABDOG_GENERATED_HEADER_DIR}>"
-    "$<INSTALL_INTERFACE:.>"
-)
-
-# ŠO•”ƒ‰ƒCƒuƒ‰ƒŠ‚ðƒŠƒ“ƒN
-target_link_libraries(${LIBRARY_NAME} PRIVATE 
-    $<BUILD_INTERFACE:${LABDOG_EXTERNAL_LIBS}>
-)
-
-# ƒ‰ƒCƒuƒ‰ƒŠ‚ðƒCƒ“ƒXƒg[ƒ‹
+# ãƒ˜ãƒƒãƒ€ãƒ•ã‚¡ã‚¤ãƒ«ã‚’ã‚¤ãƒ³ã‚¹ãƒˆãƒ¼ãƒ«
 install(
-    TARGETS              "${LIBRARY_NAME}"
-    EXPORT               "${TARGETS_EXPORT_NAME}"
-    LIBRARY DESTINATION  "${CMAKE_INSTALL_LIBDIR}"
-    ARCHIVE DESTINATION  "${CMAKE_INSTALL_LIBDIR}"
-    RUNTIME DESTINATION  "${CMAKE_INSTALL_BINDIR}"
-    INCLUDES DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}"
+    FILES ${LABDOG_HEADERS}
+    DESTINATION "include/${PROJECT_NAME}"
 )
 
-# ƒwƒbƒ_‚ðƒCƒ“ƒXƒg[ƒ‹
+# ãƒ©ã‚¤ãƒ–ãƒ©ãƒªã‚’ã‚¤ãƒ³ã‚¹ãƒˆãƒ¼ãƒ«
 install(
-    FILES ${LABDOG_HEADERS_PUBLIC}
-    DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}/${LIBRARY_FOLDER}"
+    TARGETS ${PROJECT_NAME}
+    EXPORT "${PROJECT_NAME}_config"
+    LIBRARY DESTINATION "lib"
+    ARCHIVE DESTINATION "lib"
+    RUNTIME DESTINATION "bin"
+    PUBLIC_HEADER DESTINATION "include/${PROJECT_NAME}"
 )
 
-# version.hpp‚ðƒCƒ“ƒXƒg[ƒ‹
-install(
-    FILES       "${LABDOG_GENERATED_HEADER_DIR}/${LIBRARY_FOLDER}/version.hpp"
-    DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}/${LIBRARY_FOLDER}"
-)
-
-# export.hpp‚ðƒCƒ“ƒXƒg[ƒ‹
-install(
-    FILES "${LABDOG_GENERATED_HEADER_DIR}/${LIBRARY_FOLDER}/export.hpp" 
-    DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}/${LIBRARY_FOLDER}"
-)
-
-# ƒRƒ“ƒtƒBƒO‚ðƒCƒ“ƒXƒg[ƒ‹
-install(
-    FILES       "${PROJECT_CONFIG_FILE}"
-                "${VERSION_CONFIG_FILE}"
-    DESTINATION "${CONFIG_INSTALL_DIR}"
-)
-
-# ƒ^[ƒQƒbƒg‚ÌƒRƒ“ƒtƒBƒO‚ðƒCƒ“ƒXƒg[ƒ‹
-install(
-    EXPORT      "${TARGETS_EXPORT_NAME}"
-    FILE        "${PROJECT_NAME}Targets.cmake"
-    DESTINATION "${CONFIG_INSTALL_DIR}"
-    NAMESPACE   "${PROJECT_NAME}::"
+# ã‚³ãƒ³ãƒ•ã‚£ã‚°ãƒ•ã‚¡ã‚¤ãƒ«ã‚’ã‚¤ãƒ³ã‚¹ãƒˆãƒ¼ãƒ«
+install(EXPORT "${PROJECT_NAME}_config"
+    NAMESPACE "${PROJECT_NAME}::"
+    DESTINATION "lib/cmake/${PROJECT_NAME}"
 )

@@ -1,24 +1,14 @@
-cmake_minimum_required(VERSION 3.9)
+cmake_minimum_required(VERSION 3.21)
 
-# ƒvƒƒWƒFƒNƒg–¼‚Æƒo[ƒWƒ‡ƒ“‚Ìİ’è
+# ãƒ—ãƒ­ã‚¸ã‚§ã‚¯ãƒˆ
 project(labdog VERSION 1.0.0)
 
-# C++ƒo[ƒWƒ‡ƒ“‚ğw’è
-set(CMAKE_CXX_STANDARD 23)
-set(CMAKE_CXX_STANDARD_REQUIRED TRUE)
-set(CMAKE_CXX_EXTENSIONS FALSE)
+# ç’°å¢ƒã‚’æ§‹ç¯‰ã™ã‚‹
+include(cmake/environment_setting.cmake)
 
-# ŠÂ‹«‚ğ\’z
-include(${PROJECT_SOURCE_DIR}/cmake/SetupEnvironment.cmake)
-
-# ŠO•”ƒ‰ƒCƒuƒ‰ƒŠ‚ğƒrƒ‹ƒh
+# å¤–éƒ¨ãƒ©ã‚¤ãƒ–ãƒ©ãƒªã‚’ãƒ“ãƒ«ãƒ‰
 add_subdirectory(external)
 
-# ƒ‰ƒCƒuƒ‰ƒŠ‚ğƒrƒ‹ƒh
+# ã‚µãƒ–ãƒ‡ã‚£ãƒ¬ã‚¯ãƒˆãƒª
 add_subdirectory(cmake/labdog)
-
-# ƒTƒ“ƒvƒ‹‚ğƒrƒ‹ƒh
-add_subdirectory(example)
-
-# ƒeƒXƒg‚ğƒrƒ‹ƒh
 add_subdirectory(test)
