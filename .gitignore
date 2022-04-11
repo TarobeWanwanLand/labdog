@@ -5,6 +5,7 @@
 build/
 install/
 out/
+.idea/
 
 ### C++ ###
 # Prerequisites
