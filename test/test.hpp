@@ -13,6 +13,6 @@
 
 #include <gtest/gtest.h>
 #include <labdog/core/string.hpp>
-using namespace labdog;
+using namespace ld;
 
 #endif //LABDOG_TEST_HPP

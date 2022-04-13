@@ -1,46 +1,31 @@
+//=========================================================
+//
+//  string.cpp is part of the labdog project.
+//  Copyright(c) 2022 Tomomi murakami.
+//
+//  Released under the MIT license.
+//  see http://opensource.org/licenses/MIT
+//
+//=========================================================
+
 #include "labdog/core/string.hpp"
 
-namespace labdog
+namespace ld
 {
     string::string() noexcept
-        : string_()
-    {}
+            : string_() {}
 
     string::string(const string& other) noexcept
-        : string_(other.string_)
-    {}
+            : string_(other.string_) {}
 
-	string::string(string&& other) noexcept
-		: string_(std::move(other.string_))
-	{}
+    string& string::operator=(const string& rhs) noexcept
+    {
+        string_ = rhs.string_;
+        return *this;
+    }
 
-	string::string(const string& str, const size_type pos, const size_type length)
-		: string_(str.string_, pos, length)
-	{}
-
-	string::string(const string_type& str)
-		: string_(str)
-	{}
-
-	string::string(const string_type& str, const size_type pos, const size_type length)
-		: string_(str, pos, length)
-	{}
-
-	string::string(const value_type* str)
-		: string_(str)
-	{}
-
-	string::string(const value_type* str, const size_type pos, const size_type length)
-		: string_(str, pos, length)
-	{}
-
-	string::string(const value_type c, const size_type count)
-		: string_(count, c)
-	{}
-
-    string::string(const std::initializer_list<value_type> list)
-            : string_(list)
-    {}
+    string::string(string&& other) noexcept
+            : string_(std::move(other.string_)) {}
 
     string& string::operator=(string&& rhs) noexcept
     {
@@ -48,17 +33,38 @@ namespace labdog
         return *this;
     }
 
-    string& string::operator=(const value_type* const rhs)
-    {
-        string_ = rhs;
-        return *this;
-    }
+    string::string(const string& str, const size_type pos, const size_type length)
+            : string_(str.string_, pos, length) {}
+
+    string::string(const string_type& str)
+            : string_(str) {}
 
     string& string::operator=(const value_type rhs)
     {
         string_ = rhs;
         return *this;
     }
+
+    string::string(const string_type& str, const size_type pos, const size_type length)
+            : string_(str, pos, length) {}
+
+    string::string(const value_type* str)
+            : string_(str) {}
+
+    string& string::operator=(const value_type* const rhs)
+    {
+        string_ = rhs;
+        return *this;
+    }
+
+    string::string(const value_type* str, const size_type pos, const size_type length)
+            : string_(str, pos, length) {}
+
+    string::string(const value_type c, const size_type count)
+            : string_(count, c) {}
+
+    string::string(const std::initializer_list<value_type> list)
+            : string_(list) {}
 
     string& string::operator=(const std::initializer_list<value_type> rhs)
     {

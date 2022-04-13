@@ -5,10 +5,7 @@ set(LABDOG_SOURCE_DIR "${CMAKE_SOURCE_DIR}/labdog/source")
 # ヘッダファイル
 set(LABDOG_HEADERS
     "${LABDOG_HEADER_DIR}/labdog/core/common.hpp"
-    "${LABDOG_HEADER_DIR}/labdog/core/export.hpp"
-    "${LABDOG_HEADER_DIR}/labdog/core/platform.hpp"
-    "${LABDOG_HEADER_DIR}/labdog/core/primitive_type.hpp"
-#    "${LABDOG_HEADER_DIR}/labdog/core/string.hpp"
+    "${LABDOG_HEADER_DIR}/labdog/core/string.hpp"
 )
 
 # ソースファイル
@@ -24,7 +21,7 @@ add_library("${PROJECT_NAME}::${PROJECT_NAME}" ALIAS ${PROJECT_NAME})
 
 # staticビルド時にポストフィックスを設定
 if(BUILD_SHARED_LIBS)
-    target_compile_definitions(${PROJECT_NAME} PRIVATE ${PROJECT_NAME_UPPERCASE}_EXPORTS)
+    target_compile_definitions(${PROJECT_NAME} PRIVATE "LD_EXPORTS")
 else()
     set(STATIC_POSTFIX -static)
 endif()

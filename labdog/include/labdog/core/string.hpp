@@ -1,291 +1,214 @@
 //=========================================================
 //
-//	string.hpp is part of the labdog framework.
-//	Copyright(c) 2022 Tomomi murakami.
+//  string.hpp is part of the labdog project.
+//  Copyright(c) 2022 Tomomi murakami.
 //
-//	Released under the MIT license.
-//	see http://opensource.org/licenses/MIT
+//  Released under the MIT license.
+//  see http://opensource.org/licenses/MIT
 //
 //=========================================================
 
-#ifndef LABDOG_STRING_HPP
-#define LABDOG_STRING_HPP
+#ifndef LD_STRING_HPP
+#define LD_STRING_HPP
 
 #include "common.hpp"
 #include <string>
 
-namespace labdog
+namespace ld
 {
-	//class string_view;
+    /// @brief UTF-32æ–‡å­—åˆ—ã‚¯ãƒ©ã‚¹
+    class LD_API string
+    {
+    public:
+        using string_type = std::u32string;
+        using traits_type = string_type::traits_type;
+        using allocator_type = string_type::allocator_type;
+        using value_type = string_type::value_type;
+        using pointer = string_type::pointer;
+        using const_pointer = string_type::const_pointer;
+        using reference = string_type::reference;
+        using const_reference = string_type::const_reference;
+        using iterator = string_type::iterator;
+        using const_iterator = string_type::const_iterator;
+        using reverse_iterator = string_type::reverse_iterator;
+        using const_reverse_iterator = string_type::const_reverse_iterator;
+        using size_type = string_type::size_type;
+        using difference_type = string_type::difference_type;
 
-	/// @brief UTF-32•¶š—ñƒNƒ‰ƒX
-	class LABDOG_API string
-	{
-	public:
-		//=========================================================
-		//	ƒGƒCƒŠƒAƒX
-		//=========================================================
-		/// @brief •¶š—ñŒ^
-		using string_type = std::u32string;
+        static constexpr size_type npos{string_type::npos};
 
-		/// @brief •¶š—ñ‚Ì“Á«Œ^
-		using traits_type = string_type::traits_type;
+        LD_NODISCARD_CTOR string() noexcept;
 
-		/// @brief ƒAƒƒP[ƒ^Œ^
-		using allocator_type = string_type::allocator_type;
+        LD_NODISCARD_CTOR string(const string& other) noexcept;
 
-		/// @brief —v‘fŒ^
-		using value_type = string_type::value_type;
+        LD_NODISCARD_CTOR string(string&& other) noexcept;
 
-		/// @brief —v‘f‚Ìƒ|ƒCƒ“ƒ^Œ^
-		using pointer = string_type::pointer;
+        LD_NODISCARD_CTOR string(const string& str, size_type pos, size_type length = npos);
 
-		/// @brief —v‘f‚Ìconstƒ|ƒCƒ“ƒ^Œ^
-		using const_pointer = string_type::const_pointer;
+        LD_NODISCARD_CTOR explicit string(const string_type& str);
 
-		/// @brief —v‘f‚ÌQÆŒ^
-		using reference = string_type::reference;
+        LD_NODISCARD_CTOR string(const string_type& str, size_type pos, size_type length = npos);
 
-		/// @brief —v‘f‚ÌconstQÆŒ^
-		using const_reference = string_type::const_reference;
+        LD_NODISCARD_CTOR explicit string(const value_type* str);
 
-		/// @brief ƒCƒeƒŒ[ƒ^Œ^
-		using iterator = string_type::iterator;
+        LD_NODISCARD_CTOR string(const value_type* str, size_type pos, size_type length = npos);
 
-		/// @brief constƒCƒeƒŒ[ƒ^Œ^
-		using const_iterator = string_type::const_iterator;
+        LD_NODISCARD_CTOR string(value_type c, size_type count);
 
-		/// @brief ƒŠƒo[ƒXƒCƒeƒŒ[ƒ^Œ^
-		using reverse_iterator = string_type::reverse_iterator;
+        LD_NODISCARD string& operator=(const string& rhs) noexcept;
 
-		/// @brief constƒŠƒo[ƒXƒCƒeƒŒ[ƒ^Œ^
-		using const_reverse_iterator = string_type::const_reverse_iterator;
+        LD_NODISCARD string& operator=(string&& rhs) noexcept;
 
-		/// @brief —v‘f‚ÌŒÂ”‚ğ•\Œ»‚·‚éŒ^
-		using size_type = string_type::size_type;
+        LD_NODISCARD string& operator=(value_type rhs);
 
-		/// @brief —v‘fŠÔ‚Ì‹——£‚ğ•\Œ»‚·‚éŒ^
-		using difference_type = string_type::difference_type;
+        LD_NODISCARD string& operator=(const value_type* rhs);
 
-        //=========================================================
-        //	’è”
-        //=========================================================
-        /// @brief –³Œø‚È—v‘f‚ÌƒCƒ“ƒfƒbƒNƒX’l
-        static constexpr size_type npos{ string_type::npos };
+        /// @brief æ–‡å­—åˆ—ã®ç¯„å›²ã‹ã‚‰æ§‹ç¯‰ã™ã‚‹
+        /// @tparam Iterator ã‚¤ãƒ†ãƒ¬ãƒ¼ã‚¿å‹
+        /// @param first ç¯„å›²ã®å…ˆé ­è¦ç´ ã¸ã®ã‚¤ãƒ†ãƒ¬ãƒ¼ã‚¿
+        /// @param last ç¯„å›²ã®æœ«å°¾è¦ç´ ã¸ã®ã‚¤ãƒ†ãƒ¬ãƒ¼ã‚¿
+        template <class Iterator>
+        string(Iterator first, Iterator last)
+                : string_(first, last) {}
 
-		//=========================================================
-		//	ƒRƒ“ƒXƒgƒ‰ƒNƒ^
-		//=========================================================
-		/// @brief ƒfƒtƒHƒ‹ƒgƒRƒ“ƒXƒgƒ‰ƒNƒ^
-        LABDOG_NODISCARD_CXX20
-        string() noexcept;
-
-		/// @brief ƒRƒs[ƒRƒ“ƒXƒgƒ‰ƒNƒ^
-        LABDOG_NODISCARD_CXX20
-        string(const string& other) noexcept;
-
-		/// @brief ƒ€[ƒuƒRƒ“ƒXƒgƒ‰ƒNƒ^
-        LABDOG_NODISCARD_CXX20
-        string(string&& other) noexcept;
-
-		/// @brief •¶š—ñ‚Ìw’è”ÍˆÍ‚ğƒRƒs[‚µ‚Ä\’z‚·‚é
-		/// @param str ƒRƒs[‚·‚é•¶š—ñ
-		///	@param pos ”ÍˆÍ‚Ìæ“ªˆÊ’u
-		///	@param length ”ÍˆÍ‚Ì’·‚³
-        LABDOG_NODISCARD_CXX20
-        string(const string& str, size_type pos, size_type length = npos);
-
-		/// @brief •¶š—ñ‚©‚çƒRƒs[‚µ‚Ä\’z‚·‚é
-		///	@param str ƒRƒs[‚·‚é•¶š—ñ
-        LABDOG_NODISCARD_CXX20
-        explicit string(const string_type& str);
-
-		/// @brief •¶š—ñ‚Ìw’è”ÍˆÍ‚ğƒRƒs[‚µ‚Ä\’z‚·‚é
-		/// @param str ƒRƒs[‚·‚é•¶š—ñ
-		///	@param pos ”ÍˆÍ‚Ìæ“ªˆÊ’u
-		///	@param length ”ÍˆÍ‚Ì’·‚³
-        LABDOG_NODISCARD_CXX20
-        string(const string_type& str, size_type pos, size_type length = npos);
-
-		/// @brief •¶š”z—ñ‚ğƒRƒs[‚µ‚Ä\’z‚·‚é
-		/// @param str ƒRƒs[‚·‚é•¶š”z—ñ
-        LABDOG_NODISCARD_CXX20
-        explicit string(const value_type* str);
-
-		/// @brief •¶š”z—ñ‚Ìw’è”ÍˆÍ‚ğƒRƒs[‚µ‚Ä\’z‚·‚é
-		/// @param str ƒRƒs[‚·‚é•¶š”z—ñ
-		///	@param pos ”ÍˆÍ‚Ìæ“ªˆÊ’u
-		///	@param length ”ÍˆÍ‚Ì’·‚³
-        LABDOG_NODISCARD_CXX20
-        string(const value_type* str, size_type pos, size_type length = npos);
-
-		/// @brief •¶š‚ğw’èŒÂ”•À‚×‚½•¶š—ñ‚ğ\’z‚·‚é
-		///	@param c ŒJ‚è•Ô‚·•¶š
-		///	@param count ŒÂ”
-        LABDOG_NODISCARD_CXX20
-        string(value_type c, size_type count);
-
-		/// @brief •¶š—ñ‚Ì”ÍˆÍ‚©‚ç\’z‚·‚é
-		/// @tparam Iterator ƒCƒeƒŒ[ƒ^Œ^
-		/// @param first ”ÍˆÍ‚Ìæ“ª—v‘f‚Ö‚ÌƒCƒeƒŒ[ƒ^
-		/// @param last ”ÍˆÍ‚Ì––”ö—v‘f‚Ö‚ÌƒCƒeƒŒ[ƒ^
-		template <class Iterator>
-        LABDOG_NODISCARD_CXX20
-        string(Iterator first, Iterator last);
-
-		/// @brief •¶š‚Ì‰Šú‰»qƒŠƒXƒg‚©‚ç\’z‚·‚é
-		///	@param list •¶š‚Ì‰Šú‰»qƒŠƒXƒg
-        LABDOG_NODISCARD_CXX20
+        /// @brief æ–‡å­—ã®åˆæœŸåŒ–å­ãƒªã‚¹ãƒˆã‹ã‚‰æ§‹ç¯‰ã™ã‚‹
+        ///	@param list æ–‡å­—ã®åˆæœŸåŒ–å­ãƒªã‚¹ãƒˆ
+        LD_NODISCARD_CTOR
         string(std::initializer_list<value_type> list);
 
-		//=========================================================
-		//	ƒfƒXƒgƒ‰ƒNƒ^
-		//=========================================================
-		/// @brief ƒfƒtƒHƒ‹ƒgƒfƒXƒgƒ‰ƒNƒ^
-		virtual ~string() noexcept = default;
+        /// @brief æ–‡å­—ã®åˆæœŸåŒ–å­ãƒªã‚¹ãƒˆã‚’ã‚³ãƒ”ãƒ¼ä»£å…¥ã™ã‚‹
+        LD_NODISCARD
+        string& operator=(std::initializer_list<value_type> rhs);
 
-		//=========================================================
-		//	‰‰Zq
-		//=========================================================
-		/// @brief ƒRƒs[‘ã“ü‰‰Zq
-		[[nodiscard]] string& operator=(const string& rhs) = default;
+        //=========================================================
+        //  ãƒ‡ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
+        //=========================================================
+        /// @brief ãƒ‡ãƒ•ã‚©ãƒ«ãƒˆãƒ‡ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
+        virtual ~string() noexcept = default;
 
-		/// @brief ƒ€[ƒu‘ã“ü‰‰Zq
-		[[nodiscard]] string& operator=(string&& rhs) noexcept;
+        //=========================================================
+        //	æ¼”ç®—å­
+        //=========================================================
+        /// @brief æ–‡å­—åˆ—ã‚’æœ«å°¾ã«çµåˆã™ã‚‹
+        [[nodiscard]] string operator+(const string& rhs) const;
 
-		/// @brief •¶š”z—ñ‚ğƒRƒs[‘ã“ü‚·‚é
-		[[nodiscard]] string& operator=(const value_type* rhs);
+        /// @brief æ–‡å­—åˆ—ã‚’æœ«å°¾ã«çµåˆã™ã‚‹
+        [[nodiscard]] string operator+(const value_type* rhs) const;
 
-		/// @brief •¶š‚ğƒRƒs[‘ã“ü‚·‚é
-		[[nodiscard]] string& operator=(value_type rhs);
+        /// @brief æ–‡å­—ã‚’æœ«å°¾ã«çµåˆã™ã‚‹
+        [[nodiscard]] string operator+(value_type rhs) const;
 
-		/// @brief •¶š‚Ì‰Šú‰»qƒŠƒXƒg‚ğƒRƒs[‘ã“ü‚·‚é
-		[[nodiscard]] string& operator=(std::initializer_list<value_type> rhs);
+        /// @brief æ–‡å­—åˆ—ã‚’æœ«å°¾ã«çµåˆã—ã¦ä»£å…¥ã™ã‚‹
+        [[nodiscard]] string& operator+=(const string& rhs);
 
-		/// @brief •¶š—ñ‚ğ––”ö‚ÉŒ‹‡‚·‚é
-		[[nodiscard]] string operator+(const string& rhs) const;
+        /// @brief æ–‡å­—é…åˆ—ã‚’æœ«å°¾ã«çµåˆã—ã¦ä»£å…¥ã™ã‚‹
+        [[nodiscard]] string& operator+=(const value_type* rhs);
 
-		/// @brief •¶š—ñ‚ğ––”ö‚ÉŒ‹‡‚·‚é
-		[[nodiscard]] string operator+(const value_type* rhs) const;
+        /// @brief æ–‡å­—ã‚’æœ«å°¾ã«çµåˆã—ã¦ä»£å…¥ã™ã‚‹
+        [[nodiscard]] string& operator+=(value_type rhs);
 
-		/// @brief •¶š‚ğ––”ö‚ÉŒ‹‡‚·‚é
-		[[nodiscard]] string operator+(value_type rhs) const;
+        /// @brief æ–‡å­—åˆ—ã‚’ç­‰å€¤æ¯”è¼ƒã™ã‚‹
+        [[nodiscard]] bool operator==(const string& rhs) const;
 
-		/// @brief •¶š—ñ‚ğ––”ö‚ÉŒ‹‡‚µ‚Ä‘ã“ü‚·‚é
-		[[nodiscard]] string& operator+=(const string& rhs);
+        /// @brief æ–‡å­—åˆ—ã‚’ç­‰å€¤æ¯”è¼ƒã™ã‚‹
+        [[nodiscard]] bool operator==(const value_type* rhs) const;
 
-		/// @brief •¶š”z—ñ‚ğ––”ö‚ÉŒ‹‡‚µ‚Ä‘ã“ü‚·‚é
-		[[nodiscard]] string& operator+=(const value_type* rhs);
+        /// @brief æ–‡å­—åˆ—ã‚’éç­‰å€¤æ¯”è¼ƒã™ã‚‹
+        [[nodiscard]] bool operator!=(const string& rhs) const;
 
-		/// @brief •¶š‚ğ––”ö‚ÉŒ‹‡‚µ‚Ä‘ã“ü‚·‚é
-		[[nodiscard]] string& operator+=(value_type rhs);
+        /// @brief æ–‡å­—åˆ—ã‚’éç­‰å€¤æ¯”è¼ƒã™ã‚‹
+        [[nodiscard]] bool operator!=(const value_type* rhs) const;
 
-		/// @brief •¶š—ñ‚ğ“™’l”äŠr‚·‚é
-		[[nodiscard]] bool operator==(const string& rhs) const;
+        /// @brief æ–‡å­—åˆ—ã‚’æ¯”è¼ƒã™ã‚‹
+        [[nodiscard]] std::strong_ordering operator<=>(const string& rhs) const;
 
-		/// @brief •¶š—ñ‚ğ“™’l”äŠr‚·‚é
-		[[nodiscard]] bool operator==(const value_type* rhs) const;
+        /// @brief æ–‡å­—åˆ—ã‚’æ¯”è¼ƒã™ã‚‹
+        [[nodiscard]] std::strong_ordering operator<=>(const value_type* rhs) const;
 
-		/// @brief •¶š—ñ‚ğ”ñ“™’l”äŠr‚·‚é
-		[[nodiscard]] bool operator!=(const string & rhs) const;
+        //=========================================================
+        //	è¦ç´ ã‚¢ã‚¯ã‚»ã‚¹
+        //=========================================================
+        /// @brief å…ˆé ­è¦ç´ ã¸ã®ãƒã‚¤ãƒ³ã‚¿ã‚’è¿”ã™
+        ///	@return å…ˆé ­è¦ç´ ã¸ã®ãƒã‚¤ãƒ³ã‚¿
+        [[nodiscard]] const value_type* data() const noexcept;
 
-		/// @brief •¶š—ñ‚ğ”ñ“™’l”äŠr‚·‚é
-		[[nodiscard]] bool operator!=(const value_type* rhs) const;
+        /// @brief å…ˆé ­è¦ç´ ã¸ã®å‚ç…§ã‚’è¿”ã™
+        ///	@return å…ˆé ­è¦ç´ ã¸ã®å‚ç…§
+        [[nodiscard]] value_type& front() noexcept;
 
-		/// @brief •¶š—ñ‚ğ”äŠr‚·‚é
-		[[nodiscard]] std::strong_ordering operator<=>(const string& rhs) const;
+        /// @brief å…ˆé ­è¦ç´ ã¸ã®constå‚ç…§ã‚’è¿”ã™
+        ///	@return å…ˆé ­è¦ç´ ã¸ã®constå‚ç…§
+        [[nodiscard]] const value_type& front() const noexcept;
 
-		/// @brief •¶š—ñ‚ğ”äŠr‚·‚é
-		[[nodiscard]] std::strong_ordering operator<=>(const value_type* rhs) const;
+        /// @brief æœ«å°¾è¦ç´ ã¸ã®å‚ç…§ã‚’è¿”ã™
+        ///	@return æœ«å°¾è¦ç´ ã¸ã®å‚ç…§
+        [[nodiscard]] value_type& back() noexcept;
 
-		//=========================================================
-		//	—v‘fƒAƒNƒZƒX
-		//=========================================================
-		/// @brief æ“ª—v‘f‚Ö‚Ìƒ|ƒCƒ“ƒ^‚ğ•Ô‚·
-		///	@return æ“ª—v‘f‚Ö‚Ìƒ|ƒCƒ“ƒ^
-		[[nodiscard]] const value_type* data() const noexcept;
+        /// @brief æœ«å°¾è¦ç´ ã¸ã®constå‚ç…§ã‚’è¿”ã™
+        ///	@return æœ«å°¾è¦ç´ ã¸ã®constå‚ç…§
+        [[nodiscard]] const value_type& back() const noexcept;
 
-		/// @brief æ“ª—v‘f‚Ö‚ÌQÆ‚ğ•Ô‚·
-		///	@return æ“ª—v‘f‚Ö‚ÌQÆ
-		[[nodiscard]] value_type& front() noexcept;
+        //=========================================================
+        //	æƒ…å ±
+        //=========================================================
+        /// @brief æ–‡å­—åˆ—ã®é•·ã•ã‚’è¿”ã™
+        ///	@return æ–‡å­—åˆ—ã®é•·ã•
+        [[nodiscard]] size_t size() const noexcept;
 
-		/// @brief æ“ª—v‘f‚Ö‚ÌconstQÆ‚ğ•Ô‚·
-		///	@return æ“ª—v‘f‚Ö‚ÌconstQÆ
-		[[nodiscard]] const value_type& front() const noexcept;
+        /// @brief æ ¼ç´å¯èƒ½ãªæœ€å¤§æ–‡å­—æ•°ã‚’è¿”ã™
+        ///	@return æ ¼ç´å¯èƒ½ãªæœ€å¤§æ–‡å­—æ•°
+        [[nodiscard]] size_t max_size() const noexcept;
 
-		/// @brief ––”ö—v‘f‚Ö‚ÌQÆ‚ğ•Ô‚·
-		///	@return ––”ö—v‘f‚Ö‚ÌQÆ
-		[[nodiscard]] value_type& back() noexcept;
+        /// @brief ã‚³ãƒ³ãƒ†ãƒŠãŒç©ºã‹ã©ã†ã‹ã‚’è¿”ã™
+        ///	@return ã‚³ãƒ³ãƒ†ãƒŠãŒç©ºã‹
+        [[nodiscard]] bool empty() const noexcept;
 
-		/// @brief ––”ö—v‘f‚Ö‚ÌconstQÆ‚ğ•Ô‚·
-		///	@return ––”ö—v‘f‚Ö‚ÌconstQÆ
-		[[nodiscard]] const value_type& back() const noexcept;
+        //=========================================================
+        //  ã‚¤ãƒ†ãƒ¬ãƒ¼ã‚¿
+        //=========================================================
+        /// @brief å…ˆé ­è¦ç´ ã‚’æŒ‡ã™ã‚¤ãƒ†ãƒ¬ãƒ¼ã‚¿ã‚’è¿”ã™
+        [[nodiscard]] iterator begin() noexcept;
 
-		//=========================================================
-		//	î•ñ
-		//=========================================================
-		/// @brief •¶š—ñ‚Ì’·‚³‚ğ•Ô‚·
-		///	@return •¶š—ñ‚Ì’·‚³
-		[[nodiscard]] size_t size() const noexcept;
+        /// @brief å…ˆé ­è¦ç´ ã‚’æŒ‡ã™constã‚¤ãƒ†ãƒ¬ãƒ¼ã‚¿ã‚’è¿”ã™
+        [[nodiscard]] const_iterator begin() const noexcept;
 
-		/// @brief Ši”[‰Â”\‚ÈÅ‘å•¶š”‚ğ•Ô‚·
-		///	@return Ši”[‰Â”\‚ÈÅ‘å•¶š”
-		[[nodiscard]] size_t max_size() const noexcept;
+        /// @brief æœ«å°¾è¦ç´ ã‚’æŒ‡ã™ã‚¤ãƒ†ãƒ¬ãƒ¼ã‚¿ã‚’è¿”ã™
+        [[nodiscard]] iterator end() noexcept;
 
-		/// @brief ƒRƒ“ƒeƒi‚ª‹ó‚©‚Ç‚¤‚©‚ğ•Ô‚·
-		///	@return ƒRƒ“ƒeƒi‚ª‹ó‚©
-		[[nodiscard]] bool empty() const noexcept;
+        /// @brief æœ«å°¾è¦ç´ ã‚’æŒ‡ã™constã‚¤ãƒ†ãƒ¬ãƒ¼ã‚¿ã‚’è¿”ã™
+        [[nodiscard]] const_iterator end() const noexcept;
 
-		//=========================================================
-		//	ƒCƒeƒŒ[ƒ^
-		//=========================================================
-		/// @brief æ“ª—v‘f‚ğw‚·ƒCƒeƒŒ[ƒ^‚ğ•Ô‚·
-		[[nodiscard]] iterator begin() noexcept;
+        /// @brief å…ˆé ­è¦ç´ ã‚’æŒ‡ã™constã‚¤ãƒ†ãƒ¬ãƒ¼ã‚¿ã‚’è¿”ã™
+        [[nodiscard]] const_iterator cbegin() const noexcept;
 
-		/// @brief æ“ª—v‘f‚ğw‚·constƒCƒeƒŒ[ƒ^‚ğ•Ô‚·
-		[[nodiscard]] const_iterator begin() const noexcept;
+        /// @brief æœ«å°¾è¦ç´ ã‚’æŒ‡ã™constã‚¤ãƒ†ãƒ¬ãƒ¼ã‚¿ã‚’è¿”ã™
+        [[nodiscard]] const_iterator cend() const noexcept;
 
-		/// @brief ––”ö—v‘f‚ğw‚·ƒCƒeƒŒ[ƒ^‚ğ•Ô‚·
-		[[nodiscard]] iterator end() noexcept;
+        /// @brief å…ˆé ­è¦ç´ ã‚’æŒ‡ã™ãƒªãƒãƒ¼ã‚¹ã‚¤ãƒ†ãƒ¬ãƒ¼ã‚¿ã‚’è¿”ã™
+        [[nodiscard]] reverse_iterator rbegin() noexcept;
 
-		/// @brief ––”ö—v‘f‚ğw‚·constƒCƒeƒŒ[ƒ^‚ğ•Ô‚·
-		[[nodiscard]] const_iterator end() const noexcept;
+        /// @brief å…ˆé ­è¦ç´ ã‚’æŒ‡ã™constãƒªãƒãƒ¼ã‚¹ã‚¤ãƒ†ãƒ¬ãƒ¼ã‚¿ã‚’è¿”ã™
+        [[nodiscard]] const_reverse_iterator rbegin() const noexcept;
 
-		/// @brief æ“ª—v‘f‚ğw‚·constƒCƒeƒŒ[ƒ^‚ğ•Ô‚·
-		[[nodiscard]] const_iterator cbegin() const noexcept;
+        /// @brief æœ«å°¾è¦ç´ ã‚’æŒ‡ã™ãƒªãƒãƒ¼ã‚¹ã‚¤ãƒ†ãƒ¬ãƒ¼ã‚¿ã‚’è¿”ã™
+        [[nodiscard]] reverse_iterator rend() noexcept;
 
-		/// @brief ––”ö—v‘f‚ğw‚·constƒCƒeƒŒ[ƒ^‚ğ•Ô‚·
-		[[nodiscard]] const_iterator cend() const noexcept;
+        /// @brief å…ˆé ­è¦ç´ ã‚’æŒ‡ã™constãƒªãƒãƒ¼ã‚¹ã‚¤ãƒ†ãƒ¬ãƒ¼ã‚¿ã‚’è¿”ã™
+        [[nodiscard]] const_reverse_iterator rend() const noexcept;
 
-		/// @brief æ“ª—v‘f‚ğw‚·ƒŠƒo[ƒXƒCƒeƒŒ[ƒ^‚ğ•Ô‚·
-		[[nodiscard]] reverse_iterator rbegin() noexcept;
+        /// @brief å…ˆé ­è¦ç´ ã‚’æŒ‡ã™constãƒªãƒãƒ¼ã‚¹ã‚¤ãƒ†ãƒ¬ãƒ¼ã‚¿ã‚’è¿”ã™
+        [[nodiscard]] const_reverse_iterator crbegin() const noexcept;
 
-		/// @brief æ“ª—v‘f‚ğw‚·constƒŠƒo[ƒXƒCƒeƒŒ[ƒ^‚ğ•Ô‚·
-		[[nodiscard]] const_reverse_iterator rbegin() const noexcept;
+        /// @brief æœ«å°¾è¦ç´ ã‚’æŒ‡ã™constãƒªãƒãƒ¼ã‚¹ã‚¤ãƒ†ãƒ¬ãƒ¼ã‚¿ã‚’è¿”ã™
+        [[nodiscard]] const_reverse_iterator crend() const noexcept;
 
-		/// @brief ––”ö—v‘f‚ğw‚·ƒŠƒo[ƒXƒCƒeƒŒ[ƒ^‚ğ•Ô‚·
-		[[nodiscard]] reverse_iterator rend() noexcept;
-
-		/// @brief æ“ª—v‘f‚ğw‚·constƒŠƒo[ƒXƒCƒeƒŒ[ƒ^‚ğ•Ô‚·
-		[[nodiscard]] const_reverse_iterator rend() const noexcept;
-
-		/// @brief æ“ª—v‘f‚ğw‚·constƒŠƒo[ƒXƒCƒeƒŒ[ƒ^‚ğ•Ô‚·
-		[[nodiscard]] const_reverse_iterator crbegin() const noexcept;
-
-		/// @brief ––”ö—v‘f‚ğw‚·constƒŠƒo[ƒXƒCƒeƒŒ[ƒ^‚ğ•Ô‚·
-		[[nodiscard]] const_reverse_iterator crend() const noexcept;
-
-	private:
-		//friend string_view;
-
-		//=========================================================
-		//	•Ï”
-		//=========================================================
-		/// @brief •¶š—ñƒRƒ“ƒeƒi
-		string_type string_;
-	};
+    private:
+        //=========================================================
+        //	å¤‰æ•°
+        //=========================================================
+        /// @brief æ–‡å­—åˆ—
+        string_type string_;
+    };
 }
 
-#include "detail/string.ipp"
-
-#endif // LABDOG_STRING_HPP
+#endif // LD_STRING_HPP
