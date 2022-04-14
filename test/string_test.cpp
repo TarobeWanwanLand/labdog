@@ -4,10 +4,13 @@ namespace
 {
 	TEST(labdog_test, string_comparison)
 	{
-		constexpr const char32* c1 = U"labdog game🐶";
-        constexpr const char32* c2 = U"aaaaa";
+        using namespace ld::string_literals;
 
-		EXPECT_EQ(string(c1), c1);
-        EXPECT_EQ(string(U'a', 5), c2);
-	}
+        string empty_str;
+
+        EXPECT_TRUE(empty_str.empty());
+        EXPECT_EQ(empty_str, U"");
+        EXPECT_EQ(empty_str, U""_s);
+        EXPECT_EQ(empty_str.size(), 0);
+    }
 }

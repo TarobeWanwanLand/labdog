@@ -35,180 +35,833 @@ namespace ld
         using size_type = string_type::size_type;
         using difference_type = string_type::difference_type;
 
-        static constexpr size_type npos{string_type::npos};
+        static constexpr size_type npos{ string_type::npos };
 
-        LD_NODISCARD_CTOR string() noexcept;
+        LD_NODISCARD_CTOR string() noexcept
+            : string_() {}
 
-        LD_NODISCARD_CTOR string(const string& other) noexcept;
+        LD_NODISCARD_CTOR explicit string(const string_type& str) noexcept
+            : string_(str) {}
 
-        LD_NODISCARD_CTOR string(string&& other) noexcept;
+        LD_NODISCARD_CTOR explicit string(string_type&& str) noexcept
+            : string_(std::move(str)) {}
 
-        LD_NODISCARD_CTOR string(const string& str, size_type pos, size_type length = npos);
+        LD_NODISCARD_CTOR string(const string& right)
+            : string_(right.string_) {}
 
-        LD_NODISCARD_CTOR explicit string(const string_type& str);
+        LD_NODISCARD_CTOR string(const string& right, const size_type offset, const size_type count = npos)
+            : string_(right.string_, offset, count) {}
 
-        LD_NODISCARD_CTOR string(const string_type& str, size_type pos, size_type length = npos);
+        LD_NODISCARD_CTOR string(string&& right) noexcept
+            : string_(std::move(right.string_)) {}
 
-        LD_NODISCARD_CTOR explicit string(const value_type* str);
+        LD_NODISCARD_CTOR explicit string(const value_type* const ptr)
+            : string_(ptr) {}
 
-        LD_NODISCARD_CTOR string(const value_type* str, size_type pos, size_type length = npos);
+        LD_NODISCARD_CTOR string(const value_type* const ptr, const size_type count)
+            : string_(ptr, count) {}
 
-        LD_NODISCARD_CTOR string(value_type c, size_type count);
+        LD_NODISCARD_CTOR string(const size_type count, const value_type c)
+            : string_(count, c) {}
 
-        LD_NODISCARD string& operator=(const string& rhs) noexcept;
-
-        LD_NODISCARD string& operator=(string&& rhs) noexcept;
-
-        LD_NODISCARD string& operator=(value_type rhs);
-
-        LD_NODISCARD string& operator=(const value_type* rhs);
-
-        /// @brief 文字列の範囲から構築する
-        /// @tparam Iterator イテレータ型
-        /// @param first 範囲の先頭要素へのイテレータ
-        /// @param last 範囲の末尾要素へのイテレータ
         template <class Iterator>
-        string(Iterator first, Iterator last)
-                : string_(first, last) {}
+        LD_NODISCARD_CTOR string(Iterator first, Iterator last)
+            : string_(first, last) {}
 
-        /// @brief 文字の初期化子リストから構築する
-        ///	@param list 文字の初期化子リスト
-        LD_NODISCARD_CTOR
-        string(std::initializer_list<value_type> list);
+        LD_NODISCARD_CTOR string(std::initializer_list<value_type> ilist)
+            : string_(ilist) {}
 
-        /// @brief 文字の初期化子リストをコピー代入する
-        LD_NODISCARD
-        string& operator=(std::initializer_list<value_type> rhs);
+        virtual ~string() noexcept {}
 
-        //=========================================================
-        //  デストラクタ
-        //=========================================================
-        /// @brief デフォルトデストラクタ
-        virtual ~string() noexcept = default;
+        string& assign(const string& right)
+        {
+            string_.assign(right.string_);
+            return *this;
+        }
 
-        //=========================================================
-        //	演算子
-        //=========================================================
-        /// @brief 文字列を末尾に結合する
-        [[nodiscard]] string operator+(const string& rhs) const;
+        string& assign(string&& right) noexcept(noexcept(string_.assign(std::move(right.string_))))
+        {
+            string_.assign(std::move(right.string_));
+            return *this;
+        }
 
-        /// @brief 文字列を末尾に結合する
-        [[nodiscard]] string operator+(const value_type* rhs) const;
+        string& assign(const string& right, const size_type offset, const size_type count = npos)
+        {
+            string_.assign(right.string_, offset, count);
+            return *this;
+        }
 
-        /// @brief 文字を末尾に結合する
-        [[nodiscard]] string operator+(value_type rhs) const;
+        string& assign(const value_type* const ptr)
+        {
+            string_.assign(ptr);
+            return *this;
+        }
 
-        /// @brief 文字列を末尾に結合して代入する
-        [[nodiscard]] string& operator+=(const string& rhs);
+        string& assign(const value_type* const ptr, const size_type offset, const size_type count = npos)
+        {
+            string_.assign(ptr, offset, count);
+            return *this;
+        }
 
-        /// @brief 文字配列を末尾に結合して代入する
-        [[nodiscard]] string& operator+=(const value_type* rhs);
+        string& assign(const value_type c)
+        {
+            assign(1, c);
+            return *this;
+        }
 
-        /// @brief 文字を末尾に結合して代入する
-        [[nodiscard]] string& operator+=(value_type rhs);
+        string& assign(const size_type count, const value_type c)
+        {
+            string_.assign(count, c);
+            return *this;
+        }
 
-        /// @brief 文字列を等値比較する
-        [[nodiscard]] bool operator==(const string& rhs) const;
+        template <class Iterator>
+        string& assign(const Iterator first, const Iterator last)
+        {
+            string_.assign(first, last);
+            return *this;
+        }
 
-        /// @brief 文字列を等値比較する
-        [[nodiscard]] bool operator==(const value_type* rhs) const;
+        string& assign(std::initializer_list<value_type> ilist)
+        {
+            string_.assign(ilist);
+            return *this;
+        }
 
-        /// @brief 文字列を非等値比較する
-        [[nodiscard]] bool operator!=(const string& rhs) const;
+        [[nodiscard]] string& operator=(const string& right) &
+        {
+            string_ = right.string_;
+            return *this;
+        }
 
-        /// @brief 文字列を非等値比較する
-        [[nodiscard]] bool operator!=(const value_type* rhs) const;
+        [[nodiscard]] string& operator=(string&& right) & noexcept
+        {
+            string_ = std::move(right.string_);
+            return *this;
+        }
 
-        /// @brief 文字列を比較する
-        [[nodiscard]] std::strong_ordering operator<=>(const string& rhs) const;
+        [[nodiscard]] string& operator=(const value_type* const ptr) &
+        {
+            string_ = ptr;
+            return *this;
+        }
 
-        /// @brief 文字列を比較する
-        [[nodiscard]] std::strong_ordering operator<=>(const value_type* rhs) const;
+        [[nodiscard]] string& operator=(const value_type c) &
+        {
+            string_ = c;
+            return *this;
+        }
 
-        //=========================================================
-        //	要素アクセス
-        //=========================================================
-        /// @brief 先頭要素へのポインタを返す
-        ///	@return 先頭要素へのポインタ
-        [[nodiscard]] const value_type* data() const noexcept;
+        [[nodiscard]] string& operator=(std::initializer_list<value_type> ilist) &
+        {
+            string_ = ilist;
+            return *this;
+        }
 
-        /// @brief 先頭要素への参照を返す
-        ///	@return 先頭要素への参照
-        [[nodiscard]] value_type& front() noexcept;
+        string& append(const string& right)
+        {
+            string_.append(right.string_);
+            return *this;
+        }
 
-        /// @brief 先頭要素へのconst参照を返す
-        ///	@return 先頭要素へのconst参照
-        [[nodiscard]] const value_type& front() const noexcept;
+        string& append(const string& right, const size_type offset, const size_type count = npos)
+        {
+            string_.append(right.string_, offset, count);
+            return *this;
+        }
 
-        /// @brief 末尾要素への参照を返す
-        ///	@return 末尾要素への参照
-        [[nodiscard]] value_type& back() noexcept;
+        string& append(const value_type* const ptr)
+        {
+            string_.append(ptr);
+            return *this;
+        }
 
-        /// @brief 末尾要素へのconst参照を返す
-        ///	@return 末尾要素へのconst参照
-        [[nodiscard]] const value_type& back() const noexcept;
+        string& append(const value_type* const ptr, const size_type offset, const size_type count = npos)
+        {
+            string_.append(ptr, offset, count);
+            return *this;
+        }
 
-        //=========================================================
-        //	情報
-        //=========================================================
-        /// @brief 文字列の長さを返す
-        ///	@return 文字列の長さ
-        [[nodiscard]] size_t size() const noexcept;
+        string& append(const value_type c)
+        {
+            push_back(c);
+            return *this;
+        }
 
-        /// @brief 格納可能な最大文字数を返す
-        ///	@return 格納可能な最大文字数
-        [[nodiscard]] size_t max_size() const noexcept;
+        string& append(const size_type count, const value_type c)
+        {
+            string_.append(count, c);
+            return *this;
+        }
 
-        /// @brief コンテナが空かどうかを返す
-        ///	@return コンテナが空か
-        [[nodiscard]] bool empty() const noexcept;
+        template <class Iterator>
+        string& append(const Iterator first, const Iterator last)
+        {
+            string_.append(first, last);
+            return *this;
+        }
 
-        //=========================================================
-        //  イテレータ
-        //=========================================================
-        /// @brief 先頭要素を指すイテレータを返す
-        [[nodiscard]] iterator begin() noexcept;
+        string& append(std::initializer_list<value_type> ilist)
+        {
+            string_.append(ilist);
+            return *this;
+        }
 
-        /// @brief 先頭要素を指すconstイテレータを返す
-        [[nodiscard]] const_iterator begin() const noexcept;
+        string& operator+=(const string& right)
+        {
+            string_ += right.string_;
+            return *this;
+        }
 
-        /// @brief 末尾要素を指すイテレータを返す
-        [[nodiscard]] iterator end() noexcept;
+        string& operator+=(const value_type* ptr)
+        {
+            string_ += ptr;
+            return *this;
+        }
 
-        /// @brief 末尾要素を指すconstイテレータを返す
-        [[nodiscard]] const_iterator end() const noexcept;
+        string& operator+=(value_type c)
+        {
+            string_ += c;
+            return *this;
+        }
 
-        /// @brief 先頭要素を指すconstイテレータを返す
-        [[nodiscard]] const_iterator cbegin() const noexcept;
+        string& operator+=(std::initializer_list<value_type> ilist)
+        {
+            string_ += ilist;
+            return *this;
+        }
 
-        /// @brief 末尾要素を指すconstイテレータを返す
-        [[nodiscard]] const_iterator cend() const noexcept;
+        string& insert(const size_type offset, const string& right)
+        {
+            string_.insert(offset, right.string_);
+            return *this;
+        }
 
-        /// @brief 先頭要素を指すリバースイテレータを返す
-        [[nodiscard]] reverse_iterator rbegin() noexcept;
+        string& insert(
+                const size_type offset, const string& right, const size_type roffset, const size_type count = npos)
+        {
+            string_.insert( offset, right.string_, roffset, count);
+            return *this;
+        }
 
-        /// @brief 先頭要素を指すconstリバースイテレータを返す
-        [[nodiscard]] const_reverse_iterator rbegin() const noexcept;
+        string& insert(const size_type offset, const value_type* const ptr)
+        {
+            string_.insert(offset, ptr);
+            return *this;
+        }
 
-        /// @brief 末尾要素を指すリバースイテレータを返す
-        [[nodiscard]] reverse_iterator rend() noexcept;
+        string& insert(
+                const size_type offset,
+                const value_type* const ptr,
+                const size_type roffset,
+                const size_type count = npos)
+        {
+            string_.insert(offset, ptr, roffset, count);
+            return *this;
+        }
 
-        /// @brief 先頭要素を指すconstリバースイテレータを返す
-        [[nodiscard]] const_reverse_iterator rend() const noexcept;
+        string& insert(const size_type offset, const size_type count, const value_type c)
+        {
+            string_.insert(offset, count, c);
+            return *this;
+        }
 
-        /// @brief 先頭要素を指すconstリバースイテレータを返す
-        [[nodiscard]] const_reverse_iterator crbegin() const noexcept;
+        iterator insert(const_iterator where, const value_type c)
+        {
+            return string_.insert(where, c);
+        }
 
-        /// @brief 末尾要素を指すconstリバースイテレータを返す
-        [[nodiscard]] const_reverse_iterator crend() const noexcept;
+        iterator insert(const_iterator where, const size_type count, const value_type c)
+        {
+            return string_.insert(where, count, c);
+        }
+
+        template <class Iterator>
+        iterator insert(const_iterator where, Iterator first, Iterator last)
+        {
+            return string_.insert(where, first, last);
+        }
+
+        iterator insert(const_iterator where, std::initializer_list<value_type> ilist)
+        {
+            return string_.insert(where, ilist);
+        }
+
+        string& erase(const size_type offset = 0)
+        {
+            string_.erase(offset);
+            return *this;
+        }
+
+        string& erase(const size_type offset, const size_type count = npos)
+        {
+            string_.erase(offset, count);
+            return *this;
+        }
+
+        iterator erase(const const_iterator where) noexcept
+        {
+            return string_.erase(where);
+        }
+
+        iterator erase(const const_iterator first, const const_iterator last) noexcept
+        {
+            return string_.erase(first, last);
+        }
+
+        void clear() noexcept
+        {
+            string_.clear();
+        }
+
+        string& replace(const size_type offset, const size_type count, const string& right)
+        {
+            string_.replace(offset, count, right.string_);
+            return *this;
+        }
+
+        string& replace(
+                const size_type offset,
+                const size_type count,
+                const string& right,
+                const size_type roffset,
+                const size_type rcount)
+        {
+            string_.replace(offset, count, right.string_, roffset, rcount);
+            return *this;
+        }
+
+        string& replace(const size_type offset, const size_type count, const value_type* const ptr)
+        {
+            string_.replace(offset, count, ptr);
+            return *this;
+        }
+
+        string& replace(
+                const size_type offset,
+                const size_type count,
+                const value_type* const ptr,
+                const size_type rcount)
+        {
+            string_.replace(offset, count, ptr, rcount);
+            return *this;
+        }
+
+        string& replace(const size_type offset, const size_type count, const size_type rcount, const value_type c)
+        {
+            string_.replace(offset, count, rcount, c);
+            return *this;
+        }
+
+        string& replace(const const_iterator first, const const_iterator last, const string& right)
+        {
+            string_.replace(first, last, right.string_);
+            return *this;
+        }
+
+        string& replace(const const_iterator first, const const_iterator last, const value_type* const ptr)
+        {
+            string_.replace(first, last, ptr);
+            return *this;
+        }
+
+        string& replace(
+                const const_iterator first,
+                const const_iterator last,
+                const value_type* const ptr,
+                const size_type count)
+        {
+            string_.replace(first, last, ptr, count);
+            return *this;
+        }
+
+        string& replace(
+                const const_iterator first,
+                const const_iterator last,
+                const size_type count,
+                const value_type c)
+        {
+            string_.replace(first, last, count, c);
+            return *this;
+        }
+
+        template <class Iterator>
+        string& replace(
+                const const_iterator first,
+                const const_iterator last,
+                const Iterator rfirst,
+                const Iterator rlast)
+        {
+            string_.replace(first, last, rfirst, rlast);
+            return *this;
+        }
+
+        [[nodiscard]] iterator begin() noexcept
+        {
+            return string_.begin();
+        }
+
+        [[nodiscard]] const_iterator begin() const noexcept
+        {
+            return string_.begin();
+        }
+
+        [[nodiscard]] iterator end() noexcept
+        {
+            return string_.end();
+        }
+
+        [[nodiscard]] const_iterator end() const noexcept
+        {
+            return string_.end();
+        }
+
+        [[nodiscard]] const_iterator cbegin() const noexcept
+        {
+            return string_.cbegin();
+        }
+
+        [[nodiscard]] const_iterator cend() const noexcept
+        {
+            return string_.cend();
+        }
+
+        [[nodiscard]] reverse_iterator rbegin() noexcept
+        {
+            return string_.rbegin();
+        }
+
+        [[nodiscard]] const_reverse_iterator rbegin() const noexcept
+        {
+            return string_.rbegin();
+        }
+
+        [[nodiscard]] reverse_iterator rend() noexcept
+        {
+            return string_.rend();
+        }
+
+        [[nodiscard]] const_reverse_iterator rend() const noexcept
+        {
+            return string_.rend();
+        }
+
+        [[nodiscard]] const_reverse_iterator crbegin() const noexcept
+        {
+            return string_.crbegin();
+        }
+
+        [[nodiscard]] const_reverse_iterator crend() const noexcept
+        {
+            return string_.crend();
+        }
+
+        void shrink_to_fit()
+        {
+            string_.shrink_to_fit();
+        }
+
+        [[nodiscard]] value_type& at(const size_type offset)
+        {
+            return string_.at(offset);
+        }
+
+        [[nodiscard]] const value_type& at(const size_type offset) const
+        {
+            return string_.at(offset);
+        }
+
+        [[nodiscard]] value_type& operator[](const size_type offset) &
+        {
+            return string_[offset];
+        }
+
+        [[nodiscard]] const value_type& operator[](const size_type offset) const &
+        {
+            return string_[offset];
+        }
+
+        [[nodiscard]] value_type operator[](const size_type offset) &&
+        {
+            return std::move(string_[offset]);
+        }
+
+        void push_front(const value_type c)
+        {
+            insert(begin(), c);
+        }
+
+        void push_back(const value_type c)
+        {
+            string_.push_back(c);
+        }
+
+        void pop_front() noexcept
+        {
+            string_.erase(begin());
+        }
+
+        void pop_front(const size_type count) noexcept
+        {
+            string_.erase(begin(), begin() + std::min<size_type>(count, size()));
+        }
+
+        void pop_back() noexcept
+        {
+            string_.pop_back();
+        }
+
+        void pop_back(const size_type count) noexcept
+        {
+            string_.erase(end() - std::min<size_type>(count, size()), end());
+        }
+
+        [[nodiscard]] value_type& front() noexcept
+        {
+            return string_.front();
+        }
+
+        [[nodiscard]] const value_type& front() const noexcept
+        {
+            return string_.front();
+        }
+
+        [[nodiscard]] value_type& back() noexcept
+        {
+            return string_.back();
+        }
+
+        [[nodiscard]] const value_type& back() const noexcept
+        {
+            return string_.back();
+        }
+
+        [[nodiscard]] string_type& str() noexcept
+        {
+            return string_;
+        }
+
+        [[nodiscard]] const string_type& str() const noexcept
+        {
+            return string_;
+        }
+
+        [[nodiscard]] const value_type* c_str() const noexcept
+        {
+            return string_.c_str();
+        }
+
+        [[nodiscard]] value_type* data() noexcept
+        {
+            return string_.data();
+        }
+
+        [[nodiscard]] const value_type* data() const noexcept
+        {
+            return string_.data();
+        }
+
+        [[nodiscard]] size_type length() const noexcept
+        {
+            return string_.length();
+        }
+
+        [[nodiscard]] size_type size() const noexcept
+        {
+            return string_.size();
+        }
+
+        [[nodiscard]] size_type max_size() const noexcept
+        {
+            return string_.max_size();
+        }
+
+        void resize(const size_type new_size, const value_type c = value_type{})
+        {
+            string_.resize(new_size, c);
+        }
+
+        [[nodiscard]] size_type capacity() const noexcept
+        {
+            return string_.capacity();
+        }
+
+        void reserve(const size_type new_capacity)
+        {
+            string_.reserve(new_capacity);
+        }
+
+        [[nodiscard]] bool empty() const noexcept
+        {
+            return string_.empty();
+        }
+
+        size_type copy(value_type* const ptr, const size_type count, const size_type offset = 0) const
+        {
+            return string_.copy(ptr, count, offset);
+        }
+
+        void swap(string& right) noexcept
+        {
+            string_.swap(right.string_);
+        }
+
+        [[nodiscard]] size_type find(const string& right, const size_type offset = 0) const noexcept
+        {
+            return string_.find(right.string_, offset);
+        }
+
+        [[nodiscard]] size_type find(const value_type* const ptr, const size_type offset = 0) const noexcept
+        {
+            return string_.find(ptr, offset);
+        }
+
+        [[nodiscard]] size_type find(
+                const value_type* const ptr, const size_type offset, const size_type count) const noexcept
+        {
+            return string_.find(ptr, offset, count);
+        }
+
+        [[nodiscard]] size_type find(const value_type c, const size_type offset = 0) const noexcept
+        {
+            return string_.find(c, offset);
+        }
+
+        [[nodiscard]] size_type rfind(const string& right, const size_type offset = 0) const noexcept
+        {
+            return string_.rfind(right.string_, offset);
+        }
+
+        [[nodiscard]] size_type rfind(const value_type* const ptr, const size_type offset = 0) const noexcept
+        {
+            return string_.rfind(ptr, offset);
+        }
+
+        [[nodiscard]] size_type rfind(
+                const value_type* const ptr, const size_type offset, const size_type count) const noexcept
+        {
+            return string_.rfind(ptr, offset, count);
+        }
+
+        [[nodiscard]] size_type rfind(const value_type c, const size_type offset = 0) const noexcept
+        {
+            return string_.rfind(c, offset);
+        }
+
+        [[nodiscard]] size_type find_first_of(const string& right, const size_type offset = 0) const noexcept
+        {
+            return string_.find_first_of(right.string_, offset);
+        }
+
+        [[nodiscard]] size_type find_first_of(const value_type* const ptr, const size_type offset = 0) const noexcept
+        {
+            return string_.find_first_of(ptr, offset);
+        }
+
+        [[nodiscard]] size_type find_first_of(
+                const value_type* const ptr, const size_type offset, const size_type count) const noexcept
+        {
+            return string_.find_first_of(ptr, offset, count);
+        }
+
+        [[nodiscard]] size_type find_first_of(const value_type c, const size_type offset = 0) const noexcept
+        {
+            return string_.find_first_of(c, offset);
+        }
+
+        [[nodiscard]] size_type find_last_of(const string& right, const size_type offset = 0) const noexcept
+        {
+            return string_.find_last_of(right.string_, offset);
+        }
+
+        [[nodiscard]] size_type find_last_of(const value_type* const ptr, const size_type offset = 0) const noexcept
+        {
+            return string_.find_last_of(ptr, offset);
+        }
+
+        [[nodiscard]] size_type find_last_of(
+                const value_type* const ptr, const size_type offset, const size_type count) const noexcept
+        {
+            return string_.find_last_of(ptr, offset, count);
+        }
+
+        [[nodiscard]] size_type find_last_of(const value_type c, const size_type offset = 0) const noexcept
+        {
+            return string_.find_last_of(c, offset);
+        }
+
+        [[nodiscard]] size_type find_first_not_of(const string& right, const size_type offset = 0) const noexcept
+        {
+            return string_.find_first_not_of(right.string_, offset);
+        }
+
+        [[nodiscard]] size_type find_first_not_of(
+                const value_type* const ptr, const size_type offset = 0) const noexcept
+        {
+            return string_.find_first_not_of(ptr, offset);
+        }
+
+        [[nodiscard]] size_type find_first_not_of(
+                const value_type* const ptr, const size_type offset, const size_type count) const noexcept
+        {
+            return string_.find_first_not_of(ptr, offset, count);
+        }
+
+        [[nodiscard]] size_type find_first_not_of(const value_type c, const size_type offset = 0) const noexcept
+        {
+            return string_.find_first_not_of(c, offset);
+        }
+
+        [[nodiscard]] size_type find_last_not_of(const string& right, const size_type offset = 0) const noexcept
+        {
+            return string_.find_last_not_of(right.string_, offset);
+        }
+
+        [[nodiscard]] size_type find_last_not_of(const value_type* const ptr, const size_type offset = 0) const noexcept
+        {
+            return string_.find_last_not_of(ptr, offset);
+        }
+
+        [[nodiscard]] size_type find_last_not_of(
+                const value_type* const ptr, const size_type offset, const size_type count) const noexcept
+        {
+            return string_.find_last_not_of(ptr, offset, count);
+        }
+
+        [[nodiscard]] size_type find_last_not_of(const value_type c, const size_type offset = 0) const noexcept
+        {
+            return string_.find_last_not_of(c, offset);
+        }
+
+        [[nodiscard]] string substr(const size_type offset, const size_type count = npos) const
+        {
+            return string(string_.substr(offset, count));
+        }
+
+        [[nodiscard]] int32 compare(const string& right) const noexcept
+        {
+            return string_.compare(right.string_);
+        }
+
+        [[nodiscard]] int32 compare(const size_type offset, const size_type count, const string& right) const noexcept
+        {
+            return string_.compare(offset, count, right.string_);
+        }
+
+        [[nodiscard]] int32 compare(
+                const size_type offset,
+                const size_type count,
+                const string& right,
+                const size_type roffset,
+                const size_type rcount) const noexcept
+        {
+            return string_.compare(offset, count, right.string_, roffset, rcount);
+        }
+
+        [[nodiscard]] int32 compare(const value_type* const ptr) const noexcept
+        {
+            return string_.compare(ptr);
+        }
+
+        [[nodiscard]] int32 compare(
+                const size_type offset, const size_type count, const value_type* const ptr) const noexcept
+        {
+            return string_.compare(offset, count, ptr);
+        }
+
+        [[nodiscard]] int32 compare(
+                const size_type offset,
+                const size_type count,
+                const value_type* const ptr,
+                const size_type rcount) const noexcept
+        {
+            return string_.compare(offset, count, ptr, rcount);
+        }
+
+        [[nodiscard]] bool operator==(const string& right) const noexcept
+        {
+            return string_ == right.string_;
+        }
+
+        [[nodiscard]] bool operator==(const value_type* const ptr) const noexcept
+        {
+            return string_ == ptr;
+        }
+
+        [[nodiscard]] std::strong_ordering operator<=>(const string& right) const noexcept
+        {
+            return string_ <=> right.string_;
+        }
+
+        [[nodiscard]] std::strong_ordering operator<=>(const value_type* const ptr) const noexcept
+        {
+            return string_ <=> ptr;
+        }
+
+        [[nodiscard]] bool starts_with(const string& right) const noexcept
+        {
+            return string_.starts_with(right.string_);
+        }
+
+        [[nodiscard]] bool starts_with(const value_type* const ptr) const noexcept
+        {
+            return string_.starts_with(ptr);
+        }
+
+        [[nodiscard]] bool starts_with(const value_type c) const noexcept
+        {
+            return (front() == c);
+        }
+
+        [[nodiscard]] bool ends_with(const string& right) const noexcept
+        {
+            return string_.ends_with(right.string_);
+        }
+
+        [[nodiscard]] bool ends_with(const value_type* const ptr) const noexcept
+        {
+            return string_.ends_with(ptr);
+        }
+
+        [[nodiscard]] bool ends_with(const value_type c) const noexcept
+        {
+            return (back() == c);
+        }
+
+        [[nodiscard]] allocator_type get_allocator() const noexcept
+        {
+            return string_.get_allocator();
+        }
 
     private:
-        //=========================================================
-        //	変数
-        //=========================================================
-        /// @brief 文字列
         string_type string_;
     };
+
+    inline namespace literals
+    {
+        inline namespace string_literals
+        {
+            [[nodiscard]] inline string operator""_s(const char32* const ptr, const size_t length)
+            {
+                return string(ptr, length);
+            }
+        }
+    }
+} // namespace ld
+
+template <>
+inline void std::swap(ld::string& a, ld::string& b) noexcept
+{
+    a.swap(b);
 }
+
+template <>
+struct std::hash<ld::string>
+{
+    [[nodiscard]] size_t operator()(const ld::string& value) const noexcept
+    {
+        return std::hash<std::u32string>{}(value.str());
+    }
+};
 
 #endif // LD_STRING_HPP

@@ -18,16 +18,16 @@
 #define LD_PLATFORM_LINUX       0
 
 #if defined(_WIN32)
-#undef  LD_PLATFORM_WINDOWS
-#define LD_PLATFORM_WINDOWS 1
+    #undef  LD_PLATFORM_WINDOWS
+    #define LD_PLATFORM_WINDOWS 1
 #elif defined(__APPLE__) && defined(__MACH__)
-#undef  LD_PLATFORM_MACOS
-#define LD_PLATFORM_MACOS   1
+    #undef  LD_PLATFORM_MACOS
+    #define LD_PLATFORM_MACOS   1
 #elif defined(__linux__)
-#undef  LD_PLATFORM_LINUX
-#define LD_PLATFORM_LINUX   1
+    #undef  LD_PLATFORM_LINUX
+    #define LD_PLATFORM_LINUX   1
 #else
-#error "Unsupported platform"
+    #error "Unsupported platform"
 #endif
 
 //=========================================================
@@ -37,56 +37,52 @@
 #define LD_COMPILER_MSVC        0
 
 #if defined(__GNUC__)
-#undef  LD_COMPILER_GNU
-#define LD_COMPILER_GNU     1
+    #undef  LD_COMPILER_GNU
+    #define LD_COMPILER_GNU     1
 #elif defined(_MSC_VER)
-#undef  LD_COMPILER_MSVC
-#define LD_COMPILER_MSVC    1
+    #undef  LD_COMPILER_MSVC
+    #define LD_COMPILER_MSVC    1
 #else
-#error "Unsupported compiler"
+    #error "Unsupported compiler"
 #endif
 
 //=========================================================
 //  Architecture
 //=========================================================
 #if defined(_WIN64) || defined(__x86_64__)
-#define LD_X64  1
+    #define LD_X64  1
 #else
-#define LD_X64  0
+    #define LD_X64  0
 #endif
 
 //=========================================================
 //  Build type
 //=========================================================
 #if defined(_DEBUG) || defined(DEBUG)
-#define LD_DEBUG 1
+    #define LD_DEBUG 1
 #else
-#define LD_DEBUG 0
+    #define LD_DEBUG 0
 #endif
 
 //=========================================================
 //  STL Version
 //=========================================================
 #if defined(_MSC_VER)
-#define LD_STL_LANG _MSVC_LANG
+    #define LD_STL_LANG _MSVC_LANG
 #elif defined(__cplusplus)
-#define LD_STL_LANG __cplusplus
+    #define LD_STL_LANG __cplusplus
 #else
-#define LD_STL_LANG 0L
+    #define LD_STL_LANG 0L
 #endif
 
 //=========================================================
 //  Attribute
 //=========================================================
-#define LD_NOEXCEPT noexcept
-#define LD_CONSTEXPR constexpr
-#define LD_NODISCARD [[nodiscard]]
-
 // [[nodiscard]] attribute of the constructor
 #if __has_cpp_attribute(nodiscard) >= 201907L
-#define LD_NODISCARD_CTOR [[nodiscard]]
+    #define LD_NODISCARD_CTOR [[nodiscard]]
 #else
-#define LD_NODISCARD_CTOR
+    #define LD_NODISCARD_CTOR
 #endif
 
 // [[likely]] and [[unlikely]] attributes
@@ -104,9 +100,9 @@
 //  DLL Export
 //=========================================================
 #if LD_PLATFORM_WINDOWS && defined(LD_EXPORTS)
-#define LD_API __declspec(dllexport)
+    #define LD_API __declspec(dllexport)
 #else
-#define LD_API
+    #define LD_API
 #endif
 
 //=========================================================
