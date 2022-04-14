@@ -93,14 +93,12 @@
 # if __has_cpp_attribute(likely)    \
  && __has_cpp_attribute(unlikely)   \
  && !LD_COMPILER_GNU
-# define SIV3D_LIKELY [[likely]]
-# define SIV3D_UNLIKELY [[unlikely]]
-# else
-
-# define SIV3D_LIKELY
-# define SIV3D_UNLIKELY
-
-# endif
+    #define LD_LIKELY [[likely]]
+    #define LD_UNLIKELY [[unlikely]]
+#else
+    #define LD_LIKELY
+    #define LD_UNLIKELY
+#endif
 
 //=========================================================
 //  DLL Export
