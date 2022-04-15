@@ -1,17 +1,25 @@
-# �T���v����
+# サンプルプログラム名
 set(EXAMPLE_NAME "example")
 
-# ���s�t�@�C�����쐬
+# サンプルプログラムを作成
 add_executable(${EXAMPLE_NAME}
-    bar.cpp
+    "${CMAKE_CURRENT_SOURCE_DIR}/bar.cpp"
 )
 
-# ���C�u�����������N
-target_link_libraries(${EXAMPLE_NAME} PRIVATE 
-    "${PROJECT_NAME}::${LIBRARY_NAME}"
+# ビルドタイプごとのポストフィックスを設定
+set_target_properties(${EXAMPLE_NAME} PROPERTIES
+    DEBUG_POSTFIX "-d"
+    RELEASE_POSTFIX ""
+    MINSIZEREL_POSTFIX "-mr"
+    RELWITHDEBINFO_POSTFIX "-rd"
 )
 
-# �C���X�g�[��
+# ライブラリをリンク
+target_link_libraries(${EXAMPLE_NAME} PRIVATE
+    ${PROJECT_NAME}::${PROJECT_NAME}
+)
+
+# サンプルプログラムをインストール
 install(
   TARGETS ${EXAMPLE_NAME}
   RUNTIME DESTINATION bin

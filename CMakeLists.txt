@@ -11,4 +11,5 @@ add_subdirectory(external)
 
 # サブディレクトリ
 add_subdirectory(cmake/labdog)
+add_subdirectory(example)
 add_subdirectory(test)
