@@ -20,59 +20,89 @@ namespace ld
     class LD_API string
     {
     public:
+        //=========================================================
+        //  エイリアス
+        //=========================================================
+        /// @brief 文字列型
         using string_type = std::u32string;
+        /// @brief 文字特性型
         using traits_type = string_type::traits_type;
+        /// @brief アロケータ型
         using allocator_type = string_type::allocator_type;
+        /// @brief 文字型
         using value_type = string_type::value_type;
+        /// @brief 文字のポインタ型
         using pointer = string_type::pointer;
+        /// @brief 文字のconstポインタ型
         using const_pointer = string_type::const_pointer;
+        /// @brief 文字の参照型
         using reference = string_type::reference;
+        /// @brief 文字のconst参照型
         using const_reference = string_type::const_reference;
+        /// @brief イテレータ型
         using iterator = string_type::iterator;
+        /// @brief constイテレータ型
         using const_iterator = string_type::const_iterator;
+        /// @brief 逆順イテレータ型
         using reverse_iterator = string_type::reverse_iterator;
+        /// @brief const逆順イテレータ型
         using const_reverse_iterator = string_type::const_reverse_iterator;
+        /// @brief 要素数を表す符号なし整数型
         using size_type = string_type::size_type;
+        /// @brief イテレータの差を表す符号なし整数型
         using difference_type = string_type::difference_type;
 
+        //=========================================================
+        //  定数
+        //=========================================================
+        /// @brief 無効な位置を表す値
         static constexpr size_type npos{ string_type::npos };
 
-        LD_NODISCARD_CTOR string() noexcept
+        //=========================================================
+        //  コンストラクタ
+        //=========================================================
+        [[nodiscard]] string() noexcept
             : string_() {}
 
-        LD_NODISCARD_CTOR explicit string(const string_type& str) noexcept
+        [[nodiscard]] explicit string(const string_type& str) noexcept
             : string_(str) {}
 
-        LD_NODISCARD_CTOR explicit string(string_type&& str) noexcept
+        [[nodiscard]] explicit string(string_type&& str) noexcept
             : string_(std::move(str)) {}
 
-        LD_NODISCARD_CTOR string(const string& right)
+        [[nodiscard]] string(const string& right)
             : string_(right.string_) {}
 
-        LD_NODISCARD_CTOR string(const string& right, const size_type offset, const size_type count = npos)
+        [[nodiscard]] string(const string& right, const size_type offset, const size_type count = npos)
             : string_(right.string_, offset, count) {}
 
-        LD_NODISCARD_CTOR string(string&& right) noexcept
+        [[nodiscard]] string(string&& right) noexcept
             : string_(std::move(right.string_)) {}
 
-        LD_NODISCARD_CTOR explicit string(const value_type* const ptr)
+        [[nodiscard]] explicit string(const value_type* const ptr)
             : string_(ptr) {}
 
-        LD_NODISCARD_CTOR string(const value_type* const ptr, const size_type count)
+        [[nodiscard]] string(const value_type* const ptr, const size_type count)
             : string_(ptr, count) {}
 
-        LD_NODISCARD_CTOR string(const size_type count, const value_type c)
+        [[nodiscard]] string(const size_type count, const value_type c)
             : string_(count, c) {}
 
-        template <class Iterator>
-        LD_NODISCARD_CTOR string(Iterator first, Iterator last)
-            : string_(first, last) {}
-
-        LD_NODISCARD_CTOR string(std::initializer_list<value_type> ilist)
+        [[nodiscard]] string(std::initializer_list<value_type> ilist)
             : string_(ilist) {}
 
+        template <class Iterator>
+        [[nodiscard]] string(Iterator first, Iterator last)
+            : string_(first, last) {}
+            
+        //=========================================================
+        //  デストラクタ
+        //=========================================================
         virtual ~string() noexcept {}
-
+    
+        //=========================================================
+        //  文字列操作
+        //=========================================================
         string& assign(const string& right)
         {
             string_.assign(right.string_);
@@ -194,16 +224,16 @@ namespace ld
             return *this;
         }
 
+        string& append(std::initializer_list<value_type> ilist)
+        {
+            string_.append(ilist);
+            return *this;
+        }
+
         template <class Iterator>
         string& append(const Iterator first, const Iterator last)
         {
             string_.append(first, last);
-            return *this;
-        }
-
-        string& append(std::initializer_list<value_type> ilist)
-        {
-            string_.append(ilist);
             return *this;
         }
 
@@ -229,6 +259,21 @@ namespace ld
         {
             string_ += ilist;
             return *this;
+        }
+
+        [[nodiscard]] string operator+(const string& right)
+        {
+            return string(string_ + right.string_);
+        }
+
+        [[nodiscard]] string operator+(const value_type* ptr)
+        {
+            return string(string_ + ptr);
+        }
+
+        [[nodiscard]] string operator+(value_type c)
+        {
+            return string(string_ + c);
         }
 
         string& insert(const size_type offset, const string& right)
@@ -276,15 +321,15 @@ namespace ld
             return string_.insert(where, count, c);
         }
 
+        iterator insert(const_iterator where, std::initializer_list<value_type> ilist)
+        {
+            return string_.insert(where, ilist);
+        }
+
         template <class Iterator>
         iterator insert(const_iterator where, Iterator first, Iterator last)
         {
             return string_.insert(where, first, last);
-        }
-
-        iterator insert(const_iterator where, std::initializer_list<value_type> ilist)
-        {
-            return string_.insert(where, ilist);
         }
 
         string& erase(const size_type offset = 0)
