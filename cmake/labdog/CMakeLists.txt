@@ -6,21 +6,24 @@ set(LABDOG_SOURCE_DIR "${CMAKE_SOURCE_DIR}/labdog/source")
 set(LABDOG_HEADERS
     "${LABDOG_HEADER_DIR}/labdog/core/common.hpp"
     "${LABDOG_HEADER_DIR}/labdog/core/string.hpp"
+    "${LABDOG_HEADER_DIR}/labdog/core/string_view.hpp"
 )
 
 # ソースファイル
 set(LABDOG_SOURCES
     "${LABDOG_SOURCE_DIR}/string.cpp"
+    "${LABDOG_SOURCE_DIR}/string_view.cpp"
 )
 
 # ライブラリを作成
-add_library(${PROJECT_NAME} ${LABDOG_SOURCES})
+add_library(${PROJECT_NAME} STATIC ${LABDOG_SOURCES})
 
 # ライブラリの別名を定義
 add_library("${PROJECT_NAME}::${PROJECT_NAME}" ALIAS ${PROJECT_NAME})
 
 # staticビルド時にポストフィックスを設定
 if(BUILD_SHARED_LIBS)
+    message(TRACE "build_shared")
     target_compile_definitions(${PROJECT_NAME} PRIVATE "LD_EXPORTS")
 else()
     set(STATIC_POSTFIX -static)

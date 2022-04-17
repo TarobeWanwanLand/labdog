@@ -11,13 +11,26 @@
 #ifndef LD_STRING_HPP
 #define LD_STRING_HPP
 
-#include "common.hpp"
 #include <string>
+#include "common.hpp"
+#include "string_view.hpp"
 
 namespace ld
 {
+    namespace detail
+    {
+        template <class StringViewIsh>
+        concept is_string_view_ish = requires
+        {
+            std::is_convertible_v<const StringViewIsh&, string_view>;
+            std::negation_v<std::is_convertible<const StringViewIsh&, const char32* const>>;
+        };
+    }
+
+    class string_view;
+
     /// @brief UTF-32文字列クラス
-    class LD_API string
+    class string final
     {
     public:
         //=========================================================
@@ -64,10 +77,10 @@ namespace ld
         [[nodiscard]] string() noexcept
             : string_() {}
 
-        [[nodiscard]] explicit string(const string_type& str) noexcept
+        [[nodiscard]] /* implicit */ string(const string_type& str)
             : string_(str) {}
 
-        [[nodiscard]] explicit string(string_type&& str) noexcept
+        [[nodiscard]] /* implicit */ string(string_type&& str) noexcept
             : string_(std::move(str)) {}
 
         [[nodiscard]] string(const string& right)
@@ -79,7 +92,7 @@ namespace ld
         [[nodiscard]] string(string&& right) noexcept
             : string_(std::move(right.string_)) {}
 
-        [[nodiscard]] explicit string(const value_type* const ptr)
+        [[nodiscard]] /* implicit */ string(const value_type* const ptr)
             : string_(ptr) {}
 
         [[nodiscard]] string(const value_type* const ptr, const size_type count)
@@ -94,15 +107,26 @@ namespace ld
         template <class Iterator>
         [[nodiscard]] string(Iterator first, Iterator last)
             : string_(first, last) {}
-            
+
+        template <detail::is_string_view_ish StringViewIsh>
+        [[nodiscard]] /* implicit */ string(const StringViewIsh& strv)
+            : string_(strv.data(), strv.size()) {}
+
+        template <class Type>
+            requires std::convertible_to<Type, string_view>
+        [[nodiscard]] string(const Type& strv, const size_type offset, const size_type count)
+            : string(strv.substr(offset, count)) {}
+
         //=========================================================
         //  デストラクタ
         //=========================================================
-        virtual ~string() noexcept {}
-    
-        //=========================================================
-        //  文字列操作
-        //=========================================================
+        ~string() noexcept = default;
+
+        [[nodiscard]] operator string_view() const noexcept
+        {
+            return { string_.data(), string_.size() };
+        }
+
         string& assign(const string& right)
         {
             string_.assign(right.string_);
@@ -127,9 +151,9 @@ namespace ld
             return *this;
         }
 
-        string& assign(const value_type* const ptr, const size_type offset, const size_type count = npos)
+        string& assign(const value_type* const ptr, const size_type count)
         {
-            string_.assign(ptr, offset, count);
+            string_.assign(ptr, count);
             return *this;
         }
 
@@ -145,6 +169,12 @@ namespace ld
             return *this;
         }
 
+        string& assign(std::initializer_list<value_type> ilist)
+        {
+            string_.assign(ilist);
+            return *this;
+        }
+
         template <class Iterator>
         string& assign(const Iterator first, const Iterator last)
         {
@@ -152,39 +182,47 @@ namespace ld
             return *this;
         }
 
-        string& assign(std::initializer_list<value_type> ilist)
+        template <detail::is_string_view_ish StringViewIsh>
+        string& assign(const StringViewIsh& strv)
         {
-            string_.assign(ilist);
+            assign(strv.data(), strv.size());
             return *this;
         }
 
-        [[nodiscard]] string& operator=(const string& right) &
+        [[nodiscard]] string& operator=(const string& right)
         {
             string_ = right.string_;
             return *this;
         }
 
-        [[nodiscard]] string& operator=(string&& right) & noexcept
+        [[nodiscard]] string& operator=(string&& right) noexcept
         {
             string_ = std::move(right.string_);
             return *this;
         }
 
-        [[nodiscard]] string& operator=(const value_type* const ptr) &
+        [[nodiscard]] string& operator=(const value_type* const ptr)
         {
             string_ = ptr;
             return *this;
         }
 
-        [[nodiscard]] string& operator=(const value_type c) &
+        [[nodiscard]] string& operator=(const value_type c)
         {
             string_ = c;
             return *this;
         }
 
-        [[nodiscard]] string& operator=(std::initializer_list<value_type> ilist) &
+        [[nodiscard]] string& operator=(std::initializer_list<value_type> ilist)
         {
             string_ = ilist;
+            return *this;
+        }
+
+        template <detail::is_string_view_ish StringViewIsh>
+        [[nodiscard]] string& operator=(const StringViewIsh& strv)
+        {
+            string_ = strv;
             return *this;
         }
 
@@ -206,9 +244,9 @@ namespace ld
             return *this;
         }
 
-        string& append(const value_type* const ptr, const size_type offset, const size_type count = npos)
+        string& append(const value_type* const ptr, const size_type count = npos)
         {
-            string_.append(ptr, offset, count);
+            string_.append(ptr, count);
             return *this;
         }
 
@@ -237,6 +275,20 @@ namespace ld
             return *this;
         }
 
+        template <detail::is_string_view_ish StringViewIsh>
+        string& append(const StringViewIsh& strv)
+        {
+            append(strv.data(), strv.size());
+            return *this;
+        }
+
+        template <detail::is_string_view_ish StringViewIsh>
+        string& append(const StringViewIsh& strv, const size_type offset, const size_type count = npos)
+        {
+            append(strv.substr(offset, count));
+            return *this;
+        }
+
         string& operator+=(const string& right)
         {
             string_ += right.string_;
@@ -261,19 +313,32 @@ namespace ld
             return *this;
         }
 
+        template <detail::is_string_view_ish StringViewIsh>
+        string& operator+=(const StringViewIsh& strv)
+        {
+            append(strv);
+            return *this;
+        }
+
         [[nodiscard]] string operator+(const string& right)
         {
-            return string(string_ + right.string_);
+            return { string_ + right.string_ };
         }
 
         [[nodiscard]] string operator+(const value_type* ptr)
         {
-            return string(string_ + ptr);
+            return { string_ + ptr };
         }
 
         [[nodiscard]] string operator+(value_type c)
         {
-            return string(string_ + c);
+            return { string_ + c };
+        }
+
+        template <detail::is_string_view_ish StringViewIsh>
+        [[nodiscard]] string operator+(const StringViewIsh& strv)
+        {
+            return { string(string_).append(strv) };
         }
 
         string& insert(const size_type offset, const string& right)
@@ -285,7 +350,7 @@ namespace ld
         string& insert(
                 const size_type offset, const string& right, const size_type roffset, const size_type count = npos)
         {
-            string_.insert( offset, right.string_, roffset, count);
+            string_.insert(offset, right.string_, roffset, count);
             return *this;
         }
 
@@ -298,10 +363,9 @@ namespace ld
         string& insert(
                 const size_type offset,
                 const value_type* const ptr,
-                const size_type roffset,
-                const size_type count = npos)
+                const size_type rcount)
         {
-            string_.insert(offset, ptr, roffset, count);
+            string_.insert(offset, ptr, rcount);
             return *this;
         }
 
@@ -309,6 +373,21 @@ namespace ld
         {
             string_.insert(offset, count, c);
             return *this;
+        }
+
+        template <detail::is_string_view_ish StringViewIsh>
+        string& insert(const size_type offset, StringViewIsh& strv)
+        {
+            insert(offset, strv.data(), strv.size());
+            return *this;
+        }
+
+        iterator insert(
+            const_iterator where,
+            const value_type* const ptr,
+            const size_type rcount)
+        {
+            return insert(where, ptr, ptr + rcount);
         }
 
         iterator insert(const_iterator where, const value_type c)
@@ -398,6 +477,23 @@ namespace ld
             return *this;
         }
 
+        template <detail::is_string_view_ish StringViewIsh>
+        string& replace(const size_type offset, const size_type count, const StringViewIsh& strv)
+        {
+            return string_.replace(offset, count, strv.view_);
+        }
+
+        template <detail::is_string_view_ish StringViewIsh>
+        string& replace(
+            const size_type offset,
+            const size_type count,
+            const StringViewIsh& strv,
+            const size_type roffset,
+            const size_type rcount = npos)
+        {
+            return string_.replace(offset, count, strv.view_, roffset, rcount);
+        }
+
         string& replace(const const_iterator first, const const_iterator last, const string& right)
         {
             string_.replace(first, last, right.string_);
@@ -439,6 +535,23 @@ namespace ld
         {
             string_.replace(first, last, rfirst, rlast);
             return *this;
+        }
+
+        template <detail::is_string_view_ish StringViewIsh>
+        string& replace(const const_iterator first, const const_iterator last, const StringViewIsh& strv)
+        {
+            return string_.replace(first, last, strv.view_);
+        }
+
+        template <detail::is_string_view_ish StringViewIsh>
+        string& replace(
+            const const_iterator first,
+            const const_iterator last,
+            const StringViewIsh& strv,
+            const size_type roffset,
+            const size_type rcount = npos)
+        {
+            return string_.replace(first, last, strv.view_, roffset, rcount);
         }
 
         [[nodiscard]] iterator begin() noexcept
@@ -672,6 +785,12 @@ namespace ld
             return string_.find(c, offset);
         }
 
+        template <detail::is_string_view_ish StringViewIsh>
+        [[nodiscard]] size_type find(const StringViewIsh& strv, const size_type offset = 0) const noexcept
+        {
+            return string_.find(strv.view_, offset);
+        }
+
         [[nodiscard]] size_type rfind(const string& right, const size_type offset = 0) const noexcept
         {
             return string_.rfind(right.string_, offset);
@@ -691,6 +810,12 @@ namespace ld
         [[nodiscard]] size_type rfind(const value_type c, const size_type offset = 0) const noexcept
         {
             return string_.rfind(c, offset);
+        }
+
+        template <detail::is_string_view_ish StringViewIsh>
+        [[nodiscard]] size_type rfind(const StringViewIsh& strv, const size_type offset = 0) const noexcept
+        {
+            return string_.rfind(strv.view_, offset);
         }
 
         [[nodiscard]] size_type find_first_of(const string& right, const size_type offset = 0) const noexcept
@@ -714,6 +839,12 @@ namespace ld
             return string_.find_first_of(c, offset);
         }
 
+        template <detail::is_string_view_ish StringViewIsh>
+        [[nodiscard]] size_type find_first_of(const StringViewIsh& strv, const size_type offset = 0) const noexcept
+        {
+            return string_.find_first_of(strv.view_, offset);
+        }
+
         [[nodiscard]] size_type find_last_of(const string& right, const size_type offset = 0) const noexcept
         {
             return string_.find_last_of(right.string_, offset);
@@ -733,6 +864,12 @@ namespace ld
         [[nodiscard]] size_type find_last_of(const value_type c, const size_type offset = 0) const noexcept
         {
             return string_.find_last_of(c, offset);
+        }
+
+        template <detail::is_string_view_ish StringViewIsh>
+        [[nodiscard]] size_type find_last_of(const StringViewIsh& strv, const size_type offset = 0) const noexcept
+        {
+            return string_.find_last_of(strv.view_, offset);
         }
 
         [[nodiscard]] size_type find_first_not_of(const string& right, const size_type offset = 0) const noexcept
@@ -757,6 +894,12 @@ namespace ld
             return string_.find_first_not_of(c, offset);
         }
 
+        template <detail::is_string_view_ish StringViewIsh>
+        [[nodiscard]] size_type find_first_not_of(const StringViewIsh& strv, const size_type offset = 0) const noexcept
+        {
+            return string_.find_first_not_of(strv.view_, offset);
+        }
+
         [[nodiscard]] size_type find_last_not_of(const string& right, const size_type offset = 0) const noexcept
         {
             return string_.find_last_not_of(right.string_, offset);
@@ -778,9 +921,15 @@ namespace ld
             return string_.find_last_not_of(c, offset);
         }
 
+        template <detail::is_string_view_ish StringViewIsh>
+        [[nodiscard]] size_type find_last_not_of(const StringViewIsh& strv, const size_type offset = 0) const noexcept
+        {
+            return string_.find_last_not_of(strv.view_, offset);
+        }
+
         [[nodiscard]] string substr(const size_type offset, const size_type count = npos) const
         {
-            return string(string_.substr(offset, count));
+            return { string_.substr(offset, count) };
         }
 
         [[nodiscard]] int32 compare(const string& right) const noexcept
@@ -823,6 +972,32 @@ namespace ld
             return string_.compare(offset, count, ptr, rcount);
         }
 
+        template <detail::is_string_view_ish StringViewIsh>
+        [[nodiscard]] int32 compare(const StringViewIsh& strv) const noexcept
+        {
+            return string_.compare(0, npos, strv.data(), strv.size());
+        }
+
+        template <detail::is_string_view_ish StringViewIsh>
+        [[nodiscard]] int32 compare(
+            const size_type offset, const size_type count, const StringViewIsh& strv) const noexcept
+        {
+            return string_.compare(offset, count, strv.data(), strv.size());
+        }
+
+        template <detail::is_string_view_ish StringViewIsh>
+        [[nodiscard]] int32 compare(
+            const size_type offset,
+            const size_type count,
+            const StringViewIsh& strv,
+            const size_type roffset,
+            const size_type rcount = npos) const noexcept
+        {
+            const size_t size = strv.size();
+            if (size)
+                return compare(offset, count, strv.substr(roffset, count));
+        }
+
         [[nodiscard]] bool operator==(const string& right) const noexcept
         {
             return string_ == right.string_;
@@ -858,6 +1033,15 @@ namespace ld
             return (front() == c);
         }
 
+        template <detail::is_string_view_ish StringViewIsh>
+        [[nodiscard]] bool starts_with(const StringViewIsh& strv) const noexcept
+        {
+            const size_type rsize = strv.size();
+            if (size() < rsize)
+                return false;
+            return compare(0, rsize, strv.data(), rsize);
+        }
+
         [[nodiscard]] bool ends_with(const string& right) const noexcept
         {
             return string_.ends_with(right.string_);
@@ -871,6 +1055,16 @@ namespace ld
         [[nodiscard]] bool ends_with(const value_type c) const noexcept
         {
             return (back() == c);
+        }
+
+        template <detail::is_string_view_ish StringViewIsh>
+        [[nodiscard]] bool ends_with(const StringViewIsh& strv) const noexcept
+        {
+            const size_type mysize = size();
+            const size_type rsize = strv.size();
+            if (mysize < rsize)
+                return false;
+            return compare(mysize - rsize, mysize, strv.data(), rsize);
         }
 
         [[nodiscard]] allocator_type get_allocator() const noexcept
@@ -888,7 +1082,7 @@ namespace ld
         {
             [[nodiscard]] inline string operator""_s(const char32* const ptr, const size_t length)
             {
-                return string(ptr, length);
+                return { ptr, length };
             }
         }
     }

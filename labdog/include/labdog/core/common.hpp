@@ -78,13 +78,6 @@
 //=========================================================
 //  Attribute
 //=========================================================
-// [[nodiscard]] attribute of the constructor
-#if __has_cpp_attribute(nodiscard) >= 201907L
-    #define LD_NODISCARD_CTOR [[nodiscard]]
-#else
-    #define LD_NODISCARD_CTOR
-#endif
-
 // [[likely]] and [[unlikely]] attributes
 # if __has_cpp_attribute(likely)    \
  && __has_cpp_attribute(unlikely)   \
@@ -94,15 +87,6 @@
 #else
     #define LD_LIKELY
     #define LD_UNLIKELY
-#endif
-
-//=========================================================
-//  DLL Export
-//=========================================================
-#if LD_PLATFORM_WINDOWS && defined(LD_EXPORTS)
-    #define LD_API __declspec(dllexport)
-#else
-    #define LD_API
 #endif
 
 //=========================================================
