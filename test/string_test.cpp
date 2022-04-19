@@ -46,12 +46,6 @@ namespace
         string str(U"b");
         EXPECT_EQ(str, string_view(U"b"));
         EXPECT_NE(str, string_view(U"z"));
-        auto comp1 = str.compare(string_view(U"a"));
-        auto comp2 = str.compare(string_view(U"b"));
-        auto comp3 = str.compare(string_view(U"c"));
-        auto ufo1 = str <=> string_view(U"a");
-        auto ufo2 = str <=> string_view(U"b");
-        auto ufo3 = str <=> string_view(U"c");
         EXPECT_LT(str, string_view(U"c"));
         EXPECT_GT(str, string_view(U"a"));
     }
