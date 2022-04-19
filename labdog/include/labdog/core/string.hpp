@@ -1005,6 +1005,12 @@ namespace ld
             return string_ == ptr;
         }
 
+        template <detail::is_string_view StringView>
+        [[nodiscard]] bool operator==(const StringView sv) const noexcept
+        {
+            return compare(sv) == 0;
+        }
+
         [[nodiscard]] std::strong_ordering operator<=>(const string& str) const noexcept
         {
             return string_ <=> str.string_;
@@ -1013,6 +1019,15 @@ namespace ld
         [[nodiscard]] std::strong_ordering operator<=>(const value_type* const ptr) const noexcept
         {
             return string_ <=> ptr;
+        }
+
+        template <detail::is_string_view StringView>
+        [[nodiscard]] std::strong_ordering operator<=>(const StringView sv) const noexcept
+        {
+            const int32 comp = compare(sv);
+            return ((comp == 0) ? std::strong_ordering::equal :
+                   ((comp <  0) ? std::strong_ordering::less
+                                : std::strong_ordering::greater));
         }
 
         [[nodiscard]] bool starts_with(const string& str) const noexcept

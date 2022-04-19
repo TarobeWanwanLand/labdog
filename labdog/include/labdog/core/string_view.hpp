@@ -38,11 +38,11 @@ namespace ld
         [[nodiscard]] constexpr string_view() noexcept
             : view_() {}
 
-        [[nodiscard]] constexpr /* implicit */ string_view(const string_view_type& view) noexcept
-            : view_(view) {}
-
         [[nodiscard]] constexpr string_view(const string_view& right) noexcept
             : view_(right.view_) {}
+
+        [[nodiscard]] constexpr /* implicit */ string_view(const string_view_type& view) noexcept
+            : view_(view) {}
 
         [[nodiscard]] constexpr /* implicit */ string_view(const value_type* const ptr) noexcept
             : view_(ptr) {}
@@ -74,6 +74,11 @@ namespace ld
             : view_(range) {}
 
         ~string_view() noexcept = default;
+
+        [[nodiscard]] constexpr operator string_view_type() const noexcept
+        {
+            return view_;
+        }
 
         constexpr string_view& operator=(const string_view& right) noexcept
         {

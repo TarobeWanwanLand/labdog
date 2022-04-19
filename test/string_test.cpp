@@ -12,8 +12,10 @@ namespace
         string str1{ string_view(STRING) };
         EXPECT_EQ(str1.compare(STRING), 0);
 
+#if LD_COMPILER_MSVC
         string str2{ string_view(STRING) | std::views::drop(7) };
         EXPECT_EQ(str2.compare(STRING + 7), 0);
+#endif
     }
 
     TEST(string, to_string_view)
@@ -30,10 +32,27 @@ namespace
         EXPECT_EQ(str.compare(STRING), 0);
     }
 
+#if LD_COMPILER_MSVC
     TEST(string, assign_range)
     {
         string str(U"be overwritten");
         str.assign(string_view(STRING) | std::views::drop(7));
         EXPECT_EQ(str.compare(STRING + 7), 0);
+    }
+#endif
+
+    TEST(string, compare_with_string_view)
+    {
+        string str(U"b");
+        EXPECT_EQ(str, string_view(U"b"));
+        EXPECT_NE(str, string_view(U"z"));
+        auto comp1 = str.compare(string_view(U"a"));
+        auto comp2 = str.compare(string_view(U"b"));
+        auto comp3 = str.compare(string_view(U"c"));
+        auto ufo1 = str <=> string_view(U"a");
+        auto ufo2 = str <=> string_view(U"b");
+        auto ufo3 = str <=> string_view(U"c");
+        EXPECT_LT(str, string_view(U"c"));
+        EXPECT_GT(str, string_view(U"a"));
     }
 }
