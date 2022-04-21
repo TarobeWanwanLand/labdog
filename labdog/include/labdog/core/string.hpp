@@ -93,17 +93,17 @@ namespace ld
             : string_(str.string_, pos, n) {}
 
         /// @brief 文字列をムーブ構築する
-        /// @param str ムーブ元の文字列
+        /// @param str ムーブ元の文字列型
         [[nodiscard]] string(string&& str) noexcept
             : string_(std::move(str.string_)) {}
 
-        /// @brief STL文字列から文字列を構築する
-        /// @param str STL文字列
+        /// @brief STLの文字列から文字列をコピー構築する
+        /// @param str コピー元のSTLの文字列
         [[nodiscard]] /* implicit */ string(const string_type& str)
             : string_(str) {}
 
-        /// @brief STL文字列から文字列を構築する
-        /// @param str STL文字列
+        /// @brief STLの文字列から文字列をムーブ構築する
+        /// @param str ムーブ元のSTLの文字列
         [[nodiscard]] /* implicit */ string(string_type&& str) noexcept
             : string_(std::move(str)) {}
 
@@ -155,66 +155,103 @@ namespace ld
         //=========================================================
         //  デストラクタ
         //=========================================================
+        /// @brief 文字列を破棄する
         ~string() noexcept = default;
 
-        [[nodiscard]] operator string_view() const noexcept
+        /// @brief string_viewへの暗黙型キャスト
+        /// @return 文字列を参照したstring_view
+        [[nodiscard]] /* implicit */ operator string_view() const noexcept
         {
             return { string_.data(), string_.size() };
         }
 
-        [[nodiscard]] operator string_type() const noexcept
+        /// @brief STLの文字列への暗黙型キャスト
+        /// @return 文字列をコピーしたSTLの文字列
+        [[nodiscard]] /* implicit */ operator string_type() const noexcept
         {
             return string_;
         }
 
+        /// @brief 文字列を代入する
+        /// @param str 代入元の文字列
+        /// @return *this
         string& assign(const string& str)
         {
             string_.assign(str.string_);
             return *this;
         }
 
+        /// @brief 文字列をムーブ代入する
+        /// @param str ムーブ代入元の文字列
+        /// @return *this
         string& assign(string&& str) noexcept(noexcept(string_.assign(std::move(str.string_))))
         {
             string_.assign(std::move(str.string_));
             return *this;
         }
 
+        /// @brief 範囲を指定して文字列を代入する
+        /// @param str 代入元の文字列
+        /// @param pos 代入する範囲の開始位置
+        /// @param n 代入する範囲の要素数
+        /// @return *this
         string& assign(const string& str, const size_type pos, const size_type n = npos)
         {
             string_.assign(str.string_, pos, n);
             return *this;
         }
 
+        /// @brief 文字配列を代入する
+        /// @param str 代入元の文字配列
+        /// @return *this
         string& assign(const value_type* const ptr)
         {
             string_.assign(ptr);
             return *this;
         }
 
+        /// @brief 文字配列を代入する
+        /// @param str 代入元の文字配列
+        /// @param n 代入する範囲の要素数
+        /// @return *this
         string& assign(const value_type* const ptr, const size_type n)
         {
             string_.assign(ptr, n);
             return *this;
         }
 
+        /// @brief 文字を代入する
+        /// @param str 代入元の文字
+        /// @return *this
         string& assign(const value_type c)
         {
             string_.assign(1, c);
             return *this;
         }
 
+        /// @brief 指定した値からなる要素数Nの文字列を代入する
+        /// @param n 代入する要素数
+        /// @param c 代入する要素の値
+        /// @return *this
         string& assign(const size_type n, const value_type c)
         {
             string_.assign(n, c);
             return *this;
         }
 
+        /// @brief 初期化リストを代入する
+        /// @param il 代入元の初期化リスト
+        /// @return *this
         string& assign(std::initializer_list<value_type> il)
         {
             string_.assign(il);
             return *this;
         }
 
+        /// @brief イテレータの範囲を代入する
+        /// @param first 範囲の開始位置を指すイテレータ
+        /// @param last 範囲の末尾位置の次を指すイテレータ
+        /// @return *this
         template <class Iterator>
         string& assign(const Iterator first, const Iterator last)
         {
@@ -222,6 +259,10 @@ namespace ld
             return *this;
         }
 
+        /// @brief 文字列ビューを代入する
+        /// @tparam StringView 文字列ビューに変換可能な型
+        /// @param sv 代入元の文字列ビュー
+        /// @return *this
         template <detail::is_string_view StringView>
         string& assign(const StringView& sv)
         {
@@ -229,6 +270,12 @@ namespace ld
             return *this;
         }
 
+        /// @brief 範囲を指定して文字列ビューを代入する
+        /// @tparam StringView 文字列ビューに変換可能な型
+        /// @param sv 代入元の文字列ビュー
+        /// @param pos 代入する範囲の開始位置
+        /// @param n 代入する範囲の要素数
+        /// @return *this
         template <detail::is_string_view StringView>
         string& assign(const StringView& sv, const size_type pos, const size_type n = npos)
         {
@@ -236,43 +283,70 @@ namespace ld
             return *this;
         }
 
-        [[nodiscard]] string& operator=(const string& str)
+        /// @brief 文字列を代入する
+        /// @param str 代入元の文字列
+        /// @return *this
+        string& operator=(const string& str)
         {
             return assign(str);
         }
 
-        [[nodiscard]] string& operator=(string&& str) noexcept
+        /// @brief 文字列をムーブ代入する
+        /// @param str ムーブ代入元の文字列
+        /// @return *this
+        string& operator=(string&& str) noexcept
         {
             return assign(std::move(str));
         }
 
-        [[nodiscard]] string& operator=(const value_type* const ptr)
+        /// @brief 文字配列を代入する
+        /// @param str 代入元の文字配列
+        /// @return *this
+        string& operator=(const value_type* const ptr)
         {
             return assign(ptr);
         }
 
-        [[nodiscard]] string& operator=(const value_type c)
+        /// @brief 文字を代入する
+        /// @param str 代入元の文字
+        /// @return *this
+        string& operator=(const value_type c)
         {
             return assign(c);
         }
 
-        [[nodiscard]] string& operator=(std::initializer_list<value_type> il)
+        /// @brief 初期化リストを代入する
+        /// @param il 代入元の初期化リスト
+        /// @return *this
+        string& operator=(std::initializer_list<value_type> il)
         {
             return assign(il);
         }
 
+        /// @brief 文字列ビューを代入する
+        /// @tparam StringView 文字列ビューに変換可能な型
+        /// @param sv 代入元の文字列ビュー
+        /// @return *this
         template <detail::is_string_view StringView>
-        [[nodiscard]] string& operator=(const StringView& sv)
+        string& operator=(const StringView& sv)
         {
             return assign(sv);
         }
 
+        /// @brief 文字列を末尾に結合する
+        /// @param str 結合する文字列
+        /// @return *this
         string& append(const string& str)
         {
             string_.append(str.string_);
             return *this;
         }
 
+        /// @brief 範囲を指定して文字列を末尾に結合する
+        /// @param str 結合する文字列
+        /// @param pos 結合する範囲の開始位置
+        /// @param n 結合する範囲の要素数
+        /// @return *this
         string& append(const string& str, const size_type pos, const size_type n = npos)
         {
             string_.append(str.string_, pos, n);
