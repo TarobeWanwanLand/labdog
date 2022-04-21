@@ -46,7 +46,7 @@ namespace
         string str(U"b");
         EXPECT_EQ(str, string_view(U"b"));
         EXPECT_NE(str, string_view(U"z"));
-        EXPECT_LT(str, string_view(U"c"));
-        EXPECT_GT(str, string_view(U"a"));
+        EXPECT_LT(str, string_view(U"ca"));
+        EXPECT_GT(str, string_view(U"az"));
     }
 }

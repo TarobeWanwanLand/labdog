@@ -76,44 +76,78 @@ namespace ld
         //=========================================================
         //  コンストラクタ
         //=========================================================
+        /// @brief 空の文字列を構築する
         [[nodiscard]] string() noexcept
             : string_() {}
 
+        /// @brief 文字列をコピー構築する
+        /// @param str コピー元の文字列
         [[nodiscard]] string(const string& str)
             : string_(str.string_) {}
 
+        /// @brief 範囲を指定して文字列をコピー構築する
+        /// @param str コピー元の文字列
+        /// @param pos コピー範囲の開始位置
+        /// @param n コピー範囲の要素数
         [[nodiscard]] string(const string& str, const size_type pos, const size_type n = npos)
             : string_(str.string_, pos, n) {}
 
+        /// @brief 文字列をムーブ構築する
+        /// @param str ムーブ元の文字列
         [[nodiscard]] string(string&& str) noexcept
             : string_(std::move(str.string_)) {}
 
+        /// @brief STL文字列から文字列を構築する
+        /// @param str STL文字列
         [[nodiscard]] /* implicit */ string(const string_type& str)
             : string_(str) {}
 
+        /// @brief STL文字列から文字列を構築する
+        /// @param str STL文字列
         [[nodiscard]] /* implicit */ string(string_type&& str) noexcept
             : string_(std::move(str)) {}
 
+        /// @brief 文字配列から文字列を構築する
+        /// @param ptr 文字配列の先頭ポインタ
         [[nodiscard]] /* implicit */ string(const value_type* const ptr)
             : string_(ptr) {}
 
+        /// @brief 範囲を指定して文字配列から文字列を構築する
+        /// @param ptr 文字配列の先頭ポインタ
+        /// @param n 範囲の要素数
         [[nodiscard]] string(const value_type* const ptr, const size_type n)
             : string_(ptr, n) {}
 
+        /// @brief 指定した値からなる要素数Nの文字列を構築する
+        /// @param n 要素数
+        /// @param c 要素の値
         [[nodiscard]] string(const size_type n, const value_type c)
             : string_(n, c) {}
 
+        /// @brief 初期化リストから文字列を構築する
+        /// @param il 初期化リスト
         [[nodiscard]] string(std::initializer_list<value_type> il)
             : string_(il) {}
 
+        /// @brief イテレータの範囲から文字列を構築する
+        /// @param first 範囲の開始位置を指すイテレータ
+        /// @param last 範囲の末尾位置の次を指すイテレータ
         template <class Iterator>
         [[nodiscard]] string(Iterator first, Iterator last)
             : string_(first, last) {}
 
+        /// @brief 文字列ビューから文字列を構築する
+        /// @tparam StringView 文字列ビューに変換可能な型
+        /// @param sv 文字列ビュー
         template <detail::is_string_view StringView>
         [[nodiscard]] /* implicit */ string(const StringView& sv)
             : string_(sv) {}
 
+        /// @brief 範囲を指定して文字列ビューから文字列を構築する
+        /// @tparam StringView 文字列ビューに変換可能な型
+        /// @param sv 文字列ビュー
+        /// @param pos コピー範囲の開始位置
+        /// @param n コピー範囲の要素数
         template <detail::is_string_view StringView>
         [[nodiscard]] string(const StringView& sv, const size_type pos, const size_type n = npos)
             : string_(sv, pos, n) {}
