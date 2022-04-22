@@ -1,7 +1,7 @@
 //=========================================================
 //
 //  string_view.hpp is part of the labdog project.
-//  Copyright(c) 2022 Tomomi murakami.
+//  Copysv(c) 2022 Tomomi murakami.
 //
 //  Released under the MIT license.
 //  see http://opensource.org/licenses/MIT
@@ -38,17 +38,17 @@ namespace ld
         [[nodiscard]] constexpr string_view() noexcept
             : view_() {}
 
-        [[nodiscard]] constexpr string_view(const string_view& right) noexcept
-            : view_(right.view_) {}
+        [[nodiscard]] constexpr string_view(const string_view& sv) noexcept
+            : view_(sv.view_) {}
 
-        [[nodiscard]] constexpr /* implicit */ string_view(const string_view_type& view) noexcept
-            : view_(view) {}
+        [[nodiscard]] constexpr /* implicit */ string_view(const string_view_type& sv) noexcept
+            : view_(sv) {}
 
         [[nodiscard]] constexpr /* implicit */ string_view(const value_type* const ptr) noexcept
             : view_(ptr) {}
 
-        [[nodiscard]] constexpr string_view(const value_type* const ptr, const size_type count) noexcept
-            : view_(ptr, count) {}
+        [[nodiscard]] constexpr string_view(const value_type* const ptr, const size_type n) noexcept
+            : view_(ptr, n) {}
 
         template <std::contiguous_iterator Iterator, std::sized_sentinel_for<Iterator> Sentinel>
         requires (
@@ -80,9 +80,9 @@ namespace ld
             return view_;
         }
 
-        constexpr string_view& operator=(const string_view& right) noexcept
+        constexpr string_view& operator=(const string_view& sv) noexcept
         {
-            view_ = right.view_;
+            view_ = sv.view_;
             return *this;
         }
 
@@ -157,14 +157,14 @@ namespace ld
             return view_.max_size();
         }
 
-        [[nodiscard]] constexpr const value_type& operator[](const size_type offset) const noexcept
+        [[nodiscard]] constexpr const value_type& operator[](const size_type pos) const noexcept
         {
-            return view_[offset];
+            return view_[pos];
         }
 
-        [[nodiscard]] constexpr const value_type& at(const size_type offset) const
+        [[nodiscard]] constexpr const value_type& at(const size_type pos) const
         {
-            return view_.at(offset);
+            return view_.at(pos);
         }
 
         [[nodiscard]] constexpr const value_type& front() const noexcept
@@ -177,52 +177,52 @@ namespace ld
             return view_.back();
         }
 
-        constexpr void remove_prefix(const size_type count) noexcept
+        constexpr void remove_prefix(const size_type n) noexcept
         {
-            view_.remove_prefix(count);
+            view_.remove_prefix(n);
         }
 
-        constexpr void remove_suffix(const size_type count) noexcept
+        constexpr void remove_suffix(const size_type n) noexcept
         {
-            view_.remove_suffix(count);
+            view_.remove_suffix(n);
         }
 
-        constexpr void swap(string_view& right) noexcept
+        constexpr void swap(string_view& str) noexcept
         {
-            view_.swap(right.view_);
+            view_.swap(str.view_);
         }
 
-        constexpr size_type copy(value_type* const ptr, const size_type count, const size_type offset = 0) noexcept
+        constexpr size_type copy(value_type* const ptr, const size_type n, const size_type pos = 0) noexcept
         {
-            return view_.copy(ptr, count, offset);
+            return view_.copy(ptr, n, pos);
         }
 
-        [[nodiscard]] constexpr string_view substr(const size_type offset = 0, const size_type count = npos) const
+        [[nodiscard]] constexpr string_view substr(const size_type pos = 0, const size_type n = npos) const
         {
-            return view_.substr(offset, npos);
+            return view_.substr(pos, npos);
         }
 
-        [[nodiscard]] constexpr int32 compare(const string_view right) const
+        [[nodiscard]] constexpr int32 compare(const string_view sv) const
         {
-            return view_.compare(right.view_);
-        }
-
-        [[nodiscard]] constexpr int32 compare(
-            const size_type offset,
-            const size_type count,
-            const string_view right) const
-        {
-            return view_.compare(offset, count, right.view_);
+            return view_.compare(sv.view_);
         }
 
         [[nodiscard]] constexpr int32 compare(
-            const size_type offset,
-            const size_type count,
-            const string_view right,
-            const size_type roffset,
-            const size_type rcount) const
+            const size_type pos,
+            const size_type n,
+            const string_view sv) const
         {
-            return view_.compare(offset, count, right.view_, roffset, rcount);
+            return view_.compare(pos, n, sv.view_);
+        }
+
+        [[nodiscard]] constexpr int32 compare(
+            const size_type pos1,
+            const size_type n1,
+            const string_view sv,
+            const size_type pos2,
+            const size_type n2) const
+        {
+            return view_.compare(pos1, n1, sv.view_, pos2, n2);
         }
 
         [[nodiscard]] constexpr int32 compare(const value_type* const ptr) const
@@ -231,25 +231,25 @@ namespace ld
         }
 
         [[nodiscard]] constexpr int32 compare(
-            const size_type offset,
-            const size_type count,
+            const size_type pos,
+            const size_type n,
             const value_type* const ptr) const
         {
-            return view_.compare(offset, count, ptr);
+            return view_.compare(pos, n, ptr);
         }
 
         [[nodiscard]] constexpr int32 compare(
-            const size_type offset,
-            const size_type count,
+            const size_type pos,
+            const size_type n,
             const value_type* const ptr,
-            const size_type rcount) const
+            const size_type n2) const
         {
-            return view_.compare(offset, count, ptr, rcount);
+            return view_.compare(pos, n, ptr, n2);
         }
 
-        [[nodiscard]] constexpr std::strong_ordering operator<=>(const string_view right) const noexcept
+        [[nodiscard]] constexpr std::strong_ordering operator<=>(const string_view sv) const noexcept
         {
-            return view_ <=> right.view_;
+            return view_ <=> sv.view_;
         }
 
         [[nodiscard]] constexpr std::strong_ordering operator<=>(const value_type* const ptr) const noexcept
@@ -257,9 +257,9 @@ namespace ld
             return view_ <=> ptr;
         }
 
-        [[nodiscard]] constexpr bool starts_with(const string_view right) const noexcept
+        [[nodiscard]] constexpr bool starts_with(const string_view sv) const noexcept
         {
-            return view_.starts_with(right.view_);
+            return view_.starts_with(sv.view_);
         }
 
         [[nodiscard]] constexpr bool starts_with(const value_type c) const noexcept
@@ -272,9 +272,9 @@ namespace ld
             return view_.starts_with(ptr);
         }
 
-        [[nodiscard]] constexpr bool ends_with(const string_view right) const noexcept
+        [[nodiscard]] constexpr bool ends_with(const string_view sv) const noexcept
         {
-            return view_.ends_with(right.view_);
+            return view_.ends_with(sv.view_);
         }
 
         [[nodiscard]] constexpr bool ends_with(const value_type c) const noexcept
@@ -287,9 +287,9 @@ namespace ld
             return view_.ends_with(ptr);
         }
 
-        [[nodiscard]] constexpr bool contains(const string_view right) const noexcept
+        [[nodiscard]] constexpr bool contains(const string_view sv) const noexcept
         {
-            return (find(right) != npos);
+            return (find(sv) != npos);
         }
 
         [[nodiscard]] constexpr bool contains(const value_type c) const noexcept
@@ -297,142 +297,139 @@ namespace ld
             return (find(c) != npos);
         }
 
-        [[nodiscard]] constexpr bool contains(const value_type* const ptr) const noexcept /* strengthened */ {
+        [[nodiscard]] constexpr bool contains(const value_type* const ptr) const noexcept {
             return (find(ptr) != npos);
         }
 
-        [[nodiscard]] constexpr size_type find(const string_view right, const size_type offset = 0) const noexcept
+        [[nodiscard]] constexpr size_type find(const string_view sv, const size_type pos = 0) const noexcept
         {
-            return view_.find(right.view_, offset);
+            return view_.find(sv.view_, pos);
         }
 
-        [[nodiscard]] constexpr size_type find(const value_type c, const size_type offset = 0) const noexcept
+        [[nodiscard]] constexpr size_type find(const value_type c, const size_type pos = 0) const noexcept
         {
-            return view_.find(c, offset);
+            return view_.find(c, pos);
         }
 
-        [[nodiscard]] constexpr size_type find(const value_type* const ptr, const size_type offset = 0) const noexcept
+        [[nodiscard]] constexpr size_type find(const value_type* const ptr, const size_type pos = 0) const noexcept
         {
-            return view_.find(ptr, offset);
+            return view_.find(ptr, pos);
         }
 
         [[nodiscard]] constexpr size_type find(
-            const value_type* const ptr, const size_type offset, const size_type count) const noexcept
+            const value_type* const ptr, const size_type pos, const size_type n) const noexcept
         {
-            return view_.find(ptr, offset, count);
+            return view_.find(ptr, pos, n);
         }
 
-        [[nodiscard]] constexpr size_type rfind(const string_view right, const size_type offset = 0) const noexcept
+        [[nodiscard]] constexpr size_type rfind(const string_view sv, const size_type pos = 0) const noexcept
         {
-            return view_.rfind(right.view_, offset);
+            return view_.rfind(sv.view_, pos);
         }
 
-        [[nodiscard]] constexpr size_type rfind(const value_type c, const size_type offset = 0) const noexcept
+        [[nodiscard]] constexpr size_type rfind(const value_type c, const size_type pos = 0) const noexcept
         {
-            return view_.rfind(c, offset);
+            return view_.rfind(c, pos);
         }
 
-        [[nodiscard]] constexpr size_type rfind(const value_type* const ptr, const size_type offset = 0) const noexcept
+        [[nodiscard]] constexpr size_type rfind(const value_type* const ptr, const size_type pos = 0) const noexcept
         {
-            return view_.rfind(ptr, offset);
+            return view_.rfind(ptr, pos);
         }
 
         [[nodiscard]] constexpr size_type rfind(
-            const value_type* const ptr, const size_type offset, const size_type count) const noexcept
+            const value_type* const ptr, const size_type pos, const size_type n) const noexcept
         {
-            return view_.rfind(ptr, offset, count);
+            return view_.rfind(ptr, pos, n);
+        }
+
+        [[nodiscard]] constexpr size_type find_first_of(const string_view sv, const size_type pos = 0) const noexcept
+        {
+            return view_.find_first_of(sv.view_, pos);
+        }
+
+        [[nodiscard]] constexpr size_type find_first_of(const value_type c, const size_type pos = 0) const noexcept
+        {
+            return view_.find_first_of(c, pos);
         }
 
         [[nodiscard]] constexpr size_type find_first_of(
-            const string_view right, const size_type offset = 0) const noexcept
+            const value_type* const ptr, const size_type pos = 0) const noexcept
         {
-            return view_.find_first_of(right.view_, offset);
-        }
-
-        [[nodiscard]] constexpr size_type find_first_of(const value_type c, const size_type offset = 0) const noexcept
-        {
-            return view_.find_first_of(c, offset);
+            return view_.find_first_of(ptr, pos);
         }
 
         [[nodiscard]] constexpr size_type find_first_of(
-            const value_type* const ptr, const size_type offset = 0) const noexcept
+            const value_type* const ptr, const size_type pos, const size_type n) const noexcept
         {
-            return view_.find_first_of(ptr, offset);
+            return view_.find_first_of(ptr, pos, n);
         }
 
-        [[nodiscard]] constexpr size_type find_first_of(
-            const value_type* const ptr, const size_type offset, const size_type count) const noexcept
+        [[nodiscard]] constexpr size_type find_last_of(const string_view sv, const size_type pos = 0) const noexcept
         {
-            return view_.find_first_of(ptr, offset, count);
+            return view_.find_last_of(sv.view_, pos);
         }
 
-        [[nodiscard]] constexpr size_type find_last_of(
-            const string_view right, const size_type offset = 0) const noexcept
+        [[nodiscard]] constexpr size_type find_last_of(const value_type c, const size_type pos = 0) const noexcept
         {
-            return view_.find_last_of(right.view_, offset);
-        }
-
-        [[nodiscard]] constexpr size_type find_last_of(const value_type c, const size_type offset = 0) const noexcept
-        {
-            return view_.find_last_of(c, offset);
+            return view_.find_last_of(c, pos);
         }
 
         [[nodiscard]] constexpr size_type find_last_of(
-            const value_type* const ptr, const size_type offset = 0) const noexcept
+            const value_type* const ptr, const size_type pos = 0) const noexcept
         {
-            return view_.find_last_of(ptr, offset);
+            return view_.find_last_of(ptr, pos);
         }
 
         [[nodiscard]] constexpr size_type find_last_of(
-            const value_type* const ptr, const size_type offset, const size_type count) const noexcept
+                const value_type* const ptr, const size_type pos, const size_type n) const noexcept
         {
-            return view_.find_last_of(ptr, offset, count);
+            return view_.find_last_of(ptr, pos, n);
         }
 
         [[nodiscard]] constexpr size_type find_first_not_of(
-            const string_view right, const size_type offset = 0) const noexcept
+            const string_view sv, const size_type pos = 0) const noexcept
         {
-            return view_.find_first_not_of(right.view_, offset);
+            return view_.find_first_not_of(sv.view_, pos);
         }
 
-        [[nodiscard]] constexpr size_type find_first_not_of(const value_type c, const size_type offset = 0) const noexcept
+        [[nodiscard]] constexpr size_type find_first_not_of(const value_type c, const size_type pos = 0) const noexcept
         {
-            return view_.find_first_not_of(c, offset);
-        }
-
-        [[nodiscard]] constexpr size_type find_first_not_of(
-            const value_type* const ptr, const size_type offset = 0) const noexcept
-        {
-            return view_.find_first_not_of(ptr, offset);
+            return view_.find_first_not_of(c, pos);
         }
 
         [[nodiscard]] constexpr size_type find_first_not_of(
-            const value_type* const ptr, const size_type offset, const size_type count) const noexcept
+            const value_type* const ptr, const size_type pos = 0) const noexcept
         {
-            return view_.find_first_not_of(ptr, offset, count);
+            return view_.find_first_not_of(ptr, pos);
+        }
+
+        [[nodiscard]] constexpr size_type find_first_not_of(
+            const value_type* const ptr, const size_type pos, const size_type n) const noexcept
+        {
+            return view_.find_first_not_of(ptr, pos, n);
+        }
+
+        [[nodiscard]] constexpr size_type find_last_not_of(const string_view sv, const size_type pos = 0) const noexcept
+        {
+            return view_.find_last_not_of(sv.view_, pos);
+        }
+
+        [[nodiscard]] constexpr size_type find_last_not_of(const value_type c, const size_type pos = 0) const noexcept
+        {
+            return view_.find_last_not_of(c, pos);
         }
 
         [[nodiscard]] constexpr size_type find_last_not_of(
-            const string_view right, const size_type offset = 0) const noexcept
+            const value_type* const ptr, const size_type pos = 0) const noexcept
         {
-            return view_.find_last_not_of(right.view_, offset);
-        }
-
-        [[nodiscard]] constexpr size_type find_last_not_of(const value_type c, const size_type offset = 0) const noexcept
-        {
-            return view_.find_last_not_of(c, offset);
+            return view_.find_last_not_of(ptr, pos);
         }
 
         [[nodiscard]] constexpr size_type find_last_not_of(
-            const value_type* const ptr, const size_type offset = 0) const noexcept
+            const value_type* const ptr, const size_type pos, const size_type n) const noexcept
         {
-            return view_.find_last_not_of(ptr, offset);
-        }
-
-        [[nodiscard]] constexpr size_type find_last_not_of(
-            const value_type* const ptr, const size_type offset, const size_type count) const noexcept
-        {
-            return view_.find_last_not_of(ptr, offset, count);
+            return view_.find_last_not_of(ptr, pos, n);
         }
     private:
         string_view_type view_;
@@ -451,17 +448,17 @@ namespace ld
 } // namespace ld
 
 template <>
-inline void std::swap(ld::string_view& a, ld::string_view& b) noexcept
+inline void std::swap(ld::string_view& sv1, ld::string_view& sv2) noexcept
 {
-    a.swap(b);
+    sv1.swap(sv2);
 }
 
 template <>
 struct std::hash<ld::string_view>
 {
-    [[nodiscard]] size_t operator()(const ld::string_view& value) const noexcept
+    [[nodiscard]] size_t operator()(const ld::string_view& sv) const noexcept
     {
-        return std::hash<std::u32string_view>{}({value.begin(), value.end()});
+        return std::hash<std::u32string_view>{}({sv.begin(), sv.end()});
     }
 };
 
