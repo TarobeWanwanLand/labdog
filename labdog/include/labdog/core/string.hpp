@@ -202,7 +202,7 @@ namespace ld
         }
 
         /// @brief 文字配列を代入する
-        /// @param str 代入元の文字配列
+        /// @param ptr 代入元の文字配列
         /// @return *this
         string& assign(const value_type* const ptr)
         {
@@ -211,7 +211,7 @@ namespace ld
         }
 
         /// @brief 文字配列を代入する
-        /// @param str 代入元の文字配列
+        /// @param ptr 代入元の文字配列
         /// @param n 代入する範囲の要素数
         /// @return *this
         string& assign(const value_type* const ptr, const size_type n)
@@ -221,7 +221,7 @@ namespace ld
         }
 
         /// @brief 文字を代入する
-        /// @param str 代入元の文字
+        /// @param c 代入元の文字
         /// @return *this
         string& assign(const value_type c)
         {
@@ -300,7 +300,7 @@ namespace ld
         }
 
         /// @brief 文字配列を代入する
-        /// @param str 代入元の文字配列
+        /// @param ptr 代入元の文字配列
         /// @return *this
         string& operator=(const value_type* const ptr)
         {
@@ -308,7 +308,7 @@ namespace ld
         }
 
         /// @brief 文字を代入する
-        /// @param str 代入元の文字
+        /// @param c 代入元の文字
         /// @return *this
         string& operator=(const value_type c)
         {
@@ -353,36 +353,57 @@ namespace ld
             return *this;
         }
 
+        /// @brief 文字配列を末尾に結合する
+        /// @param ptr 結合する文字配列
+        /// @return *this
         string& append(const value_type* const ptr)
         {
             string_.append(ptr);
             return *this;
         }
 
+        /// @brief 範囲を指定して文字配列を末尾に結合する
+        /// @param ptr 結合する文字配列
+        /// @param n 結合する範囲の要素数
+        /// @return *this
         string& append(const value_type* const ptr, const size_type n)
         {
             string_.append(ptr, n);
             return *this;
         }
 
+        /// @brief 文字を末尾に結合する
+        /// @param c 結合する文字
+        /// @return *this
         string& append(const value_type c)
         {
             push_back(c);
             return *this;
         }
 
+        /// @brief 指定した値からなる要素数Nの文字列を末尾に結合する
+        /// @param n 結合する要素数
+        /// @param c 結合する要素の値
+        /// @return *this
         string& append(const size_type n, const value_type c)
         {
             string_.append(n, c);
             return *this;
         }
 
+        /// @brief 初期化リストを末尾に結合する
+        /// @param il 初期化リスト
+        /// @return *this
         string& append(std::initializer_list<value_type> il)
         {
             string_.append(il);
             return *this;
         }
 
+        /// @brief イテレータの範囲を末尾に結合する
+        /// @param first 範囲の開始位置を指すイテレータ
+        /// @param last 範囲の末尾位置の次を指すイテレータ
+        /// @return *this
         template <class Iterator>
         string& append(const Iterator first, const Iterator last)
         {
@@ -390,6 +411,10 @@ namespace ld
             return *this;
         }
 
+        /// @brief 文字列ビューを末尾に結合する
+        /// @tparam StringView 文字列ビューに変換可能な型
+        /// @param sv 結合する文字列ビュー
+        /// @return *this
         template <detail::is_string_view StringView>
         string& append(const StringView& sv)
         {
@@ -397,6 +422,12 @@ namespace ld
             return *this;
         }
 
+        /// @brief 文字列ビューを末尾に結合する
+        /// @tparam StringView 文字列ビューに変換可能な型
+        /// @param sv 結合する文字列ビュー
+        /// @param pos 結合する範囲の開始位置
+        /// @param n 結合する範囲の要素数
+        /// @return *this
         template <detail::is_string_view StringView>
         string& append(const StringView& sv, const size_type pos, const size_type n = npos)
         {
@@ -404,30 +435,46 @@ namespace ld
             return *this;
         }
 
+        /// @brief 文字列を末尾に結合する
+        /// @param str 結合する文字列
+        /// @return *this
         string& operator+=(const string& str)
         {
             string_ += str.string_;
             return *this;
         }
 
+        /// @brief 文字配列を末尾に結合する
+        /// @param ptr 結合する文字配列
+        /// @return *this
         string& operator+=(const value_type* str)
         {
             string_ += str;
             return *this;
         }
 
+        /// @brief 文字を末尾に結合する
+        /// @param c 結合する文字
+        /// @return *this
         string& operator+=(value_type c)
         {
             string_ += c;
             return *this;
         }
 
+        /// @brief 初期化リストを末尾に結合する
+        /// @param il 初期化リスト
+        /// @return *this
         string& operator+=(std::initializer_list<value_type> il)
         {
             string_ += il;
             return *this;
         }
 
+        /// @brief 文字列ビューを末尾に結合する
+        /// @tparam StringView 文字列ビューに変換可能な型
+        /// @param sv 結合する文字列ビュー
+        /// @return *this
         template <detail::is_string_view StringView>
         string& operator+=(const StringView& sv)
         {
@@ -435,6 +482,9 @@ namespace ld
             return *this;
         }
 
+        /// @brief 文字列を末尾に結合した文字列を構築する
+        /// @param str 結合する文字列
+        /// @return 結合した文字列
         [[nodiscard]] string operator+(const string& str)
         {
             string res(*this);
@@ -442,6 +492,9 @@ namespace ld
             return res;
         }
 
+        /// @brief 文字配列を末尾に結合した文字列を構築する
+        /// @param str 結合する文字配列
+        /// @return 結合した文字列
         [[nodiscard]] string operator+(const value_type* str)
         {
             string res(*this);
@@ -449,6 +502,9 @@ namespace ld
             return res;
         }
 
+        /// @brief 文字を末尾に結合した文字列を構築する
+        /// @param c 結合する文字
+        /// @return 結合した文字列
         [[nodiscard]] string operator+(value_type c)
         {
             string res(*this);
@@ -456,6 +512,10 @@ namespace ld
             return res;
         }
 
+        /// @brief 文字列ビューを末尾に結合した文字列を構築する
+        /// @tparam StringView 文字列ビューに変換可能な型
+        /// @param sv 結合する文字列ビュー
+        /// @return 結合した文字列
         template <detail::is_string_view StringView>
         [[nodiscard]] string operator+(const StringView& sv)
         {
