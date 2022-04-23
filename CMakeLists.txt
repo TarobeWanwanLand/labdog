@@ -7,6 +7,7 @@ project(labdog VERSION 1.0.0)
 include(cmake/environment_setting.cmake)
 
 # 外部ライブラリをビルド
+include(cmake/find_vulkan.cmake)
 add_subdirectory(external)
 
 # サブディレクトリ

@@ -45,6 +45,11 @@ target_include_directories(${PROJECT_NAME} PUBLIC
     $<BUILD_INTERFACE:${LABDOG_HEADER_DIR}>
     $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}>
     $<INSTALL_INTERFACE:"include">
+    ${Vulkan_INCLUDE_DIR}
+)
+
+target_link_libraries(${PROJECT_NAME} PRIVATE
+    ${Vulkan_LIBRARY}
 )
 
 # ヘッダファイルをインストール
