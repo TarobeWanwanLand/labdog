@@ -4,10 +4,10 @@ cmake_minimum_required(VERSION 3.7)
 project(labdog VERSION 1.0.0)
 
 # 環境を構築する
-include(cmake/environment_setting.cmake)
+include(cmake/ProjectSetup.cmake)
 
 # 外部ライブラリをビルド
-include(cmake/find_vulkan.cmake)
+include(cmake/FindVulkan.cmake)
 add_subdirectory(external)
 
 # サブディレクトリ
