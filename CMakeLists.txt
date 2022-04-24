@@ -8,6 +8,7 @@ include(cmake/ProjectSetup.cmake)
 
 # 外部ライブラリをビルド
 include(cmake/FindVulkan.cmake)
+include(cmake/FindGLFW.cmake)
 add_subdirectory(external)
 
 # サブディレクトリ
