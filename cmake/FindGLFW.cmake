@@ -8,7 +8,7 @@ if(EXISTS ${GLFW_ROOT})
     set(GLFW_ROOT $ENV{GLFW_ROOT} CACHE STRING "GLFW root directory.")
 endif()
 
-find_path (GLFW_INCLUDE_DIR
+find_path(GLFW_INCLUDE_DIR
     NAMES GLFW/glfw3.h
     PATHS
     "${GLFW_ROOT}/include"
@@ -21,9 +21,9 @@ find_path (GLFW_INCLUDE_DIR
     /opt/graphics/OpenGL/contrib/libglfw
 )
 
-if (WIN32)
-    if (MSVC11)
-        find_library (GLFW_LIBRARIES
+if(WIN32)
+    if(MSVC11 OR (MSVC_VERSION EQUAL 1700))
+        find_library(GLFW_LIBRARIES
             NAMES
             glfw3
             PATHS
@@ -32,8 +32,8 @@ if (WIN32)
             DOCS
             "The GLFW library"
         )
-    elseif (MSVC12)
-        find_library (GLFW_LIBRARIES
+    elseif(MSVC12 OR (MSVC_VERSION EQUAL 1800))
+        find_library(GLFW_LIBRARIES
             NAMES
             glfw3
             PATHS
@@ -42,38 +42,56 @@ if (WIN32)
             DOCS
             "The GLFW library"
         )
-    elseif (MSVC14)
-        find_library (GLFW_LIBRARIES
+    elseif(MSVC14 OR (MSVC_VERSION EQUAL 1900))
+        find_library(GLFW_LIBRARIES
             NAMES
             glfw3
             PATHS
             "${GLFW_ROOT}/lib"
             "${GLFW_ROOT}/lib-vc2015"
-            DOCS
-            "The GLFW library"
         )
-    elseif (MINGW)
-        find_library (GLFW_LIBRARIES
+    elseif(MSVC15 OR ((MSVC_VERSION GREATER_EQUAL 1910) AND (MSVC_VERSION LESS 1920)))
+        find_library(GLFW_LIBRARIES
+            NAMES
+            glfw3
+            PATHS
+            "${GLFW_ROOT}/lib"
+            "${GLFW_ROOT}/lib-vc2017"
+        )
+    elseif(MSVC16 OR ((MSVC_VERSION GREATER_EQUAL 1920) AND (MSVC_VERSION LESS 1930)))
+        find_library(GLFW_LIBRARIES
+            NAMES
+            glfw3
+            PATHS
+            "${GLFW_ROOT}/lib"
+            "${GLFW_ROOT}/lib-vc2019"
+        )
+    elseif(MSVC17)
+        find_library(GLFW_LIBRARIES
+            NAMES
+            glfw3
+            PATHS
+            "${GLFW_ROOT}/lib"
+            "${GLFW_ROOT}/lib-vc2022"
+        )
+    elseif(MINGW)
+        find_library(GLFW_LIBRARIES
             NAMES
             glfw3
             PATHS
             "${GLFW_ROOT}/lib"
             "${GLFW_ROOT}/lib-mingw-w64"
-            DOCS
-            "The GLFW library"
         )
     else()
-        find_library (GLFW_LIBRARIES
+        find_library(GLFW_LIBRARIES
             NAMES
             glfw3
             PATHS
             "${GLFW_ROOT}/lib"
-            DOCS
-            "The GLFW library"
         )
     endif()
-else ()
-    find_library (GLFW_LIBRARIES
+else()
+    find_library(GLFW_LIBRARIES
         NAMES
         glfw
         glfw3
@@ -87,16 +105,14 @@ else ()
         /usr/local/lib
         /usr/local/lib/${CMAKE_LIBRARY_ARCHITECTURE}
         /usr/X11R6/lib
-        DOCS
-        "The GLFW library"
-        )
-    if (APPLE)
-        list (APPEND GLFW_LIBRARIES
+    )
+    if(APPLE)
+        list(APPEND GLFW_LIBRARIES
             "-framework Cocoa"
             "-framework CoreVideo"
             "-framework IOKit"
         )
-    else ()
+    else()
         find_package(Threads REQUIRED)
 
         find_package(X11 REQUIRED)
@@ -106,7 +122,7 @@ else ()
         list(APPEND GLFW_LIBRARIES "${X11_X11_LIB}" "${CMAKE_THREAD_LIBS_INIT}" "${CMAKE_DL_LIBS}")
 
         # Check for XRandR (modern resolution switching and gamma control)
-        if (NOT X11_Xrandr_FOUND)
+        if(NOT X11_Xrandr_FOUND)
             message(FATAL_ERROR "The RandR library and headers were not found")
         endif()
 
@@ -114,7 +130,7 @@ else ()
         list(APPEND GLFW_LIBRARIES "${X11_Xrandr_LIB}")
 
         # Check for Xinerama (legacy multi-monitor support)
-        if (NOT X11_Xinerama_FOUND)
+        if(NOT X11_Xinerama_FOUND)
             message(FATAL_ERROR "The Xinerama library and headers were not found")
         endif()
 
@@ -122,14 +138,14 @@ else ()
         list(APPEND GLFW_LIBRARIES "${X11_Xinerama_LIB}")
 
         # Check for Xkb (X keyboard extension)
-        if (NOT X11_Xkb_FOUND)
+        if(NOT X11_Xkb_FOUND)
             message(FATAL_ERROR "The X keyboard extension headers were not found")
         endif()
 
         list(APPEND GLFW_INCLUDE_DIR "${X11_Xkb_INCLUDE_PATH}")
 
         # Check for Xcursor
-        if (NOT X11_Xcursor_FOUND)
+        if(NOT X11_Xcursor_FOUND)
             message(FATAL_ERROR "The Xcursor libraries and headers were not found")
         endif()
 
@@ -149,15 +165,13 @@ else ()
         endif()
 
         list(APPEND GLFW_LIBRARIES "${X11_Xxf86vm_LIB}")
-
-    endif ()
+    endif()
 endif()
 
 set(GLFW_INCLUDE_DIRS ${GLFW_INCLUDE_DIR})
 
 find_package_handle_standard_args(GLFW DEFAULT_MSG GLFW_LIBRARIES GLFW_INCLUDE_DIRS)
 mark_as_advanced(GLFW_INCLUDE_DIRS GLFW_LIBRARIES)
-
 
 message(STATUS "GLFW_FOUND = ${GLFW_FOUND}")
 message(STATUS "GLFW_INCLUDE_DIRS = ${GLFW_INCLUDE_DIRS}")
