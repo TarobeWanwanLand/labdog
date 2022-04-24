@@ -8,8 +8,8 @@
 //
 //=========================================================
 
-#ifndef LD_STRING_HPP
-#define LD_STRING_HPP
+#ifndef LABDOG_STRING_HPP
+#define LABDOG_STRING_HPP
 
 #include <string>
 #include "common.hpp"
@@ -1274,4 +1274,4 @@ struct std::hash<ld::string>
     }
 };
 
-#endif // LD_STRING_HPP
+#endif // LABDOG_STRING_HPP

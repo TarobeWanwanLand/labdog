@@ -1,6 +1,6 @@
 //=========================================================
 //
-//  string.cpp is part of the labdog project.
+//  graphics.cpp is part of the labdog project.
 //  Copyright(c) 2022 Tomomi murakami.
 //
 //  Released under the MIT license.
@@ -8,8 +8,13 @@
 //
 //=========================================================
 
-#include "labdog/core/string.hpp"
+#include "labdog/graphics/graphics.hpp"
+#include <GLFW/glfw3.h>
 
 namespace ld
 {
+    graphics::graphics()
+    {
+
+    }
 } // namespace ld

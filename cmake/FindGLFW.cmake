@@ -4,7 +4,7 @@
 
 include(FindPackageHandleStandardArgs)
 
-if(EXISTS ${GLFW_ROOT})
+if(NOT DEFINED GLFW_ROOT)
     set(GLFW_ROOT $ENV{GLFW_ROOT} CACHE STRING "GLFW root directory.")
 endif()
 
@@ -22,7 +22,7 @@ find_path(GLFW_INCLUDE_DIR
 )
 
 if(WIN32)
-    if(MSVC11 OR (MSVC_VERSION EQUAL 1700))
+    if(MSVC11)
         find_library(GLFW_LIBRARIES
             NAMES
             glfw3
@@ -32,7 +32,7 @@ if(WIN32)
             DOCS
             "The GLFW library"
         )
-    elseif(MSVC12 OR (MSVC_VERSION EQUAL 1800))
+    elseif(MSVC12)
         find_library(GLFW_LIBRARIES
             NAMES
             glfw3
@@ -42,7 +42,7 @@ if(WIN32)
             DOCS
             "The GLFW library"
         )
-    elseif(MSVC14 OR (MSVC_VERSION EQUAL 1900))
+    elseif(MSVC14)
         find_library(GLFW_LIBRARIES
             NAMES
             glfw3
@@ -50,7 +50,7 @@ if(WIN32)
             "${GLFW_ROOT}/lib"
             "${GLFW_ROOT}/lib-vc2015"
         )
-    elseif(MSVC15 OR ((MSVC_VERSION GREATER_EQUAL 1910) AND (MSVC_VERSION LESS 1920)))
+    elseif(MSVC15)
         find_library(GLFW_LIBRARIES
             NAMES
             glfw3
@@ -58,7 +58,7 @@ if(WIN32)
             "${GLFW_ROOT}/lib"
             "${GLFW_ROOT}/lib-vc2017"
         )
-    elseif(MSVC16 OR ((MSVC_VERSION GREATER_EQUAL 1920) AND (MSVC_VERSION LESS 1930)))
+    elseif(MSVC16)
         find_library(GLFW_LIBRARIES
             NAMES
             glfw3

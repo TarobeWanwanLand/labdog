@@ -14,9 +14,17 @@ set_target_properties(${EXAMPLE_NAME} PROPERTIES
     RELWITHDEBINFO_POSTFIX "-rd"
 )
 
+# インクルードディレクトリを設定
+target_include_directories(${EXAMPLE_NAME} PUBLIC
+    ${VULKAN_INCLUDE_DIR}
+    ${GLFW_INCLUDE_DIR}
+)
+
 # ライブラリをリンク
 target_link_libraries(${EXAMPLE_NAME} PRIVATE
     ${PROJECT_NAME}::${PROJECT_NAME}
+    ${VULKAN_LIBRARIES}
+    ${GLFW_LIBRARIES}
 )
 
 # サンプルプログラムをインストール

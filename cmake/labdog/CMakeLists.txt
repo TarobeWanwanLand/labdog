@@ -7,12 +7,18 @@ set(LABDOG_HEADERS
     "${LABDOG_HEADER_DIR}/labdog/core/common.hpp"
     "${LABDOG_HEADER_DIR}/labdog/core/string.hpp"
     "${LABDOG_HEADER_DIR}/labdog/core/string_view.hpp"
+
+    "${LABDOG_HEADER_DIR}/labdog/graphics/graphics.hpp"
+    "${LABDOG_HEADER_DIR}/labdog/graphics/window.hpp"
 )
 
 # ソースファイル
 set(LABDOG_SOURCES
-    "${LABDOG_SOURCE_DIR}/string.cpp"
-    "${LABDOG_SOURCE_DIR}/string_view.cpp"
+    "${LABDOG_SOURCE_DIR}/core/string.cpp"
+    "${LABDOG_SOURCE_DIR}/core/string_view.cpp"
+
+    "${LABDOG_SOURCE_DIR}/graphics/graphics.cpp"
+    "${LABDOG_SOURCE_DIR}/graphics/window.cpp"
 )
 
 # ライブラリを作成

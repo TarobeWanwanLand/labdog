@@ -5,7 +5,7 @@
 include(FindPackageMessage)
 include(FindPackageHandleStandardArgs)
 
-if(EXISTS ${VULKAN_ROOT})
+if(NOT DEFINED VULKAN_ROOT)
     set(VULKAN_ROOT $ENV{VULKAN_SDK})
 endif()
 

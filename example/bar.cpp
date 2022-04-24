@@ -1,9 +1,9 @@
 ﻿#include <cstdio>
-#include <labdog/core/string.hpp>
+#include <labdog/graphics/window.hpp>
 
 int main(int argc, char *argv[])
 {
-	ld::string str(U"labdog🐶🦴");
+	ld::window window(600u, 400u);
 
 	return 0;
 }

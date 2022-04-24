@@ -462,4 +462,4 @@ struct std::hash<ld::string_view>
     }
 };
 
-#endif //LABDOG_STRING_VIEW_HPP
+#endif // LABDOG_STRING_VIEW_HPP
