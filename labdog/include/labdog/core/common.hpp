@@ -58,7 +58,7 @@
 //=========================================================
 //  Build type
 //=========================================================
-#if defined(_DEBUG) || defined(DEBUG)
+#if !defined(NDEBUG)
     #define LD_DEBUG 1
 #else
     #define LD_DEBUG 0

@@ -4,6 +4,7 @@ set(LABDOG_SOURCE_DIR "${CMAKE_SOURCE_DIR}/labdog/source")
 
 # ヘッダファイル
 set(LABDOG_HEADERS
+    "${LABDOG_HEADER_DIR}/labdog/core/assertion.hpp"
     "${LABDOG_HEADER_DIR}/labdog/core/common.hpp"
     "${LABDOG_HEADER_DIR}/labdog/core/string.hpp"
     "${LABDOG_HEADER_DIR}/labdog/core/string_view.hpp"
