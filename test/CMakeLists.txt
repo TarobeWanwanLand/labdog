@@ -7,7 +7,7 @@ set(TESTS_SOURCES
     "${CMAKE_CURRENT_SOURCE_DIR}/test.hpp"
     # ソース
     "${CMAKE_CURRENT_SOURCE_DIR}/string_test.cpp"
-)
+        ../labdog/include/labdog/graphics/window_manager.hpp ../labdog/source/graphics/window_manager.cpp)
 
 # テストプログラムを作成
 add_executable(${TESTS_NAME} ${TESTS_SOURCES})

@@ -1,17 +1,21 @@
 ﻿#include <exception>
 #include <iostream>
-#include <labdog/graphics/window.hpp>
+#include <random>
+#include <labdog/graphics/window_manager.hpp>
 #include <labdog/graphics/graphics.hpp>
 
 int main(int argc, char *argv[])
 {
     try
     {
-        ld::window window(600u, 400u);
-
-        while (!window.should_close())
+        for (ld::int32 i = 0; i < 3; ++i)
         {
-            window.update();
+            ld::window_manager::create(600, 400);
+        }
+
+        while (!ld::window_manager::empty())
+        {
+            ld::window_manager::update();
         }
     }
     catch(std::exception exception)

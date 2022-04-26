@@ -30,13 +30,12 @@ namespace ld
         window(window&&) = delete;
         window& operator=(window&&) = delete;
 
-        void update() noexcept;
+        void set_position(int32 x_pos, int32 y_pos) noexcept;
+        void set_size(int32 width, int32 height) noexcept;
 
         [[nodiscard]] bool should_close() noexcept;
 
     private:
-        static size_t window_count_;    //!< 総ウィンドウ数
-
         handle_type window_;    //!< ウィンドウハンドル
 
         // TODO: タイトルメンバ変数を追加

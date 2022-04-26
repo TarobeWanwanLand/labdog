@@ -13,8 +13,6 @@
 
 namespace ld
 {
-    size_t window::window_count_ = 0;
-
     window::window(int32 width, int32 height)
         : window_(nullptr)
         , x_pos_(0)
@@ -26,26 +24,16 @@ namespace ld
         if(width_ <= 0 || height_ <= 0)
             throw std::out_of_range("Window size cannot be less than zero.");
 
-        // 総ウィンドウ数が0の場合、GLFWの初期化を行う
-        if(window_count_ == 0)
-        {
-            // GLFWの初期化
-            if(glfwInit() == GLFW_FALSE)
-                throw std::runtime_error("Failed to initialize GLFW.");
-
-            // ウィンドウの設定
-            glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
-            glfwWindowHint(GLFW_RESIZABLE, 0);
-        }
-
         // TODO: アプリケーション名の変更が出来るようにする
         // ウィンドウを作成する
-        window_ = glfwCreateWindow(static_cast<int32>(width), static_cast<int32>(height), "App", nullptr, nullptr);
+        window_ = glfwCreateWindow(
+            static_cast<int32>(width),
+            static_cast<int32>(height),
+            "App",
+            nullptr,
+            nullptr);
         if(!window_)
             throw std::runtime_error("Failed to create window.");
-
-        // 総ウィンドウ数をインクリメント
-        ++window_count_;
 
         // ウィンドウ座標を取得
         glfwGetWindowPos(window_, &x_pos_, &y_pos_);
@@ -113,6 +101,15 @@ namespace ld
         {
             auto& data = *static_cast<window*>(glfwGetWindowUserPointer(handle));
         });
+
+        glfwSetJoystickCallback([](int32 jid, int32 event)
+        {
+            switch (event)
+            {
+                case GLFW_CONNECTED: break;
+                case GLFW_DISCONNECTED: break;
+            }
+        });
     }
 
     window::~window()
@@ -122,20 +119,17 @@ namespace ld
         {
             glfwDestroyWindow(window_);
             window_ = nullptr;
-
-            // 総ウィンドウ数をデクリメント
-            --window_count_;
         }
-
-        // 総ウィンドウ数が0の場合、GLFWの終了処理を行う
-        if(window_count_ == 0)
-            glfwTerminate();
     }
 
-    void window::update() noexcept
+    void window::set_position(int32 x_pos, int32 y_pos) noexcept
     {
-        // ウィンドウイベントをポーリングする
-        glfwPollEvents();
+        glfwSetWindowPos(window_, x_pos, y_pos);
+    }
+
+    void window::set_size(int32 width, int32 height) noexcept
+    {
+        glfwSetWindowSize(window_, width, height);
     }
 
     bool window::should_close() noexcept
