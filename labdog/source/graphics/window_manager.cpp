@@ -29,7 +29,7 @@ namespace ld
         // ウィンドウのイベント処理を行う
         glfwPollEvents();
 
-        // 閉じられたウィンドウを破棄する
+        // 閉じられたウィンドウを破棄し、リストから削除
         std::erase_if(windows_, [](const std::unique_ptr<window>& window)
         {
            return window->should_close();
@@ -40,8 +40,9 @@ namespace ld
             glfwTerminate();
     }
 
-    bool window_manager::empty() noexcept
+    bool window_manager::exists() noexcept
     {
-        return windows_.empty();
+        // ウィンドウが存在しているかを返す
+        return !windows_.empty();
     }
 }

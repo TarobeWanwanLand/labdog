@@ -14,7 +14,7 @@
 namespace ld
 {
     window::window(int32 width, int32 height)
-        : window_(nullptr)
+        : handle_(nullptr)
         , x_pos_(0)
         , y_pos_(0)
         , width_(width)
@@ -26,23 +26,23 @@ namespace ld
 
         // TODO: アプリケーション名の変更が出来るようにする
         // ウィンドウを作成する
-        window_ = glfwCreateWindow(
+        handle_ = glfwCreateWindow(
             static_cast<int32>(width),
             static_cast<int32>(height),
             "App",
             nullptr,
             nullptr);
-        if(!window_)
+        if(!handle_)
             throw std::runtime_error("Failed to create window.");
 
         // ウィンドウ座標を取得
-        glfwGetWindowPos(window_, &x_pos_, &y_pos_);
+        glfwGetWindowPos(handle_, &x_pos_, &y_pos_);
 
         // ウィンドウコールバックに使用するユーザーデータをセット
-        glfwSetWindowUserPointer(window_, this);
+        glfwSetWindowUserPointer(handle_, this);
 
         // TODO: ウィンドウ座標変更時のイベントを発行する
-        glfwSetWindowPosCallback(window_, [](handle_type handle, int32 x_pos, int32 y_pos)
+        glfwSetWindowPosCallback(handle_, [](handle_type handle, int32 x_pos, int32 y_pos)
         {
             auto& data = *static_cast<window*>(glfwGetWindowUserPointer(handle));
 
@@ -51,7 +51,7 @@ namespace ld
         });
 
         // TODO: ウィンドウサイズ変更時のイベントを発行する
-        glfwSetWindowSizeCallback(window_, [](handle_type handle, int32 width, int32 height)
+        glfwSetWindowSizeCallback(handle_, [](handle_type handle, int32 width, int32 height)
         {
             auto& data = *static_cast<window*>(glfwGetWindowUserPointer(handle));
 
@@ -60,7 +60,7 @@ namespace ld
         });
 
         // TODO: キー操作時のイベントを発行する
-        glfwSetKeyCallback(window_, [](handle_type handle, int32 key, int32 scancode, int32 action, int32 mods)
+        glfwSetKeyCallback(handle_, [](handle_type handle, int32 key, int32 scancode, int32 action, int32 mods)
         {
             auto& data = *static_cast<window*>(glfwGetWindowUserPointer(handle));
 
@@ -73,13 +73,13 @@ namespace ld
         });
 
         // TODO: 文字入力時のイベントを発行する
-        glfwSetCharCallback(window_, [](handle_type handle, uint32 keycode)
+        glfwSetCharCallback(handle_, [](handle_type handle, uint32 keycode)
         {
             auto& data = *static_cast<window*>(glfwGetWindowUserPointer(handle));
         });
 
         // TODO: マウスボタン操作時のイベントを発行する
-        glfwSetMouseButtonCallback(window_, [](handle_type handle, int32 button, int32 action, int32 mods)
+        glfwSetMouseButtonCallback(handle_, [](handle_type handle, int32 button, int32 action, int32 mods)
         {
             auto& data = *static_cast<window*>(glfwGetWindowUserPointer(handle));
 
@@ -91,17 +91,18 @@ namespace ld
         });
 
         // TODO: スクロール時のイベントを発行する
-        glfwSetScrollCallback(window_, [](handle_type handle, double x_pos, double y_pos)
+        glfwSetScrollCallback(handle_, [](handle_type handle, double x_pos, double y_pos)
         {
             auto& data = *static_cast<window*>(glfwGetWindowUserPointer(handle));
         });
 
         // TODO: カーソル操作時のイベントを発行する
-        glfwSetCursorPosCallback(window_, [](handle_type handle, double x_pos, double y_pos)
+        glfwSetCursorPosCallback(handle_, [](handle_type handle, double x_pos, double y_pos)
         {
             auto& data = *static_cast<window*>(glfwGetWindowUserPointer(handle));
         });
 
+        // TODO: コントローラー接続/切断時のイベントを発行する
         glfwSetJoystickCallback([](int32 jid, int32 event)
         {
             switch (event)
@@ -115,26 +116,29 @@ namespace ld
     window::~window()
     {
         // ウィンドウ作成に成功していた場合、ウィンドウを破棄する
-        if(window_)
+        if(handle_)
         {
-            glfwDestroyWindow(window_);
-            window_ = nullptr;
+            // ウィンドウを破棄
+            glfwDestroyWindow(handle_);
+            handle_ = nullptr;
         }
     }
 
     void window::set_position(int32 x_pos, int32 y_pos) noexcept
     {
-        glfwSetWindowPos(window_, x_pos, y_pos);
+        // ウィンドウ座標を変更する
+        glfwSetWindowPos(handle_, x_pos, y_pos);
     }
 
     void window::set_size(int32 width, int32 height) noexcept
     {
-        glfwSetWindowSize(window_, width, height);
+        // ウィンドウサイズを変更する
+        glfwSetWindowSize(handle_, width, height);
     }
 
     bool window::should_close() noexcept
     {
         // ウィンドウを閉じるべきか調べる
-        return glfwWindowShouldClose(window_) == GLFW_TRUE;
+        return glfwWindowShouldClose(handle_) == GLFW_TRUE;
     }
 } // namespace ld

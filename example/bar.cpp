@@ -13,7 +13,7 @@ int main(int argc, char *argv[])
             ld::window_manager::create(600, 400);
         }
 
-        while (!ld::window_manager::empty())
+        while (ld::window_manager::exists())
         {
             ld::window_manager::update();
         }

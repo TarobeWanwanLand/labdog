@@ -16,13 +16,19 @@
 
 namespace ld
 {
+    /// @brief ウィンドウを管理する
     class window final
     {
     public:
         /// @brief ウィンドウハンドル型
         using handle_type = GLFWwindow*;
 
-        window(int32 handle, int32 height);
+        /// @brief ウィンドウを構築する
+        /// @param width ウィンドウの横幅
+        /// @param width ウィンドウの縦幅
+        window(int32 width, int32 height);
+
+        /// @brief ウィンドウを破棄する
         ~window();
 
         window(const window&) = delete;
@@ -30,13 +36,22 @@ namespace ld
         window(window&&) = delete;
         window& operator=(window&&) = delete;
 
+        /// @brief ウィンドウ座標を変更する
+        /// @param x_pos X軸座標
+        /// @param y_pos Y軸座標
         void set_position(int32 x_pos, int32 y_pos) noexcept;
+
+        /// @brief ウィンドウサイズを変更する
+        /// @param width ウィンドウ横幅
+        /// @param height ウィンドウ縦幅
         void set_size(int32 width, int32 height) noexcept;
 
+        /// @brief ウィンドウを閉じるべきかを返す
+        /// @return ウィンドウを閉じるべきか
         [[nodiscard]] bool should_close() noexcept;
 
     private:
-        handle_type window_;    //!< ウィンドウハンドル
+        handle_type handle_;    //!< ウィンドウハンドル
 
         // TODO: タイトルメンバ変数を追加
         //string title_;
@@ -47,4 +62,4 @@ namespace ld
     };
 } // namespace ld
 
-#endif //LABDOG_WINDOW_HPP
+#endif // LABDOG_WINDOW_HPP
