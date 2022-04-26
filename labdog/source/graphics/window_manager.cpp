@@ -1,5 +1,6 @@
 #include "labdog/graphics/window_manager.hpp"
 #include <algorithm>
+#include <stdexcept>
 
 namespace ld
 {
