@@ -2,16 +2,13 @@
 # GLFW_INCLUDE_DIRS
 # GLFW_LIBRARIES
 
+include(FindPackageMessage)
 include(FindPackageHandleStandardArgs)
-
-if(NOT DEFINED GLFW_ROOT)
-    set(GLFW_ROOT $ENV{GLFW_ROOT} CACHE STRING "GLFW root directory.")
-endif()
 
 find_path(GLFW_INCLUDE_DIRS
     NAMES GLFW/glfw3.h
     PATHS
-    "${GLFW_ROOT}/include"
+    "$ENV{GLFW_ROOT}/include"
     /usr/X11R6/include
     /usr/include/X11
     /usr/local/include
@@ -27,8 +24,8 @@ if(WIN32)
             NAMES
             glfw3
             PATHS
-            "${GLFW_ROOT}/lib"
-            "${GLFW_ROOT}/lib-vc2012"
+            "$ENV{GLFW_ROOT}/lib"
+            "$ENV{GLFW_ROOT}/lib-vc2012"
             DOCS
             "The GLFW library"
         )
@@ -37,8 +34,8 @@ if(WIN32)
             NAMES
             glfw3
             PATHS
-            "${GLFW_ROOT}/lib"
-            "${GLFW_ROOT}/lib-vc2013"
+            "$ENV{GLFW_ROOT}/lib"
+            "$ENV{GLFW_ROOT}/lib-vc2013"
             DOCS
             "The GLFW library"
         )
@@ -47,47 +44,47 @@ if(WIN32)
             NAMES
             glfw3
             PATHS
-            "${GLFW_ROOT}/lib"
-            "${GLFW_ROOT}/lib-vc2015"
+            "$ENV{GLFW_ROOT}/lib"
+            "$ENV{GLFW_ROOT}/lib-vc2015"
         )
     elseif(MSVC15)
         find_library(GLFW_LIBRARIES
             NAMES
             glfw3
             PATHS
-            "${GLFW_ROOT}/lib"
-            "${GLFW_ROOT}/lib-vc2017"
+            "$ENV{GLFW_ROOT}/lib"
+            "$ENV{GLFW_ROOT}/lib-vc2017"
         )
     elseif(MSVC16)
         find_library(GLFW_LIBRARIES
             NAMES
             glfw3
             PATHS
-            "${GLFW_ROOT}/lib"
-            "${GLFW_ROOT}/lib-vc2019"
+            "$ENV{GLFW_ROOT}/lib"
+            "$ENV{GLFW_ROOT}/lib-vc2019"
         )
     elseif(MSVC17)
         find_library(GLFW_LIBRARIES
             NAMES
             glfw3
             PATHS
-            "${GLFW_ROOT}/lib"
-            "${GLFW_ROOT}/lib-vc2022"
+            "$ENV{GLFW_ROOT}/lib"
+            "$ENV{GLFW_ROOT}/lib-vc2022"
         )
     elseif(MINGW)
         find_library(GLFW_LIBRARIES
             NAMES
             glfw3
             PATHS
-            "${GLFW_ROOT}/lib"
-            "${GLFW_ROOT}/lib-mingw-w64"
+            "$ENV{GLFW_ROOT}/lib"
+            "$ENV{GLFW_ROOT}/lib-mingw-w64"
         )
     else()
         find_library(GLFW_LIBRARIES
             NAMES
             glfw3
             PATHS
-            "${GLFW_ROOT}/lib"
+            "$ENV{GLFW_ROOT}/lib"
         )
     endif()
 else()
@@ -96,8 +93,8 @@ else()
         glfw
         glfw3
         PATHS
-        "${GLFW_ROOT}/lib"
-        "${GLFW_ROOT}/lib/x11"
+        "$ENV{GLFW_ROOT}/lib"
+        "$ENV{GLFW_ROOT}/lib/x11"
         /usr/lib64
         /usr/lib
         /usr/lib/${CMAKE_LIBRARY_ARCHITECTURE}

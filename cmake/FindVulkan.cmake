@@ -5,39 +5,35 @@
 include(FindPackageMessage)
 include(FindPackageHandleStandardArgs)
 
-if(NOT DEFINED VULKAN_ROOT)
-    set(VULKAN_ROOT $ENV{VULKAN_SDK})
-endif()
-
 if(WIN32)
     find_path(Vulkan_INCLUDE_DIRS
         NAMES vulkan/vulkan.h
         HINTS
-        "${VULKAN_ROOT}/Include"
+        "$ENV{VULKAN_SDK}/Include"
     )
     if(CMAKE_SIZEOF_VOID_P EQUAL 8)
         find_library(Vulkan_LIBRARIES
             NAMES vulkan-1
             HINTS
-            "${VULKAN_ROOT}/Lib"
-            "${VULKAN_ROOT}/Bin"
+            "$ENV{VULKAN_SDK}/Lib"
+            "$ENV{VULKAN_SDK}/Bin"
         )
     elseif(CMAKE_SIZEOF_VOID_P EQUAL 4)
         find_library(Vulkan_LIBRARIES
             NAMES vulkan-1
             HINTS
-            "${VULKAN_ROOT}/Lib32"
-            "${VULKAN_ROOT}/Bin32"
+            "$ENV{VULKAN_SDK}/Lib32"
+            "$ENV{VULKAN_SDK}/Bin32"
         )
     endif()
 else()
     find_path(Vulkan_INCLUDE_DIRS
         NAMES vulkan/vulkan.h
-        HINTS "${VULKAN_ROOT}/include"
+        HINTS "$ENV{VULKAN_SDK}/include"
     )
     find_library(Vulkan_LIBRARIES
         NAMES vulkan
-        HINTS "${VULKAN_ROOT}/lib"
+        HINTS "$ENV{VULKAN_SDK}/lib"
     )
 endif()
 
