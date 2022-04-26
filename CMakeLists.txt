@@ -9,6 +9,20 @@ include(cmake/ProjectSetup.cmake)
 # 外部ライブラリをビルド
 include(cmake/FindVulkan.cmake)
 include(cmake/FindGLFW.cmake)
+
+# 外部ライブラリのインクルードディレクトリを設定
+include_directories(
+    ${Vulkan_INCLUDE_DIRS}
+    ${GLFW_INCLUDE_DIRS}
+)
+
+# 外部ライブラリをリンク
+link_libraries(
+    ${Vulkan_LIBRARIES}
+    ${GLFW_LIBRARIES}
+)
+
+# サブモジュールの外部ライブラリをビルド
 add_subdirectory(external)
 
 # サブディレクトリ

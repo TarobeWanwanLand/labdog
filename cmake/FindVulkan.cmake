@@ -10,20 +10,20 @@ if(NOT DEFINED VULKAN_ROOT)
 endif()
 
 if(WIN32)
-    find_path(Vulkan_INCLUDE_DIR
+    find_path(Vulkan_INCLUDE_DIRS
         NAMES vulkan/vulkan.h
         HINTS
         "${VULKAN_ROOT}/Include"
     )
     if(CMAKE_SIZEOF_VOID_P EQUAL 8)
-        find_library(Vulkan_LIBRARY
+        find_library(Vulkan_LIBRARIES
             NAMES vulkan-1
             HINTS
             "${VULKAN_ROOT}/Lib"
             "${VULKAN_ROOT}/Bin"
         )
     elseif(CMAKE_SIZEOF_VOID_P EQUAL 4)
-        find_library(Vulkan_LIBRARY
+        find_library(Vulkan_LIBRARIES
             NAMES vulkan-1
             HINTS
             "${VULKAN_ROOT}/Lib32"
@@ -31,18 +31,15 @@ if(WIN32)
         )
     endif()
 else()
-    find_path(Vulkan_INCLUDE_DIR
+    find_path(Vulkan_INCLUDE_DIRS
         NAMES vulkan/vulkan.h
         HINTS "${VULKAN_ROOT}/include"
     )
-    find_library(Vulkan_LIBRARY
+    find_library(Vulkan_LIBRARIES
         NAMES vulkan
         HINTS "${VULKAN_ROOT}/lib"
     )
 endif()
-
-set(Vulkan_LIBRARIES ${Vulkan_LIBRARY})
-set(Vulkan_INCLUDE_DIRS ${Vulkan_INCLUDE_DIR})
 
 find_package_handle_standard_args(Vulkan DEFAULT_MSG Vulkan_INCLUDE_DIRS Vulkan_LIBRARIES)
 mark_as_advanced(Vulkan_INCLUDE_DIRS Vulkan_LIBRARIES)

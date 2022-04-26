@@ -20,20 +20,12 @@ set_target_properties(${TESTS_NAME} PROPERTIES
     RELWITHDEBINFO_POSTFIX "-rd"
 )
 
-# インクルードディレクトリを設定
-target_include_directories(${TESTS_NAME} PUBLIC
-    ${VULKAN_INCLUDE_DIR}
-    ${GLFW_INCLUDE_DIR}
-)
-
 # ライブラリをリンク
 target_link_libraries(${TESTS_NAME} PRIVATE
     ${PROJECT_NAME}::${PROJECT_NAME}
     GTest::gmock
     GTest::gtest
     GTest::gmock_main
-    ${VULKAN_LIBRARIES}
-    ${GLFW_LIBRARIES}
 )
 
 include(GoogleTest)

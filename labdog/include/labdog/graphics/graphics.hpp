@@ -12,6 +12,7 @@
 #define LABDOG_GRAPHICS_HPP
 
 #include "../core/common.hpp"
+#include <vulkan/vulkan_core.h>
 
 namespace ld
 {
@@ -22,7 +23,7 @@ namespace ld
         ~graphics() = default;
 
     private:
-
+        VkInstance instance_;
     };
 } // namespace ld
 

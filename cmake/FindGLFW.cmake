@@ -8,7 +8,7 @@ if(NOT DEFINED GLFW_ROOT)
     set(GLFW_ROOT $ENV{GLFW_ROOT} CACHE STRING "GLFW root directory.")
 endif()
 
-find_path(GLFW_INCLUDE_DIR
+find_path(GLFW_INCLUDE_DIRS
     NAMES GLFW/glfw3.h
     PATHS
     "${GLFW_ROOT}/include"
@@ -167,8 +167,6 @@ else()
         list(APPEND GLFW_LIBRARIES "${X11_Xxf86vm_LIB}")
     endif()
 endif()
-
-set(GLFW_INCLUDE_DIRS ${GLFW_INCLUDE_DIR})
 
 find_package_handle_standard_args(GLFW DEFAULT_MSG GLFW_LIBRARIES GLFW_INCLUDE_DIRS)
 mark_as_advanced(GLFW_INCLUDE_DIRS GLFW_LIBRARIES)
