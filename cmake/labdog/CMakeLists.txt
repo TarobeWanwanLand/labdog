@@ -34,8 +34,7 @@ add_library("${PROJECT_NAME}::${PROJECT_NAME}" ALIAS ${PROJECT_NAME})
 
 # staticビルド時にポストフィックスを設定
 if(BUILD_SHARED_LIBS)
-    message(TRACE "build_shared")
-    target_compile_definitions(${PROJECT_NAME} PRIVATE "LD_EXPORTS")
+    target_compile_definitions(${PROJECT_NAME} PRIVATE LD_EXPORTS)
 else()
     set(STATIC_POSTFIX -static)
 endif()
@@ -53,8 +52,8 @@ target_sources(${PROJECT_NAME} PRIVATE ${LABDOG_SOURCES})
 
 # インクルードディレクトリを設定
 target_include_directories(${PROJECT_NAME} PUBLIC
-    $<BUILD_INTERFACE:${LABDOG_HEADER_DIR}>
-    $<INSTALL_INTERFACE:"include">
+    "$<BUILD_INTERFACE:${LABDOG_HEADER_DIR}>"
+    "$<INSTALL_INTERFACE:include>"
 )
 
 # 外部ライブラリをリンク
@@ -72,9 +71,9 @@ install(
 install(
     TARGETS ${PROJECT_NAME}
     EXPORT "${PROJECT_NAME}_config"
-    LIBRARY DESTINATION "lib"
-    ARCHIVE DESTINATION "lib"
-    RUNTIME DESTINATION "bin"
+    LIBRARY DESTINATION lib
+    ARCHIVE DESTINATION lib
+    RUNTIME DESTINATION bin
     PUBLIC_HEADER DESTINATION "include/${PROJECT_NAME}"
 )
 

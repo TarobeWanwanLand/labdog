@@ -9,7 +9,7 @@ int main(int argc, char *argv[])
 {
     try
     {
-        auto str = ld::utf32To16(U"abc🥰");
+        auto str = ld::utf32To16(U"あ");
 
         for (ld::int32 i = 0; i < 3; ++i)
         {
