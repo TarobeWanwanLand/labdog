@@ -54,8 +54,12 @@ target_sources(${PROJECT_NAME} PRIVATE ${LABDOG_SOURCES})
 # インクルードディレクトリを設定
 target_include_directories(${PROJECT_NAME} PUBLIC
     $<BUILD_INTERFACE:${LABDOG_HEADER_DIR}>
-    $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}>
     $<INSTALL_INTERFACE:"include">
+)
+
+# 外部ライブラリをリンク
+target_link_libraries(${PROJECT_NAME} PUBLIC
+    icu::common
 )
 
 # ヘッダファイルをインストール
