@@ -1,14 +1,15 @@
 //=========================================================
 //
-//	common.hpp
-//	Copyright(c) 2022 Tomomi murakami.
+//  common.hpp is part of the labdog project.
+//  Copyright (C) 2022 TarobeWanwanLand.
 //
-//	Released under the MIT license.
-//	see http://opensource.org/licenses/MIT
+//  Released under the MIT license.
+//  see http://opensource.org/licenses/MIT
 //
 //=========================================================
 
-#pragma once
+#ifndef LABDOG_COMMON_HPP
+#define LABDOG_COMMON_HPP
 
 //=========================================================
 //  Platform
@@ -117,3 +118,5 @@ namespace ld
     static_assert(sizeof(char16) == 2);
     static_assert(sizeof(char32) == 4);
 }
+
+#endif // LABDOG_COMMON_HPP

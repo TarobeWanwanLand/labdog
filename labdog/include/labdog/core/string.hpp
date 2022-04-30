@@ -1,7 +1,7 @@
 //=========================================================
 //
-//  string.hpp is part of the labdog project.
-//  Copystr(c) 2022 Tomomi murakami.
+//  basic_string.hpp is part of the labdog project.
+//  Copyright (C) 2022 TarobeWanwanLand.
 //
 //  Released under the MIT license.
 //  see http://opensource.org/licenses/MIT
@@ -17,29 +17,19 @@
 
 namespace ld
 {
-    class string;
+    class basic_string;
     class string_view;
 
-    namespace detail
-    {
-        template <class Type>
-        concept is_string_view = requires
-        {
-            std::is_convertible_v<const Type&, string_view>;
-            std::negation_v<std::is_convertible<const Type*, const string*>>;
-            std::negation_v<std::is_convertible<const Type&, const char32*>>;
-        };
-    }
-
-    /// @brief UTF-32文字列クラス
-    class string final
+    /// @brief Unicode文字列クラス
+    template <class CharType>
+    class basic_string final
     {
     public:
         //=========================================================
         //  エイリアス
         //=========================================================
         /// @brief 文字列型
-        using string_type = std::u32string;
+        using string_type = std::basic_string<CharType>;
         /// @brief 文字特性型
         using traits_type = string_type::traits_type;
         /// @brief アロケータ型
@@ -73,74 +63,99 @@ namespace ld
         /// @brief 無効な位置を表す値
         static constexpr size_type npos{ string_type::npos };
 
+    private:
+        template <class Type>
+        concept is_string_view = requires
+        {
+            std::is_convertible_v<const Type&, string_view>;
+            std::negation_v<std::is_convertible<const Type*, const basic_string*>>;
+            std::negation_v<std::is_convertible<const Type&, const char32*>>;
+        };
+
+        template <class Type>
+        using _If_sv = enable_if_t<
+            std::conjunction<is_convertible<const Type&, __sv_type>,
+            std::negation<is_convertible<const Type*, const basic_string*>>,
+        __not_<is_convertible<const Type&, const value_type*>>>::value,
+        int>;
+
+        template <class Type>
+        using _Is_string_view_ish =
+        enable_if_t<
+            conjunction_v<is_convertible<const Type&, basic_string_view<value_type, _Traits>>,
+            negation<is_convertible<const Type&, const value_type*>>>,
+        int>;
+
+    public:
+
         //=========================================================
         //  コンストラクタ
         //=========================================================
         /// @brief 空の文字列を構築する
-        [[nodiscard]] string() noexcept
+        [[nodiscard]] basic_string() noexcept
             : string_() {}
 
         /// @brief 文字列をコピー構築する
         /// @param str コピー元の文字列
-        [[nodiscard]] string(const string& str)
+        [[nodiscard]] basic_string(const basic_string& str)
             : string_(str.string_) {}
 
         /// @brief 範囲を指定して文字列をコピー構築する
         /// @param str コピー元の文字列
         /// @param pos コピー範囲の開始位置
         /// @param n コピー範囲の要素数
-        [[nodiscard]] string(const string& str, const size_type pos, const size_type n = npos)
+        [[nodiscard]] basic_string(const basic_string& str, const size_type pos, const size_type n = npos)
             : string_(str.string_, pos, n) {}
 
         /// @brief 文字列をムーブ構築する
         /// @param str ムーブ元の文字列型
-        [[nodiscard]] string(string&& str) noexcept
+        [[nodiscard]] basic_string(basic_string&& str) noexcept
             : string_(std::move(str.string_)) {}
 
         /// @brief STLの文字列から文字列をコピー構築する
         /// @param str コピー元のSTLの文字列
-        [[nodiscard]] /* implicit */ string(const string_type& str)
+        [[nodiscard]] /* implicit */ basic_string(const string_type& str)
             : string_(str) {}
 
         /// @brief STLの文字列から文字列をムーブ構築する
         /// @param str ムーブ元のSTLの文字列
-        [[nodiscard]] /* implicit */ string(string_type&& str) noexcept
+        [[nodiscard]] /* implicit */ basic_string(string_type&& str) noexcept
             : string_(std::move(str)) {}
 
         /// @brief 文字配列から文字列を構築する
         /// @param ptr 文字配列の先頭ポインタ
-        [[nodiscard]] /* implicit */ string(const value_type* const ptr)
+        [[nodiscard]] /* implicit */ basic_string(const value_type* const ptr)
             : string_(ptr) {}
 
         /// @brief 範囲を指定して文字配列から文字列を構築する
         /// @param ptr 文字配列の先頭ポインタ
         /// @param n 範囲の要素数
-        [[nodiscard]] string(const value_type* const ptr, const size_type n)
+        [[nodiscard]] basic_string(const value_type* const ptr, const size_type n)
             : string_(ptr, n) {}
 
         /// @brief 指定した値からなる要素数Nの文字列を構築する
         /// @param n 要素数
         /// @param c 要素の値
-        [[nodiscard]] string(const size_type n, const value_type c)
+        [[nodiscard]] basic_string(const size_type n, const value_type c)
             : string_(n, c) {}
 
         /// @brief 初期化リストから文字列を構築する
         /// @param il 初期化リスト
-        [[nodiscard]] string(std::initializer_list<value_type> il)
+        [[nodiscard]] basic_string(std::initializer_list<value_type> il)
             : string_(il) {}
 
         /// @brief イテレータの範囲から文字列を構築する
         /// @param first 範囲の開始位置を指すイテレータ
         /// @param last 範囲の末尾位置の次を指すイテレータ
         template <class Iterator>
-        [[nodiscard]] string(Iterator first, Iterator last)
+        [[nodiscard]] basic_string(Iterator first, Iterator last)
             : string_(first, last) {}
 
         /// @brief 文字列ビューから文字列を構築する
         /// @tparam StringView 文字列ビューに変換可能な型
         /// @param sv 文字列ビュー
         template <detail::is_string_view StringView>
-        [[nodiscard]] /* implicit */ string(const StringView& sv)
+        [[nodiscard]] /* implicit */ basic_string(const StringView& sv)
             : string_(sv) {}
 
         /// @brief 範囲を指定して文字列ビューから文字列を構築する
@@ -149,14 +164,14 @@ namespace ld
         /// @param pos コピー範囲の開始位置
         /// @param n コピー範囲の要素数
         template <detail::is_string_view StringView>
-        [[nodiscard]] string(const StringView& sv, const size_type pos, const size_type n = npos)
+        [[nodiscard]] basic_string(const StringView& sv, const size_type pos, const size_type n = npos)
             : string_(sv, pos, n) {}
 
         //=========================================================
         //  デストラクタ
         //=========================================================
         /// @brief 文字列を破棄する
-        ~string() noexcept = default;
+        ~basic_string() noexcept = default;
 
         /// @brief string_viewへの暗黙型キャスト
         /// @return 文字列を参照したstring_view
@@ -175,7 +190,7 @@ namespace ld
         /// @brief 文字列を代入する
         /// @param str 代入元の文字列
         /// @return *this
-        string& assign(const string& str)
+        basic_string& assign(const basic_string& str)
         {
             string_.assign(str.string_);
             return *this;
@@ -184,7 +199,7 @@ namespace ld
         /// @brief 文字列をムーブ代入する
         /// @param str ムーブ代入元の文字列
         /// @return *this
-        string& assign(string&& str) noexcept(noexcept(string_.assign(std::move(str.string_))))
+        basic_string& assign(basic_string&& str) noexcept(noexcept(string_.assign(std::move(str.string_))))
         {
             string_.assign(std::move(str.string_));
             return *this;
@@ -195,7 +210,7 @@ namespace ld
         /// @param pos 代入する範囲の開始位置
         /// @param n 代入する範囲の要素数
         /// @return *this
-        string& assign(const string& str, const size_type pos, const size_type n = npos)
+        basic_string& assign(const basic_string& str, const size_type pos, const size_type n = npos)
         {
             string_.assign(str.string_, pos, n);
             return *this;
@@ -204,7 +219,7 @@ namespace ld
         /// @brief 文字配列を代入する
         /// @param ptr 代入元の文字配列
         /// @return *this
-        string& assign(const value_type* const ptr)
+        basic_string& assign(const value_type* const ptr)
         {
             string_.assign(ptr);
             return *this;
@@ -214,7 +229,7 @@ namespace ld
         /// @param ptr 代入元の文字配列
         /// @param n 代入する範囲の要素数
         /// @return *this
-        string& assign(const value_type* const ptr, const size_type n)
+        basic_string& assign(const value_type* const ptr, const size_type n)
         {
             string_.assign(ptr, n);
             return *this;
@@ -223,7 +238,7 @@ namespace ld
         /// @brief 文字を代入する
         /// @param c 代入元の文字
         /// @return *this
-        string& assign(const value_type c)
+        basic_string& assign(const value_type c)
         {
             string_.assign(1, c);
             return *this;
@@ -233,7 +248,7 @@ namespace ld
         /// @param n 代入する要素数
         /// @param c 代入する要素の値
         /// @return *this
-        string& assign(const size_type n, const value_type c)
+        basic_string& assign(const size_type n, const value_type c)
         {
             string_.assign(n, c);
             return *this;
@@ -242,7 +257,7 @@ namespace ld
         /// @brief 初期化リストを代入する
         /// @param il 代入元の初期化リスト
         /// @return *this
-        string& assign(std::initializer_list<value_type> il)
+        basic_string& assign(std::initializer_list<value_type> il)
         {
             string_.assign(il);
             return *this;
@@ -253,7 +268,7 @@ namespace ld
         /// @param last 範囲の末尾位置の次を指すイテレータ
         /// @return *this
         template <class Iterator>
-        string& assign(const Iterator first, const Iterator last)
+        basic_string& assign(const Iterator first, const Iterator last)
         {
             string_.assign(first, last);
             return *this;
@@ -264,7 +279,7 @@ namespace ld
         /// @param sv 代入元の文字列ビュー
         /// @return *this
         template <detail::is_string_view StringView>
-        string& assign(const StringView& sv)
+        basic_string& assign(const StringView& sv)
         {
             string_.assign(sv);
             return *this;
@@ -277,7 +292,7 @@ namespace ld
         /// @param n 代入する範囲の要素数
         /// @return *this
         template <detail::is_string_view StringView>
-        string& assign(const StringView& sv, const size_type pos, const size_type n = npos)
+        basic_string& assign(const StringView& sv, const size_type pos, const size_type n = npos)
         {
             string_.assign(sv, pos, n);
             return *this;
@@ -286,7 +301,7 @@ namespace ld
         /// @brief 文字列を代入する
         /// @param str 代入元の文字列
         /// @return *this
-        string& operator=(const string& str)
+        basic_string& operator=(const basic_string& str)
         {
             return assign(str);
         }
@@ -294,7 +309,7 @@ namespace ld
         /// @brief 文字列をムーブ代入する
         /// @param str ムーブ代入元の文字列
         /// @return *this
-        string& operator=(string&& str) noexcept
+        basic_string& operator=(basic_string&& str) noexcept
         {
             return assign(std::move(str));
         }
@@ -302,7 +317,7 @@ namespace ld
         /// @brief 文字配列を代入する
         /// @param ptr 代入元の文字配列
         /// @return *this
-        string& operator=(const value_type* const ptr)
+        basic_string& operator=(const value_type* const ptr)
         {
             return assign(ptr);
         }
@@ -310,7 +325,7 @@ namespace ld
         /// @brief 文字を代入する
         /// @param c 代入元の文字
         /// @return *this
-        string& operator=(const value_type c)
+        basic_string& operator=(const value_type c)
         {
             return assign(c);
         }
@@ -318,7 +333,7 @@ namespace ld
         /// @brief 初期化リストを代入する
         /// @param il 代入元の初期化リスト
         /// @return *this
-        string& operator=(std::initializer_list<value_type> il)
+        basic_string& operator=(std::initializer_list<value_type> il)
         {
             return assign(il);
         }
@@ -328,7 +343,7 @@ namespace ld
         /// @param sv 代入元の文字列ビュー
         /// @return *this
         template <detail::is_string_view StringView>
-        string& operator=(const StringView& sv)
+        basic_string& operator=(const StringView& sv)
         {
             return assign(sv);
         }
@@ -336,7 +351,7 @@ namespace ld
         /// @brief 文字列を末尾に結合する
         /// @param str 結合する文字列
         /// @return *this
-        string& append(const string& str)
+        basic_string& append(const basic_string& str)
         {
             string_.append(str.string_);
             return *this;
@@ -347,7 +362,7 @@ namespace ld
         /// @param pos 結合する範囲の開始位置
         /// @param n 結合する範囲の要素数
         /// @return *this
-        string& append(const string& str, const size_type pos, const size_type n = npos)
+        basic_string& append(const basic_string& str, const size_type pos, const size_type n = npos)
         {
             string_.append(str.string_, pos, n);
             return *this;
@@ -356,7 +371,7 @@ namespace ld
         /// @brief 文字配列を末尾に結合する
         /// @param ptr 結合する文字配列
         /// @return *this
-        string& append(const value_type* const ptr)
+        basic_string& append(const value_type* const ptr)
         {
             string_.append(ptr);
             return *this;
@@ -366,7 +381,7 @@ namespace ld
         /// @param ptr 結合する文字配列
         /// @param n 結合する範囲の要素数
         /// @return *this
-        string& append(const value_type* const ptr, const size_type n)
+        basic_string& append(const value_type* const ptr, const size_type n)
         {
             string_.append(ptr, n);
             return *this;
@@ -375,7 +390,7 @@ namespace ld
         /// @brief 文字を末尾に結合する
         /// @param c 結合する文字
         /// @return *this
-        string& append(const value_type c)
+        basic_string& append(const value_type c)
         {
             push_back(c);
             return *this;
@@ -385,7 +400,7 @@ namespace ld
         /// @param n 結合する要素数
         /// @param c 結合する要素の値
         /// @return *this
-        string& append(const size_type n, const value_type c)
+        basic_string& append(const size_type n, const value_type c)
         {
             string_.append(n, c);
             return *this;
@@ -394,7 +409,7 @@ namespace ld
         /// @brief 初期化リストを末尾に結合する
         /// @param il 初期化リスト
         /// @return *this
-        string& append(std::initializer_list<value_type> il)
+        basic_string& append(std::initializer_list<value_type> il)
         {
             string_.append(il);
             return *this;
@@ -405,7 +420,7 @@ namespace ld
         /// @param last 範囲の末尾位置の次を指すイテレータ
         /// @return *this
         template <class Iterator>
-        string& append(const Iterator first, const Iterator last)
+        basic_string& append(const Iterator first, const Iterator last)
         {
             string_.append(first, last);
             return *this;
@@ -416,7 +431,7 @@ namespace ld
         /// @param sv 結合する文字列ビュー
         /// @return *this
         template <detail::is_string_view StringView>
-        string& append(const StringView& sv)
+        basic_string& append(const StringView& sv)
         {
             string_.append(sv);
             return *this;
@@ -429,7 +444,7 @@ namespace ld
         /// @param n 結合する範囲の要素数
         /// @return *this
         template <detail::is_string_view StringView>
-        string& append(const StringView& sv, const size_type pos, const size_type n = npos)
+        basic_string& append(const StringView& sv, const size_type pos, const size_type n = npos)
         {
             string_.append(sv, pos, n);
             return *this;
@@ -438,7 +453,7 @@ namespace ld
         /// @brief 文字列を末尾に結合する
         /// @param str 結合する文字列
         /// @return *this
-        string& operator+=(const string& str)
+        basic_string& operator+=(const basic_string& str)
         {
             string_ += str.string_;
             return *this;
@@ -447,7 +462,7 @@ namespace ld
         /// @brief 文字配列を末尾に結合する
         /// @param ptr 結合する文字配列
         /// @return *this
-        string& operator+=(const value_type* str)
+        basic_string& operator+=(const value_type* str)
         {
             string_ += str;
             return *this;
@@ -456,7 +471,7 @@ namespace ld
         /// @brief 文字を末尾に結合する
         /// @param c 結合する文字
         /// @return *this
-        string& operator+=(value_type c)
+        basic_string& operator+=(value_type c)
         {
             string_ += c;
             return *this;
@@ -465,7 +480,7 @@ namespace ld
         /// @brief 初期化リストを末尾に結合する
         /// @param il 初期化リスト
         /// @return *this
-        string& operator+=(std::initializer_list<value_type> il)
+        basic_string& operator+=(std::initializer_list<value_type> il)
         {
             string_ += il;
             return *this;
@@ -476,7 +491,7 @@ namespace ld
         /// @param sv 結合する文字列ビュー
         /// @return *this
         template <detail::is_string_view StringView>
-        string& operator+=(const StringView& sv)
+        basic_string& operator+=(const StringView& sv)
         {
             string_ += sv;
             return *this;
@@ -485,9 +500,9 @@ namespace ld
         /// @brief 文字列を末尾に結合した文字列を構築する
         /// @param str 結合する文字列
         /// @return 結合した文字列
-        [[nodiscard]] string operator+(const string& str)
+        [[nodiscard]] basic_string operator+(const basic_string& str)
         {
-            string res(*this);
+            basic_string res(*this);
             res.append(str);
             return res;
         }
@@ -495,9 +510,9 @@ namespace ld
         /// @brief 文字配列を末尾に結合した文字列を構築する
         /// @param str 結合する文字配列
         /// @return 結合した文字列
-        [[nodiscard]] string operator+(const value_type* str)
+        [[nodiscard]] basic_string operator+(const value_type* str)
         {
-            string res(*this);
+            basic_string res(*this);
             res.append(str);
             return res;
         }
@@ -505,9 +520,9 @@ namespace ld
         /// @brief 文字を末尾に結合した文字列を構築する
         /// @param c 結合する文字
         /// @return 結合した文字列
-        [[nodiscard]] string operator+(value_type c)
+        [[nodiscard]] basic_string operator+(value_type c)
         {
-            string res(*this);
+            basic_string res(*this);
             res.append(c);
             return res;
         }
@@ -517,33 +532,33 @@ namespace ld
         /// @param sv 結合する文字列ビュー
         /// @return 結合した文字列
         template <detail::is_string_view StringView>
-        [[nodiscard]] string operator+(const StringView& sv)
+        [[nodiscard]] basic_string operator+(const StringView& sv)
         {
-            string res(*this);
+            basic_string res(*this);
             res.append(sv);
             return res;
         }
 
-        string& insert(const size_type pos, const string& str)
+        basic_string& insert(const size_type pos, const basic_string& str)
         {
             string_.insert(pos, str.string_);
             return *this;
         }
 
-        string& insert(
-            const size_type pos1, const string& str, const size_type pos2, const size_type n = npos)
+        basic_string& insert(
+            const size_type pos1, const basic_string& str, const size_type pos2, const size_type n = npos)
         {
             string_.insert(pos1, str.string_, pos2, n);
             return *this;
         }
 
-        string& insert(const size_type pos, const value_type* const ptr)
+        basic_string& insert(const size_type pos, const value_type* const ptr)
         {
             string_.insert(pos, ptr);
             return *this;
         }
 
-        string& insert(
+        basic_string& insert(
                 const size_type pos,
                 const value_type* const ptr,
                 const size_type n)
@@ -552,27 +567,27 @@ namespace ld
             return *this;
         }
 
-        string& insert(const size_type pos, const value_type c)
+        basic_string& insert(const size_type pos, const value_type c)
         {
             insert(pos, 1, c);
             return *this;
         }
 
-        string& insert(const size_type pos, const size_type n, const value_type c)
+        basic_string& insert(const size_type pos, const size_type n, const value_type c)
         {
             string_.insert(pos, n, c);
             return *this;
         }
 
         template <detail::is_string_view StringView>
-        string& insert(const size_type pos, StringView& sv)
+        basic_string& insert(const size_type pos, StringView& sv)
         {
             string_.insert(pos, sv);
             return *this;
         }
 
         template <detail::is_string_view StringView>
-        string& insert(const size_type pos1, StringView& sv, const size_type pos2, const size_type n = npos)
+        basic_string& insert(const size_type pos1, StringView& sv, const size_type pos2, const size_type n = npos)
         {
             string_.insert(pos1, sv, pos2, n);
             return *this;
@@ -599,13 +614,13 @@ namespace ld
             return string_.insert(where, first, last);
         }
 
-        string& erase(const size_type pos = 0)
+        basic_string& erase(const size_type pos = 0)
         {
             string_.erase(pos);
             return *this;
         }
 
-        string& erase(const size_type pos, const size_type n = npos)
+        basic_string& erase(const size_type pos, const size_type n = npos)
         {
             string_.erase(pos, n);
             return *this;
@@ -626,16 +641,16 @@ namespace ld
             string_.clear();
         }
 
-        string& replace(const size_type pos, const size_type n, const string& str)
+        basic_string& replace(const size_type pos, const size_type n, const basic_string& str)
         {
             string_.replace(pos, n, str.string_);
             return *this;
         }
 
-        string& replace(
+        basic_string& replace(
                 const size_type pos1,
                 const size_type n1,
-                const string& str,
+                const basic_string& str,
                 const size_type pos2,
                 const size_type n2 = npos)
         {
@@ -643,13 +658,13 @@ namespace ld
             return *this;
         }
 
-        string& replace(const size_type pos, const size_type n, const value_type* const ptr)
+        basic_string& replace(const size_type pos, const size_type n, const value_type* const ptr)
         {
             string_.replace(pos, n, ptr);
             return *this;
         }
 
-        string& replace(
+        basic_string& replace(
                 const size_type pos,
                 const size_type n1,
                 const value_type* const ptr,
@@ -659,20 +674,20 @@ namespace ld
             return *this;
         }
 
-        string& replace(const size_type pos, const size_type n1, const size_type n2, const value_type c)
+        basic_string& replace(const size_type pos, const size_type n1, const size_type n2, const value_type c)
         {
             string_.replace(pos, n1, n2, c);
             return *this;
         }
 
         template <detail::is_string_view StringView>
-        string& replace(const size_type pos, const size_type n, const StringView& sv)
+        basic_string& replace(const size_type pos, const size_type n, const StringView& sv)
         {
             return string_.replace(pos, n, sv);
         }
 
         template <detail::is_string_view StringView>
-        string& replace(
+        basic_string& replace(
             const size_type pos1,
             const size_type n1,
             const StringView& sv,
@@ -682,19 +697,19 @@ namespace ld
             return string_.replace(pos1, n1, sv, pos2, n2);
         }
 
-        string& replace(const const_iterator first, const const_iterator last, const string& str)
+        basic_string& replace(const const_iterator first, const const_iterator last, const basic_string& str)
         {
             string_.replace(first, last, str.string_);
             return *this;
         }
 
-        string& replace(const const_iterator first, const const_iterator last, const value_type* const ptr)
+        basic_string& replace(const const_iterator first, const const_iterator last, const value_type* const ptr)
         {
             string_.replace(first, last, ptr);
             return *this;
         }
 
-        string& replace(
+        basic_string& replace(
                 const const_iterator first,
                 const const_iterator last,
                 const value_type* const ptr,
@@ -704,7 +719,7 @@ namespace ld
             return *this;
         }
 
-        string& replace(
+        basic_string& replace(
                 const const_iterator first,
                 const const_iterator last,
                 const size_type n,
@@ -715,7 +730,7 @@ namespace ld
         }
 
         template <class Iterator>
-        string& replace(
+        basic_string& replace(
                 const const_iterator first1,
                 const const_iterator last1,
                 const Iterator first2,
@@ -726,7 +741,7 @@ namespace ld
         }
 
         template <detail::is_string_view StringView>
-        string& replace(const const_iterator first, const const_iterator last, const StringView& sv)
+        basic_string& replace(const const_iterator first, const const_iterator last, const StringView& sv)
         {
             return string_.replace(first, last, sv);
         }
@@ -926,12 +941,12 @@ namespace ld
             return string_.copy(ptr, n, pos);
         }
 
-        void swap(string& str) noexcept
+        void swap(basic_string& str) noexcept
         {
             string_.swap(str.string_);
         }
 
-        [[nodiscard]] size_type find(const string& str, const size_type pos = 0) const noexcept
+        [[nodiscard]] size_type find(const basic_string& str, const size_type pos = 0) const noexcept
         {
             return string_.find(str.string_, pos);
         }
@@ -958,7 +973,7 @@ namespace ld
             return string_.find(sv, pos);
         }
 
-        [[nodiscard]] size_type rfind(const string& str, const size_type pos = 0) const noexcept
+        [[nodiscard]] size_type rfind(const basic_string& str, const size_type pos = 0) const noexcept
         {
             return string_.rfind(str.string_, pos);
         }
@@ -985,7 +1000,7 @@ namespace ld
             return string_.rfind(sv, pos);
         }
 
-        [[nodiscard]] size_type find_first_of(const string& str, const size_type pos = 0) const noexcept
+        [[nodiscard]] size_type find_first_of(const basic_string& str, const size_type pos = 0) const noexcept
         {
             return string_.find_first_of(str.string_, pos);
         }
@@ -1012,7 +1027,7 @@ namespace ld
             return string_.find_first_of(sv, pos);
         }
 
-        [[nodiscard]] size_type find_last_of(const string& str, const size_type pos = 0) const noexcept
+        [[nodiscard]] size_type find_last_of(const basic_string& str, const size_type pos = 0) const noexcept
         {
             return string_.find_last_of(str.string_, pos);
         }
@@ -1039,7 +1054,7 @@ namespace ld
             return string_.find_last_of(sv, pos);
         }
 
-        [[nodiscard]] size_type find_first_not_of(const string& str, const size_type pos = 0) const noexcept
+        [[nodiscard]] size_type find_first_not_of(const basic_string& str, const size_type pos = 0) const noexcept
         {
             return string_.find_first_not_of(str.string_, pos);
         }
@@ -1067,7 +1082,7 @@ namespace ld
             return string_.find_first_not_of(sv, pos);
         }
 
-        [[nodiscard]] size_type find_last_not_of(const string& str, const size_type pos = 0) const noexcept
+        [[nodiscard]] size_type find_last_not_of(const basic_string& str, const size_type pos = 0) const noexcept
         {
             return string_.find_last_not_of(str.string_, pos);
         }
@@ -1094,17 +1109,17 @@ namespace ld
             return string_.find_last_not_of(sv, pos);
         }
 
-        [[nodiscard]] string substr(const size_type pos, const size_type n = npos) const
+        [[nodiscard]] basic_string substr(const size_type pos, const size_type n = npos) const
         {
-            return { string_.substr(pos, n) };
+            return basic_string;
         }
 
-        [[nodiscard]] int32 compare(const string& str) const noexcept
+        [[nodiscard]] int32 compare(const basic_string& str) const noexcept
         {
             return string_.compare(str.string_);
         }
 
-        [[nodiscard]] int32 compare(const size_type pos, const size_type n, const string& str) const noexcept
+        [[nodiscard]] int32 compare(const size_type pos, const size_type n, const basic_string& str) const noexcept
         {
             return string_.compare(pos, n, str.string_);
         }
@@ -1112,7 +1127,7 @@ namespace ld
         [[nodiscard]] int32 compare(
                 const size_type pos1,
                 const size_type n1,
-                const string& str,
+                const basic_string& str,
                 const size_type pos2,
                 const size_type n2) const noexcept
         {
@@ -1163,7 +1178,7 @@ namespace ld
             return string_.compare(pos1, n1, sv, pos2, n2);
         }
 
-        [[nodiscard]] bool operator==(const string& str) const noexcept
+        [[nodiscard]] bool operator==(const basic_string& str) const noexcept
         {
             return string_ == str.string_;
         }
@@ -1179,7 +1194,7 @@ namespace ld
             return compare(sv) == 0;
         }
 
-        [[nodiscard]] std::strong_ordering operator<=>(const string& str) const noexcept
+        [[nodiscard]] std::strong_ordering operator<=>(const basic_string& str) const noexcept
         {
             return string_ <=> str.string_;
         }
@@ -1193,12 +1208,12 @@ namespace ld
         [[nodiscard]] std::strong_ordering operator<=>(const StringView sv) const noexcept
         {
             const int32 comp = compare(sv);
-            return ((comp == 0) ? std::strong_ordering::equal :
-                   ((comp <  0) ? std::strong_ordering::less
-                                : std::strong_ordering::greater));
+            return ((comp == 0) ? std::strong_ordering::equal
+                 : ((comp <  0) ? std::strong_ordering::less
+                 : std::strong_ordering::greater));
         }
 
-        [[nodiscard]] bool starts_with(const string& str) const noexcept
+        [[nodiscard]] bool starts_with(const basic_string& str) const noexcept
         {
             return string_.starts_with(str.string_);
         }
@@ -1218,7 +1233,7 @@ namespace ld
             return string_.starts_with(sv);
         }
 
-        [[nodiscard]] bool ends_with(const string& str) const noexcept
+        [[nodiscard]] bool ends_with(const basic_string& str) const noexcept
         {
             return string_.ends_with(str.string_);
         }
@@ -1251,26 +1266,26 @@ namespace ld
     {
         inline namespace string_literals
         {
-            [[nodiscard]] inline string operator""_s(const char32* const ptr, const size_t n)
+            [[nodiscard]] inline basic_string operator""_s(const char32* const ptr, const size_t n)
             {
-                return { ptr, n };
+                return string;
             }
         }
     }
 } // namespace ld
 
 template <>
-inline void std::swap(ld::string& str1, ld::string& str2) noexcept
+inline void std::swap(ld::basic_string& str1, ld::basic_string& str2) noexcept
 {
     str1.swap(str2);
 }
 
-template <>
-struct std::hash<ld::string>
+template <class CharType>
+struct std::hash<ld::basic_string<CharType>>
 {
-    [[nodiscard]] size_t operator()(const ld::string& str) const noexcept
+    [[nodiscard]] size_t operator()(const ld::basic_string<CharType>& str) const noexcept
     {
-        return std::hash<std::u32string>{}(str);
+        return std::hash<std::basic_string<CharType>>{}(str);
     }
 };
 

@@ -1,7 +1,7 @@
 //=========================================================
 //
 //  graphics.hpp is part of the labdog project.
-//  Copyright(c) 2022 Tomomi murakami.
+//  Copyright (C) 2022 TarobeWanwanLand.
 //
 //  Released under the MIT license.
 //  see http://opensource.org/licenses/MIT
