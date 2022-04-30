@@ -8,15 +8,7 @@ set(LABDOG_HEADERS
     "${LABDOG_HEADER_DIR}/labdog/core/common.hpp"
     "${LABDOG_HEADER_DIR}/labdog/core/string.hpp"
     "${LABDOG_HEADER_DIR}/labdog/core/string_view.hpp"
-<<<<<<< Updated upstream
-    "${LABDOG_HEADER_DIR}/labdog/core/unicode.hpp"
-=======
-<<<<<<< Updated upstream
-=======
-    "${LABDOG_HEADER_DIR}/labdog/core/unicode.hpp"
     "${LABDOG_HEADER_DIR}/labdog/core/unicode_convert.hpp"
->>>>>>> Stashed changes
->>>>>>> Stashed changes
 
     "${LABDOG_HEADER_DIR}/labdog/graphics/graphics.hpp"
     "${LABDOG_HEADER_DIR}/labdog/graphics/window.hpp"
@@ -27,15 +19,7 @@ set(LABDOG_HEADERS
 set(LABDOG_SOURCES
     "${LABDOG_SOURCE_DIR}/core/string.cpp"
     "${LABDOG_SOURCE_DIR}/core/string_view.cpp"
-<<<<<<< Updated upstream
-    "${LABDOG_SOURCE_DIR}/core/unicode.cpp"
-=======
-<<<<<<< Updated upstream
-=======
-    "${LABDOG_SOURCE_DIR}/core/unicode.cpp"
     "${LABDOG_SOURCE_DIR}/core/unicode_convert.cpp"
->>>>>>> Stashed changes
->>>>>>> Stashed changes
 
     "${LABDOG_SOURCE_DIR}/graphics/graphics.cpp"
     "${LABDOG_SOURCE_DIR}/graphics/window.cpp"
@@ -68,25 +52,12 @@ target_sources(${PROJECT_NAME} PRIVATE ${LABDOG_SOURCES})
 
 # インクルードディレクトリを設定
 target_include_directories(${PROJECT_NAME} PUBLIC
-<<<<<<< Updated upstream
-=======
-<<<<<<< Updated upstream
-    $<BUILD_INTERFACE:${LABDOG_HEADER_DIR}>
-    $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}>
-    $<INSTALL_INTERFACE:"include">
-=======
->>>>>>> Stashed changes
     "$<BUILD_INTERFACE:${LABDOG_HEADER_DIR}>"
     "$<INSTALL_INTERFACE:include>"
 )
 
 # 外部ライブラリをリンク
 target_link_libraries(${PROJECT_NAME} PUBLIC
-<<<<<<< Updated upstream
-    icu::common
-=======
->>>>>>> Stashed changes
->>>>>>> Stashed changes
 )
 
 # ヘッダファイルをインストール

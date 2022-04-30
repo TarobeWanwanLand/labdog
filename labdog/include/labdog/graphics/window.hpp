@@ -54,7 +54,7 @@ namespace ld
         handle_type handle_;    //!< ウィンドウハンドル
 
         // TODO: タイトルメンバ変数を追加
-        //basic_string title_;
+        //string title_;
         int32 x_pos_;   //!< ウィンドウX座標
         int32 y_pos_;   //!< ウィンドウY座標
         int32 width_;   //!< ウィンドウ横幅

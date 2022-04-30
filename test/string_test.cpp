@@ -7,25 +7,25 @@ static constexpr const char32 *const STRING{U"labdog is the best!"};
 
 TEST(basic_string, construct)
 {
-    basic_string str1{string_view(STRING)};
+    string str1{string_view(STRING)};
     EXPECT_EQ(str1.compare(STRING), 0);
 
 #if LD_COMPILER_MSVC
-    basic_string str2{ string_view(STRING) | std::views::drop(7) };
+    string str2{string_view(STRING) | std::views::drop(7) };
     EXPECT_EQ(str2.compare(STRING + 7), 0);
 #endif
 }
 
 TEST(basic_string, to_string_view)
 {
-    basic_string str{STRING};
+    string str{STRING};
     string_view strv = str;
     EXPECT_EQ(str.compare(strv), 0);
 }
 
 TEST(basic_string, assign_string_view)
 {
-    basic_string str(U"be overwritten");
+    string str(U"be overwritten");
     str.assign(string_view(STRING));
     EXPECT_EQ(str.compare(STRING), 0);
 }
@@ -33,7 +33,7 @@ TEST(basic_string, assign_string_view)
 #if LD_COMPILER_MSVC
 TEST(basic_string, assign_range)
 {
-    basic_string str(U"be overwritten");
+    string str(U"be overwritten");
     str.assign(string_view(STRING) | std::views::drop(7));
     EXPECT_EQ(str.compare(STRING + 7), 0);
 }
@@ -41,7 +41,7 @@ TEST(basic_string, assign_range)
 
 TEST(basic_string, compare_with_string_view)
 {
-    basic_string str(U"b");
+    string str(U"b");
     EXPECT_EQ(str, string_view(U"b"));
     EXPECT_NE(str, string_view(U"z"));
     EXPECT_LT(str, string_view(U"ca"));

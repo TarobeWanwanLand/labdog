@@ -1,6 +1,6 @@
 //=========================================================
 //
-//  basic_string.cpp is part of the labdog project.
+//  string.cpp is part of the labdog project.
 //  Copyright (C) 2022 TarobeWanwanLand.
 //
 //  Released under the MIT license.

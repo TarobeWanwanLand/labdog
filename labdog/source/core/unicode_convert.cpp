@@ -14,12 +14,6 @@
 
 namespace ld
 {
-    // 🦴 U+1F9B4
-    // code point         000   01 1111   10 0110   11 0100
-    //              1111 0    10        10        10
-    // UTF-8        1111 0000 1001 1111 1010 0110 1011 0100
-    // UTF-32       0000 0000 0000 0001 1111 1001 1011 0100
-
     static constexpr std::array<uint8, 7> first_byte_mask
         {
             0x00u, // 0: 0000 0000
@@ -47,21 +41,57 @@ namespace ld
     /// @brief 文字コードの上限値
     static constexpr uint32 max_utf32{ 0x10FFFFu }; // 0000 0000 0001 0000 1111 1111 1111 1111
 
-    template <typename Iterator>
-    char32 utf8_to_utf32(Iterator& begin, const Iterator end)
+    [[nodiscard]] constexpr size_t utf8_bytes(const uint8 first_code_unit)
+    {
+        if (first_code_unit < 0xC0u /* 1100 0000 */)
+            return 0u;
+        if (first_code_unit < 0xE0u /* 1110 0000 */)
+            return 1u;
+        if (first_code_unit < 0xF0u /* 1111 0000 */)
+            return 2u;
+        if (first_code_unit < 0xF8u /* 1111 1000 */)
+            return 3u;
+        if (first_code_unit < 0xFCu /* 1111 1100 */)
+            return 4u;
+        return 5u;
+    }
+
+    size_t utf32_length(std::u8string_view u8sv)
+    {
+        size_t res = 0;
+        auto itr = u8sv.begin();
+
+        while(itr != end)
+        {
+            size_t bytes = utf8_bytes(std::bit_cast<uint8>(*itr));
+
+            for (size_t i = 1; i < bytes + 1; ++i)
+            {
+                if ((*(itr + i) & 0xC0) != 0x80)
+                {
+                    bytes = 0;
+                    break;
+                }
+            }
+
+            itr += bytes + 1;
+
+            ++res;
+        }
+
+        return res;
+    }
+
+    template <std::input_iterator Iterator>
+    requires std::convertible_to<std::iter_value_t<Iterator>, char8>
+    char32 code_units_from_utf8_to_utf32(Iterator& begin, Iterator end)
     {
         char32 res = 0;
 
         if(begin == end)
             return res;
 
-        const auto first_code_unit = std::bit_cast<uint8>(*begin);
-        const size_t bytes = ((first_code_unit < 0xC0u /* 1100 0000 */) ? 0u
-                           : ((first_code_unit < 0xE0u /* 1110 0000 */) ? 1u
-                           : ((first_code_unit < 0xF0u /* 1111 0000 */) ? 2u
-                           : ((first_code_unit < 0xF8u /* 1111 1000 */) ? 3u
-                           : ((first_code_unit < 0xFCu /* 1111 1100 */) ? 4u
-                           : 5u)))));
+        const size_t bytes = utf8_bytes(std::bit_cast<uint8>(*begin));
 
         if(begin + bytes >= end)
             throw std::range_error("The number of code units is out of range.");
@@ -84,14 +114,15 @@ namespace ld
 
     std::u32string utf8_to_utf32(const std::u8string_view sv)
     {
-        std::u32string res;
-
         auto itr = sv.begin();
         const auto end = sv.end();
 
-        while (itr != end)
+        const size_t length = utf32_length(sv.begin(), sv.end());
+        std::u32string res(length, U'\0');
+
+        for (size_t i = 0; i < length; ++i)
         {
-            res.push_back(utf8_to_utf32(itr, end));
+            res[i] = code_units_from_utf8_to_utf32(itr, end);
         }
 
         return res;
