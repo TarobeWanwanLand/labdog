@@ -6,6 +6,7 @@ build/
 install/
 out/
 .idea/
+*.stackdump
 
 ### C++ ###
 # Prerequisites
