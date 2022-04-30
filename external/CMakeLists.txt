@@ -6,5 +6,3 @@ add_subdirectory(googletest)
 set(SPDLOG_WCHAR_FILENAMES TRUE)
 set(SPDLOG_WCHAR_SUPPORT TRUE)
 add_subdirectory(spdlog)
-
-include(BuildICU.cmake)

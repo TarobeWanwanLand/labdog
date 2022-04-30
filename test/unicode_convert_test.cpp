@@ -72,7 +72,7 @@
 static constexpr std::u8string_view  utf8_strings [] = STRING_CONSTANTS(u8);
 static constexpr std::u16string_view utf16_strings[] = STRING_CONSTANTS(u);
 static constexpr std::u32string_view utf32_strings[] = STRING_CONSTANTS(U);
-static constexpr size_t strings_array_size = sizeof(utf8_strings) / sizeof(std::u8string_view);
+static constexpr size_t strings_array_size = std::size(utf8_strings);
 
 TEST(unicode_convert, utf8_to_utf32)
 {

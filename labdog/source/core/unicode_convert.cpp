@@ -39,7 +39,7 @@ namespace ld
     static constexpr uint16 replacement_char{ 0xFFFDu }; // 1111 1111 1111 1101
 
     /// @brief 文字コードの上限値
-    static constexpr uint32 max_utf32{ 0x10FFFFu }; // 0000 0000 0001 0000 1111 1111 1111 1111
+    static constexpr uint32 max_unicode{ 0x10FFFFu }; // 0000 0000 0001 0000 1111 1111 1111 1111
 
     [[nodiscard]] constexpr size_t utf8_bytes(const uint8 first_code_unit)
     {
@@ -60,6 +60,7 @@ namespace ld
     {
         size_t res = 0;
         auto itr = u8sv.begin();
+        const auto end = u8sv.end();
 
         while(itr != end)
         {
@@ -117,7 +118,7 @@ namespace ld
         auto itr = sv.begin();
         const auto end = sv.end();
 
-        const size_t length = utf32_length(sv.begin(), sv.end());
+        const size_t length = utf32_length(sv);
         std::u32string res(length, U'\0');
 
         for (size_t i = 0; i < length; ++i)
