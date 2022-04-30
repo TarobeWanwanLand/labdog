@@ -1,7 +1,7 @@
 //=========================================================
 //
 //  window.hpp is part of the labdog project.
-//  Copyright(c) 2022 Tomomi murakami.
+//  Copyright (C) 2022 TarobeWanwanLand.
 //
 //  Released under the MIT license.
 //  see http://opensource.org/licenses/MIT
@@ -54,7 +54,7 @@ namespace ld
         handle_type handle_;    //!< ウィンドウハンドル
 
         // TODO: タイトルメンバ変数を追加
-        //string title_;
+        //basic_string title_;
         int32 x_pos_;   //!< ウィンドウX座標
         int32 y_pos_;   //!< ウィンドウY座標
         int32 width_;   //!< ウィンドウ横幅

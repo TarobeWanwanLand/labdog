@@ -1,3 +1,13 @@
+//=========================================================
+//
+//  window_manager.cpp is part of the labdog project.
+//  Copyright (C) 2022 TarobeWanwanLand.
+//
+//  Released under the MIT license.
+//  see http://opensource.org/licenses/MIT
+//
+//=========================================================
+
 #include "labdog/graphics/window_manager.hpp"
 #include <algorithm>
 #include <stdexcept>
@@ -9,7 +19,7 @@ namespace ld
     window* window_manager::create(int32 width, int32 height)
     {
         // 総ウィンドウ数が0の場合、GLFWの初期化を行う
-        if(windows_.empty())
+        if(exists())
         {
             // GLFWの初期化
             if(glfwInit() == GLFW_FALSE)
@@ -17,7 +27,6 @@ namespace ld
 
             // ウィンドウの設定
             glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
-            //glfwWindowHint(GLFW_RESIZABLE, 0);
         }
 
         auto& ret = windows_.emplace_back(std::make_unique<window>(width, height));
@@ -36,7 +45,7 @@ namespace ld
         });
 
         // 総ウィンドウ数が0の場合、GLFWの終了処理を行う
-        if(windows_.empty())
+        if(exists())
             glfwTerminate();
     }
 

@@ -1,7 +1,7 @@
 //=========================================================
 //
 //  string_view.hpp is part of the labdog project.
-//  Copysv(c) 2022 Tomomi murakami.
+//  Copyright (C) 2022 TarobeWanwanLand.
 //
 //  Released under the MIT license.
 //  see http://opensource.org/licenses/MIT
