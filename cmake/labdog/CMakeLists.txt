@@ -64,15 +64,10 @@ target_link_libraries(${PROJECT_NAME} PUBLIC
 )
 
 # ヘッダファイルをインストール
-foreach(HEADER_PATH ${LABDOG_HEADERS})
-    string(REPLACE "${LABDOG_HEADER_DIR}/" "" DESTINATION_HEADER_DIR ${HEADER_PATH})
-    get_filename_component(DESTINATION_HEADER_DIR ${DESTINATION_HEADER_DIR} DIRECTORY)
-
-    install(
-        FILES ${HEADER_PATH}
-        DESTINATION "include/${DESTINATION_HEADER_DIR}"
-    )
-endforeach()
+install(
+    DIRECTORY "${LABDOG_HEADER_DIR}/labdog"
+    DESTINATION "include"
+)
 
 # ライブラリをインストール
 install(
