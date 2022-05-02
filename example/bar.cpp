@@ -9,9 +9,6 @@ int main(int argc, char *argv[])
 {
     try
     {
-        // TODO: テスト書く
-        std::u32string str = ld::utf8_to_utf32(u8"あvbsいaう");
-
         for (ld::int32 i = 0; i < 3; ++i)
         {
             ld::window_manager::create(600, 400);

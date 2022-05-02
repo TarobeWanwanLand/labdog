@@ -2,7 +2,8 @@
 #include <labdog/core/unicode_convert.hpp>
 #include <string_view>
 
-#define STRING_CONSTANTS(literal) {\
+#define STRING_CONSTANTS(literal) { \
+    literal##R"(123)",\
     literal##R"(!/#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqrstuvwxyz{|}~)",\
     literal##R"(¡¢£¤¥¦§¨©ª«¬­®¯°±²³´µ¶·¸¹º»¼½¾¿ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖ×ØÙÚÛÜÝÞßàáâãäåæçèéêëìíîïðñòóôõö÷øùúûüýþÿ)",\
     literal##R"(ĀāĂăĄąĆćĈĉĊċČčĎďĐđĒēĔĕĖėĘęĚěĜĝĞğĠġĢģĤĥĦħĨĩĪīĬĭĮįİıĲĳĴĵĶķĸĹĺĻļĽľĿŀŁłŃńŅņŇňŉŊŋŌōŎŏŐőŒœŔŕŖŗŘřŚśŜŝŞşŠšŢţŤťŦŧŨũŪūŬŭŮůŰűŲųŴŵŶŷŸŹźŻżŽžſ)",\
@@ -78,9 +79,37 @@ TEST(unicode_convert, utf8_to_utf32)
 {
     for (size_t i = 0; i < strings_array_size; ++i)
     {
-        std::u32string u32str = utf8_to_utf32(utf8_strings[i]);
+        std::u32string u32str(utf8_to_utf32_length(utf8_strings[i].begin(), utf8_strings[i].end()), '\0');
+
+        utf8_to_utf32(utf8_strings[i].begin(), utf8_strings[i].end(), u32str.begin());
 
         EXPECT_EQ(u32str.size(), utf32_strings[i].size());
         EXPECT_EQ(u32str.compare(utf32_strings[i]), 0);
+    }
+}
+
+TEST(unicode_convert, utf32_to_utf8)
+{
+    for (size_t i = 0; i < strings_array_size; ++i)
+    {
+        std::u8string u8str;
+
+        utf32_to_utf8(utf32_strings[i].begin(), utf32_strings[i].end(), std::back_inserter(u8str));
+
+        EXPECT_EQ(u8str.size(), utf8_strings[i].size());
+        EXPECT_EQ(u8str.compare(utf8_strings[i]), 0);
+    }
+}
+
+TEST(unicode_convert, utf32_to_utf16)
+{
+    for (size_t i = 0; i < strings_array_size; ++i)
+    {
+        std::u16string u16str;
+
+        utf32_to_utf16(utf32_strings[i].begin(), utf32_strings[i].end(), std::back_inserter(u16str));
+
+        EXPECT_EQ(u16str.size(), utf16_strings[i].size());
+        EXPECT_EQ(u16str.compare(utf16_strings[i]), 0);
     }
 }
