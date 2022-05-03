@@ -54,11 +54,13 @@ namespace ld
         }
     }
 
-    //std::u32string utf8_to_utf32(const std::u8string_view sv);
-
     template<std::input_iterator InputIterator, std::output_iterator<char32_t> OutputIterator>
     requires std::same_as<std::iter_value_t<InputIterator>, char8_t>
     OutputIterator utf8_to_utf32(InputIterator first, InputIterator last, OutputIterator dest);
+
+    template<std::input_iterator InputIterator, std::output_iterator<char32_t> OutputIterator>
+    requires std::same_as<std::iter_value_t<InputIterator>, char16_t>
+    OutputIterator utf16_to_utf32(InputIterator first, InputIterator last, OutputIterator dest);
 
     template <std::input_iterator InputIterator, std::output_iterator<char8_t> OutputIterator>
     requires std::same_as<std::iter_value_t<InputIterator>, char32_t>
@@ -68,13 +70,28 @@ namespace ld
     requires std::same_as<std::iter_value_t<InputIterator>, char32_t>
     OutputIterator utf32_to_utf16(InputIterator first, InputIterator last, OutputIterator dest);
 
-    template <std::input_iterator Iterator>
-    requires std::same_as<std::iter_value_t<Iterator>, char8_t>
-    [[nodiscard]] size_t utf8_to_utf32_length(Iterator begin, Iterator end);
+    template<std::input_iterator InputIterator, std::output_iterator<char16_t> OutputIterator>
+    requires std::same_as<std::iter_value_t<InputIterator>, char8_t>
+    OutputIterator utf8_to_utf16(InputIterator first, InputIterator last, OutputIterator dest)
+    {
+        std::u32string temp;
+        utf8_to_utf32(first, last, std::back_inserter(temp));
+        return utf32_to_utf16(temp.begin(), temp.end(), dest);
+    }
+
+    template<std::input_iterator InputIterator, std::output_iterator<char8_t> OutputIterator>
+    requires std::same_as<std::iter_value_t<InputIterator>, char16_t>
+    OutputIterator utf16_to_utf8(InputIterator first, InputIterator last, OutputIterator dest)
+    {
+        std::u32string temp;
+        utf16_to_utf32(first, last, std::back_inserter(temp));
+        return utf32_to_utf8(temp.begin(), temp.end(), dest);
+    }
 }
 
+#include "detail/utf8_to_utf32.ipp"
+#include "detail/utf16_to_utf32.ipp"
 #include "detail/utf32_to_utf8.ipp"
 #include "detail/utf32_to_utf16.ipp"
-#include "detail/utf8_to_utf32.ipp"
 
 #endif // LABDOG_UNICODE_CONVERT_HPP

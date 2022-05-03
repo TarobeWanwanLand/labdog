@@ -11,6 +11,7 @@ set(LABDOG_HEADERS
     "${LABDOG_HEADER_DIR}/labdog/core/unicode_convert.hpp"
 
     "${LABDOG_HEADER_DIR}/labdog/core/detail/utf8_to_utf32.ipp"
+    "${LABDOG_SOURCE_DIR}/labdog/core/detail/utf16_to_utf32.ipp"
     "${LABDOG_HEADER_DIR}/labdog/core/detail/utf32_to_utf8.ipp"
     "${LABDOG_HEADER_DIR}/labdog/core/detail/utf32_to_utf16.ipp"
 
@@ -66,7 +67,7 @@ target_link_libraries(${PROJECT_NAME} PUBLIC
 # ヘッダファイルをインストール
 install(
     DIRECTORY "${LABDOG_HEADER_DIR}/labdog"
-    DESTINATION "include"
+    DESTINATION include
 )
 
 # ライブラリをインストール

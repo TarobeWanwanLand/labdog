@@ -75,13 +75,52 @@ static constexpr std::u16string_view utf16_strings[] = STRING_CONSTANTS(u);
 static constexpr std::u32string_view utf32_strings[] = STRING_CONSTANTS(U);
 static constexpr size_t strings_array_size = std::size(utf8_strings);
 
+TEST(unicode_convert, utf8_to_utf16)
+{
+    for (size_t i = 0; i < strings_array_size; ++i)
+    {
+        std::u16string u16str;
+
+        utf8_to_utf16(utf8_strings[i].begin(), utf8_strings[i].end(), std::back_inserter(u16str));
+
+        EXPECT_EQ(u16str.size(), utf16_strings[i].size());
+        EXPECT_EQ(u16str.compare(utf16_strings[i]), 0);
+    }
+}
+
 TEST(unicode_convert, utf8_to_utf32)
 {
     for (size_t i = 0; i < strings_array_size; ++i)
     {
-        std::u32string u32str(utf8_to_utf32_length(utf8_strings[i].begin(), utf8_strings[i].end()), '\0');
+        std::u32string u32str;
 
-        utf8_to_utf32(utf8_strings[i].begin(), utf8_strings[i].end(), u32str.begin());
+        utf8_to_utf32(utf8_strings[i].begin(), utf8_strings[i].end(), std::back_inserter(u32str));
+
+        EXPECT_EQ(u32str.size(), utf32_strings[i].size());
+        EXPECT_EQ(u32str.compare(utf32_strings[i]), 0);
+    }
+}
+
+TEST(unicode_convert, utf16_to_utf8)
+{
+    for (size_t i = 0; i < strings_array_size; ++i)
+    {
+        std::u8string u8str;
+
+        utf16_to_utf8(utf16_strings[i].begin(), utf16_strings[i].end(), std::back_inserter(u8str));
+
+        EXPECT_EQ(u8str.size(), utf8_strings[i].size());
+        EXPECT_EQ(u8str.compare(utf8_strings[i]), 0);
+    }
+}
+
+TEST(unicode_convert, utf16_to_utf32)
+{
+    for (size_t i = 0; i < strings_array_size; ++i)
+    {
+        std::u32string u32str;
+
+        utf16_to_utf32(utf16_strings[i].begin(), utf16_strings[i].end(), std::back_inserter(u32str));
 
         EXPECT_EQ(u32str.size(), utf32_strings[i].size());
         EXPECT_EQ(u32str.compare(utf32_strings[i]), 0);

@@ -17,11 +17,8 @@ namespace ld
                 0x82082080  // 5: 1000 0010 0000 1000 0010 0000 1000 0000
             };
 
-        /// @brief 置換文字
-        static constexpr uint16 replacement_char{ 0xFFFD }; // 1111 1111 1111 1101
-
         template <class U8>
-        [[nodiscard]] constexpr size_t utf8_bytes(const U8 cp)
+        [[nodiscard]] constexpr size_t utf8_bytes(const U8 cp) noexcept
         {
             if (cp < 0xC0)               // 1: 0000 0000 ~ 0111 1111
                 return 1;
@@ -31,73 +28,49 @@ namespace ld
                 return 3;
             if (cp >= 0xF0 && cp < 0xF8) // 4: 1111 0000 ~ 1111 0111
                 return 4;
-            throw std::runtime_error("Invalid code point.");
+            return 0;
         }
 
         template <std::input_iterator InputIterator, std::output_iterator<char32_t> OutputIterator>
         requires std::same_as<std::iter_value_t<InputIterator>, char8_t>
-        InputIterator utf32_encode(InputIterator begin, InputIterator end, OutputIterator dest)
+        InputIterator utf32_encode(InputIterator first, InputIterator last, OutputIterator dest)
         {
-            const size_t bytes = utf8_bytes(static_cast<uint8>(*begin));
+            const size_t bytes = utf8_bytes(static_cast<uint8>(*first));
 
             char32_t result = 0;
 
             switch (bytes)
             {
+                default:
+                    throw std::runtime_error("Invalid code point.");
                 case 4:
-                    result += *(begin++);
+                    result += *(first++);
                     result <<= 6;
                     [[fallthrough]];
                 case 3:
-                    result += *(begin++);
+                    result += *(first++);
                     result <<= 6;
                     [[fallthrough]];
                 case 2:
-                    result += *(begin++);
+                    result += *(first++);
                     result <<= 6;
                     [[fallthrough]];
                 case 1:
-                    result += *(begin++);
+                    result += *(first++);
+                    result -= utf8_offsets[bytes - 1];
             }
 
-            *dest = result - utf8_offsets[bytes - 1];
+            *dest = result;
 
-            return begin;
+            return first;
         }
-    }
-
-    template <std::input_iterator Iterator>
-    requires std::same_as<std::iter_value_t<Iterator>, char8_t>
-    inline size_t utf8_to_utf32_length(Iterator begin, Iterator end)
-    {
-        size_t result = 0;
-
-        while(begin != end)
-        {
-            size_t bytes = detail::utf8_bytes(*begin);
-
-            for (auto itr = begin + 1; (itr != (begin + bytes)) && (itr != end); ++itr)
-            {
-                if ((*itr & 0xC0) != 0x80)
-                {
-                    bytes = 1;
-                    break;
-                }
-            }
-
-            begin += bytes;
-
-            ++result;
-        }
-
-        return result;
     }
 
     template<std::input_iterator InputIterator, std::output_iterator<char32_t> OutputIterator>
     requires std::same_as<std::iter_value_t<InputIterator>, char8_t>
     inline OutputIterator utf8_to_utf32(InputIterator first, InputIterator last, OutputIterator dest)
     {
-        while (first != last)
+        while (first < last)
             first = detail::utf32_encode(first, last, dest++);
 
         return dest;

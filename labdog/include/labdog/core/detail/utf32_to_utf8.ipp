@@ -45,7 +45,7 @@ namespace ld
     requires std::same_as<std::iter_value_t<InputIterator>, char32_t>
     inline OutputIterator utf32_to_utf8(InputIterator first, InputIterator last, OutputIterator dest)
     {
-        while (first != last)
+        while (first < last)
             dest = detail::utf8_encode(first++, last, dest);
 
         return dest;

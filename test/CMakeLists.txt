@@ -23,6 +23,7 @@ set_target_properties(${TESTS_NAME} PROPERTIES
 
 # ライブラリをリンク
 target_link_libraries(${TESTS_NAME} PRIVATE
+    -static gcc stdc++ winpthread
     ${PROJECT_NAME}::${PROJECT_NAME}
     GTest::gmock
     GTest::gtest
