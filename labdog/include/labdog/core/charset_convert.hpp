@@ -8,8 +8,8 @@
 //
 //=========================================================
 
-#ifndef LABDOG_UNICODE_CONVERT_HPP
-#define LABDOG_UNICODE_CONVERT_HPP
+#ifndef LABDOG_CHARSET_CONVERT_HPP
+#define LABDOG_CHARSET_CONVERT_HPP
 
 #include "common.hpp"
 #include <string>
@@ -55,37 +55,51 @@ namespace ld
     }
 
     template<std::input_iterator InputIterator, std::output_iterator<char32_t> OutputIterator>
-    requires std::same_as<std::iter_value_t<InputIterator>, char8_t>
+    requires
+           std::same_as<std::iter_value_t<InputIterator>, char8_t>
+        || std::same_as<std::iter_value_t<InputIterator>, char>
     OutputIterator utf8_to_utf32(InputIterator first, InputIterator last, OutputIterator dest);
 
     template<std::input_iterator InputIterator, std::output_iterator<char32_t> OutputIterator>
-    requires std::same_as<std::iter_value_t<InputIterator>, char16_t>
+    requires
+           std::same_as<std::iter_value_t<InputIterator>, char16_t>
+        || std::same_as<std::iter_value_t<InputIterator>, wchar_t>
     OutputIterator utf16_to_utf32(InputIterator first, InputIterator last, OutputIterator dest);
 
-    template <std::input_iterator InputIterator, std::output_iterator<char8_t> OutputIterator>
-    requires std::same_as<std::iter_value_t<InputIterator>, char32_t>
+    template <std::input_iterator InputIterator, class OutputIterator>
+    requires
+           std::same_as<std::iter_value_t<InputIterator>, char32_t>
+        && (std::output_iterator<OutputIterator, char8_t> || std::output_iterator<OutputIterator, char>)
     OutputIterator utf32_to_utf8(InputIterator first, InputIterator last, OutputIterator dest);
 
-    template <std::input_iterator InputIterator, std::output_iterator<char16_t> OutputIterator>
-    requires std::same_as<std::iter_value_t<InputIterator>, char32_t>
+    template <std::input_iterator InputIterator, class OutputIterator>
+    requires
+           std::same_as<std::iter_value_t<InputIterator>, char32_t>
+        && (std::output_iterator<OutputIterator, char16_t> || std::output_iterator<OutputIterator, wchar_t>)
     OutputIterator utf32_to_utf16(InputIterator first, InputIterator last, OutputIterator dest);
 
-    template<std::input_iterator InputIterator, std::output_iterator<char16_t> OutputIterator>
-    requires std::same_as<std::iter_value_t<InputIterator>, char8_t>
-    OutputIterator utf8_to_utf16(InputIterator first, InputIterator last, OutputIterator dest)
-    {
-        std::u32string temp;
-        utf8_to_utf32(first, last, std::back_inserter(temp));
-        return utf32_to_utf16(temp.begin(), temp.end(), dest);
-    }
-
     template<std::input_iterator InputIterator, std::output_iterator<char8_t> OutputIterator>
-    requires std::same_as<std::iter_value_t<InputIterator>, char16_t>
+    requires
+           std::same_as<std::iter_value_t<InputIterator>, char16_t>
+        || std::same_as<std::iter_value_t<InputIterator>, wchar_t>
+        && (std::output_iterator<OutputIterator, char8_t> || std::output_iterator<OutputIterator, char>)
     OutputIterator utf16_to_utf8(InputIterator first, InputIterator last, OutputIterator dest)
     {
         std::u32string temp;
         utf16_to_utf32(first, last, std::back_inserter(temp));
         return utf32_to_utf8(temp.begin(), temp.end(), dest);
+    }
+
+    template<std::input_iterator InputIterator, std::output_iterator<char16_t> OutputIterator>
+    requires
+           std::same_as<std::iter_value_t<InputIterator>, char8_t>
+        || std::same_as<std::iter_value_t<InputIterator>, char>
+        && (std::output_iterator<OutputIterator, char16_t> || std::output_iterator<OutputIterator, wchar_t>)
+    OutputIterator utf8_to_utf16(InputIterator first, InputIterator last, OutputIterator dest)
+    {
+        std::u32string temp;
+        utf8_to_utf32(first, last, std::back_inserter(temp));
+        return utf32_to_utf16(temp.begin(), temp.end(), dest);
     }
 }
 
@@ -94,4 +108,4 @@ namespace ld
 #include "detail/utf32_to_utf8.ipp"
 #include "detail/utf32_to_utf16.ipp"
 
-#endif // LABDOG_UNICODE_CONVERT_HPP
+#endif // LABDOG_CHARSET_CONVERT_HPP

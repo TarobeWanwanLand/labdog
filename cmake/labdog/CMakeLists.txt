@@ -8,7 +8,7 @@ set(LABDOG_HEADERS
     "${LABDOG_HEADER_DIR}/labdog/core/common.hpp"
     "${LABDOG_HEADER_DIR}/labdog/core/string.hpp"
     "${LABDOG_HEADER_DIR}/labdog/core/string_view.hpp"
-    "${LABDOG_HEADER_DIR}/labdog/core/unicode_convert.hpp"
+    "${LABDOG_HEADER_DIR}/labdog/core/charset_convert.hpp"
 
     "${LABDOG_HEADER_DIR}/labdog/core/detail/utf8_to_utf32.ipp"
     "${LABDOG_SOURCE_DIR}/labdog/core/detail/utf16_to_utf32.ipp"
@@ -61,7 +61,8 @@ target_include_directories(${PROJECT_NAME} PUBLIC
 )
 
 # 外部ライブラリをリンク
-target_link_libraries(${PROJECT_NAME} PUBLIC
+target_link_libraries(${PROJECT_NAME} PRIVATE
+    spdlog::spdlog
 )
 
 # ヘッダファイルをインストール

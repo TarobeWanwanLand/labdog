@@ -5,8 +5,10 @@ namespace ld
 {
     namespace detail
     {
-        template <std::input_iterator InputIterator, std::output_iterator<char32_t> OutputIterator>
-        requires std::same_as<std::iter_value_t<InputIterator>, char16_t>
+        template<std::input_iterator InputIterator, std::output_iterator<char32_t> OutputIterator>
+        requires
+               std::same_as<std::iter_value_t<InputIterator>, char16_t>
+            || std::same_as<std::iter_value_t<InputIterator>, wchar_t>
         InputIterator utf32_encode(InputIterator first, InputIterator last, OutputIterator dest)
         {
             char32_t result = 0;
@@ -41,7 +43,9 @@ namespace ld
     }
 
     template<std::input_iterator InputIterator, std::output_iterator<char32_t> OutputIterator>
-    requires std::same_as<std::iter_value_t<InputIterator>, char16_t>
+    requires
+           std::same_as<std::iter_value_t<InputIterator>, char16_t>
+        || std::same_as<std::iter_value_t<InputIterator>, wchar_t>
     inline OutputIterator utf16_to_utf32(InputIterator first, InputIterator last, OutputIterator dest)
     {
         while (first < last)

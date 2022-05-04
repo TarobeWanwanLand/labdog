@@ -1,14 +1,16 @@
 #ifndef LABDOG_UTF32_TO_UTF8_IPP
 #define LABDOG_UTF32_TO_UTF8_IPP
 
-#include "labdog/core/unicode_convert.hpp"
+#include "labdog/core/charset_convert.hpp"
 
 namespace ld
 {
     namespace detail
     {
-        template <std::input_iterator InputIterator, std::output_iterator<char8_t> OutputIterator>
-        requires std::same_as<std::iter_value_t<InputIterator>, char32_t>
+        template <std::input_iterator InputIterator, class OutputIterator>
+        requires
+               std::same_as<std::iter_value_t<InputIterator>, char32_t>
+            && (std::output_iterator<OutputIterator, char8_t> || std::output_iterator<OutputIterator, char>)
         OutputIterator utf8_encode(InputIterator first, InputIterator last, OutputIterator dest)
         {
             if (!is_code_point_valid(*first))
@@ -41,8 +43,10 @@ namespace ld
         }
     }
 
-    template <std::input_iterator InputIterator, std::output_iterator<char8_t> OutputIterator>
-    requires std::same_as<std::iter_value_t<InputIterator>, char32_t>
+    template <std::input_iterator InputIterator, class OutputIterator>
+    requires
+           std::same_as<std::iter_value_t<InputIterator>, char32_t>
+        && (std::output_iterator<OutputIterator, char8_t> || std::output_iterator<OutputIterator, char>)
     inline OutputIterator utf32_to_utf8(InputIterator first, InputIterator last, OutputIterator dest)
     {
         while (first < last)

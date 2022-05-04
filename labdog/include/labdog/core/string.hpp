@@ -14,6 +14,7 @@
 #include <string>
 #include "common.hpp"
 #include "string_view.hpp"
+#include "charset_convert.hpp"
 
 namespace ld
 {
@@ -838,7 +839,7 @@ namespace ld
 
         void pop_front(const size_type n) noexcept
         {
-            string_.erase(begin(), begin() + std::min<size_type>(n, size()));
+            string_.erase(begin(), begin() + std::min<size_t>(n, size()));
         }
 
         void pop_back() noexcept
@@ -848,7 +849,7 @@ namespace ld
 
         void pop_back(const size_type n) noexcept
         {
-            string_.erase(end() - std::min<size_type>(n, size()), end());
+            string_.erase(end() - std::min<size_t>(n, size()), end());
         }
 
         [[nodiscard]] value_type& front() noexcept
@@ -884,6 +885,16 @@ namespace ld
         [[nodiscard]] const value_type* data() const noexcept
         {
             return string_.data();
+        }
+
+        [[nodiscard]] string_type& str() noexcept
+        {
+            return string_;
+        }
+
+        [[nodiscard]] const string_type& str() const noexcept
+        {
+            return string_;
         }
 
         [[nodiscard]] size_type length() const noexcept
@@ -1097,6 +1108,34 @@ namespace ld
         [[nodiscard]] string substr(const size_type pos, const size_type n = npos) const
         {
             return string_.substr(pos, npos);
+        }
+
+        [[nodiscard]] std::string to_str() const
+        {
+            std::string result;
+            utf32_to_utf8(begin(), end(), std::back_inserter(result));
+            return result;
+        }
+
+        [[nodiscard]] std::wstring to_wstr() const
+        {
+            std::wstring result;
+            utf32_to_utf16(begin(), end(), std::back_inserter(result));
+            return result;
+        }
+
+        [[nodiscard]] std::u8string to_utf8() const
+        {
+            std::u8string result;
+            utf32_to_utf8(begin(), end(), std::back_inserter(result));
+            return result;
+        }
+
+        [[nodiscard]] std::u16string to_utf16() const
+        {
+            std::u16string result;
+            utf32_to_utf16(begin(), end(), std::back_inserter(result));
+            return result;
         }
 
         [[nodiscard]] int32 compare(const string& str) const noexcept

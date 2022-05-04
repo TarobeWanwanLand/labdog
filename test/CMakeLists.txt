@@ -7,7 +7,7 @@ set(TESTS_SOURCES
     "${CMAKE_CURRENT_SOURCE_DIR}/test.hpp"
     # ソース
     "${CMAKE_CURRENT_SOURCE_DIR}/string_test.cpp"
-    "${CMAKE_CURRENT_SOURCE_DIR}/unicode_convert_test.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/charset_convert_test.cpp"
 )
 
 # テストプログラムを作成

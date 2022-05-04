@@ -1,7 +1,7 @@
 #ifndef LABDOG_UTF8_TO_UTF32_IPP
 #define LABDOG_UTF8_TO_UTF32_IPP
 
-#include "labdog/core/unicode_convert.hpp"
+#include "labdog/core/charset_convert.hpp"
 
 namespace ld
 {
@@ -32,7 +32,9 @@ namespace ld
         }
 
         template <std::input_iterator InputIterator, std::output_iterator<char32_t> OutputIterator>
-        requires std::same_as<std::iter_value_t<InputIterator>, char8_t>
+        requires
+               std::same_as<std::iter_value_t<InputIterator>, char8_t>
+            || std::same_as<std::iter_value_t<InputIterator>, char>
         InputIterator utf32_encode(InputIterator first, InputIterator last, OutputIterator dest)
         {
             const size_t bytes = utf8_bytes(static_cast<uint8>(*first));
@@ -67,7 +69,9 @@ namespace ld
     }
 
     template<std::input_iterator InputIterator, std::output_iterator<char32_t> OutputIterator>
-    requires std::same_as<std::iter_value_t<InputIterator>, char8_t>
+    requires
+           std::same_as<std::iter_value_t<InputIterator>, char8_t>
+        || std::same_as<std::iter_value_t<InputIterator>, char>
     inline OutputIterator utf8_to_utf32(InputIterator first, InputIterator last, OutputIterator dest)
     {
         while (first < last)
