@@ -61,9 +61,7 @@ namespace ld
     OutputIterator utf8_to_utf32(InputIterator first, InputIterator last, OutputIterator dest);
 
     template<std::input_iterator InputIterator, std::output_iterator<char32_t> OutputIterator>
-    requires
-           std::same_as<std::iter_value_t<InputIterator>, char16_t>
-        || std::same_as<std::iter_value_t<InputIterator>, wchar_t>
+    requires std::same_as<std::iter_value_t<InputIterator>, char16_t>
     OutputIterator utf16_to_utf32(InputIterator first, InputIterator last, OutputIterator dest);
 
     template <std::input_iterator InputIterator, class OutputIterator>
@@ -72,16 +70,13 @@ namespace ld
         && (std::output_iterator<OutputIterator, char8_t> || std::output_iterator<OutputIterator, char>)
     OutputIterator utf32_to_utf8(InputIterator first, InputIterator last, OutputIterator dest);
 
-    template <std::input_iterator InputIterator, class OutputIterator>
-    requires
-           std::same_as<std::iter_value_t<InputIterator>, char32_t>
-        && (std::output_iterator<OutputIterator, char16_t> || std::output_iterator<OutputIterator, wchar_t>)
+    template <std::input_iterator InputIterator, std::output_iterator<char16_t> OutputIterator>
+    requires std::same_as<std::iter_value_t<InputIterator>, char32_t>
     OutputIterator utf32_to_utf16(InputIterator first, InputIterator last, OutputIterator dest);
 
     template<std::input_iterator InputIterator, std::output_iterator<char8_t> OutputIterator>
     requires
            std::same_as<std::iter_value_t<InputIterator>, char16_t>
-        || std::same_as<std::iter_value_t<InputIterator>, wchar_t>
         && (std::output_iterator<OutputIterator, char8_t> || std::output_iterator<OutputIterator, char>)
     OutputIterator utf16_to_utf8(InputIterator first, InputIterator last, OutputIterator dest)
     {
@@ -94,7 +89,6 @@ namespace ld
     requires
            std::same_as<std::iter_value_t<InputIterator>, char8_t>
         || std::same_as<std::iter_value_t<InputIterator>, char>
-        && (std::output_iterator<OutputIterator, char16_t> || std::output_iterator<OutputIterator, wchar_t>)
     OutputIterator utf8_to_utf16(InputIterator first, InputIterator last, OutputIterator dest)
     {
         std::u32string temp;

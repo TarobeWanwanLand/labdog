@@ -8,7 +8,7 @@ set(TESTS_SOURCES
     # ソース
     "${CMAKE_CURRENT_SOURCE_DIR}/string_test.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/charset_convert_test.cpp"
-)
+        ../labdog/source/core/logger.cpp)
 
 # テストプログラムを作成
 add_executable(${TESTS_NAME} ${TESTS_SOURCES})
@@ -23,7 +23,7 @@ set_target_properties(${TESTS_NAME} PROPERTIES
 
 # ライブラリをリンク
 target_link_libraries(${TESTS_NAME} PRIVATE
-    -static gcc stdc++ winpthread
+    -static gcc stdc++
     ${PROJECT_NAME}::${PROJECT_NAME}
     GTest::gmock
     GTest::gtest

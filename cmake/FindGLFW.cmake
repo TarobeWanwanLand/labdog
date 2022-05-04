@@ -8,100 +8,117 @@ include(FindPackageHandleStandardArgs)
 find_path(GLFW_INCLUDE_DIRS
     NAMES GLFW/glfw3.h
     PATHS
-    "$ENV{GLFW_ROOT}/include"
-    /usr/X11R6/include
-    /usr/include/X11
-    /usr/local/include
-    /usr/include/GL
-    /usr/include
-    /opt/graphics/OpenGL/include
-    /opt/graphics/OpenGL/contrib/libglfw
+        "${GLFW_INCLUDE_DIR}"
+        "${GLFW_ROOT}/include"
+        "$ENV{GLFW_INCLUDE_DIR}"
+        "$ENV{GLFW_ROOT}/include"
 )
 
 if(WIN32)
     if(MSVC11)
         find_library(GLFW_LIBRARIES
-            NAMES
-            glfw3
+            NAMES glfw3
             PATHS
-            "$ENV{GLFW_ROOT}/lib"
-            "$ENV{GLFW_ROOT}/lib-vc2012"
-            DOCS
-            "The GLFW library"
+                "${GLFW_LIBRARY_DIR}"
+                "${GLFW_ROOT}/lib-vc2012"
+                "${GLFW_ROOT}/lib"
+                "$ENV{GLFW_LIBRARY_DIR}"
+                "$ENV{GLFW_ROOT}/lib-vc2012"
+                "$ENV{GLFW_ROOT}/lib"
         )
     elseif(MSVC12)
         find_library(GLFW_LIBRARIES
-            NAMES
-            glfw3
+            NAMES glfw3
             PATHS
-            "$ENV{GLFW_ROOT}/lib"
-            "$ENV{GLFW_ROOT}/lib-vc2013"
-            DOCS
-            "The GLFW library"
+                "${GLFW_LIBRARY_DIR}"
+                "${GLFW_ROOT}/lib-vc2013"
+                "${GLFW_ROOT}/lib"
+                "$ENV{GLFW_LIBRARY_DIR}"
+                "$ENV{GLFW_ROOT}/lib-vc2013"
+                "$ENV{GLFW_ROOT}/lib"
         )
     elseif(MSVC14)
         find_library(GLFW_LIBRARIES
-            NAMES
-            glfw3
+            NAMES glfw3
             PATHS
-            "$ENV{GLFW_ROOT}/lib"
-            "$ENV{GLFW_ROOT}/lib-vc2015"
+                "${GLFW_LIBRARY_DIR}"
+                "${GLFW_ROOT}/lib-vc2015"
+                "${GLFW_ROOT}/lib"
+                "$ENV{GLFW_LIBRARY_DIR}"
+                "$ENV{GLFW_ROOT}/lib-vc2015"
+                "$ENV{GLFW_ROOT}/lib"
         )
     elseif(MSVC15)
         find_library(GLFW_LIBRARIES
-            NAMES
-            glfw3
+            NAMES glfw3
             PATHS
-            "$ENV{GLFW_ROOT}/lib"
-            "$ENV{GLFW_ROOT}/lib-vc2017"
+                "${GLFW_LIBRARY_DIR}"
+                "${GLFW_ROOT}/lib-vc2017"
+                "${GLFW_ROOT}/lib"
+                "$ENV{GLFW_LIBRARY_DIR}"
+                "$ENV{GLFW_ROOT}/lib-vc2017"
+                "$ENV{GLFW_ROOT}/lib"
         )
     elseif(MSVC16)
         find_library(GLFW_LIBRARIES
-            NAMES
-            glfw3
+            NAMES glfw3
             PATHS
-            "$ENV{GLFW_ROOT}/lib"
-            "$ENV{GLFW_ROOT}/lib-vc2019"
+                "${GLFW_LIBRARY_DIR}"
+                "${GLFW_ROOT}/lib-vc2019"
+                "${GLFW_ROOT}/lib"
+                "$ENV{GLFW_LIBRARY_DIR}"
+                "$ENV{GLFW_ROOT}/lib-vc2019"
+                "$ENV{GLFW_ROOT}/lib"
         )
     elseif(MSVC17)
         find_library(GLFW_LIBRARIES
-            NAMES
-            glfw3
+            NAMES glfw3
             PATHS
-            "$ENV{GLFW_ROOT}/lib"
-            "$ENV{GLFW_ROOT}/lib-vc2022"
+                "${GLFW_LIBRARY_DIR}"
+                "${GLFW_ROOT}/lib-vc2022"
+                "${GLFW_ROOT}/lib"
+                "$ENV{GLFW_LIBRARY_DIR}"
+                "$ENV{GLFW_ROOT}/lib-vc2022"
+                "$ENV{GLFW_ROOT}/lib"
         )
     elseif(MINGW)
         find_library(GLFW_LIBRARIES
-            NAMES
-            glfw3
+            NAMES glfw3
             PATHS
-            "$ENV{GLFW_ROOT}/lib"
-            "$ENV{GLFW_ROOT}/lib-mingw-w64"
+                "${GLFW_LIBRARY_DIR}"
+                "${GLFW_ROOT}/lib-mingw-w64"
+                "${GLFW_ROOT}/lib"
+                "$ENV{GLFW_LIBRARY_DIR}"
+                "$ENV{GLFW_ROOT}/lib-mingw-w64"
+                "$ENV{GLFW_ROOT}/lib"
         )
     else()
         find_library(GLFW_LIBRARIES
-            NAMES
-            glfw3
+            NAMES glfw3
             PATHS
-            "$ENV{GLFW_ROOT}/lib"
+                "${GLFW_LIBRARY_DIR}"
+                "${GLFW_ROOT}/lib"
+                "$ENV{GLFW_LIBRARY_DIR}"
+                "$ENV{GLFW_ROOT}/lib"
         )
     endif()
 else()
     find_library(GLFW_LIBRARIES
-        NAMES
-        glfw
-        glfw3
+        NAMES glfw glfw3
         PATHS
-        "$ENV{GLFW_ROOT}/lib"
-        "$ENV{GLFW_ROOT}/lib/x11"
-        /usr/lib64
-        /usr/lib
-        /usr/lib/${CMAKE_LIBRARY_ARCHITECTURE}
-        /usr/local/lib64
-        /usr/local/lib
-        /usr/local/lib/${CMAKE_LIBRARY_ARCHITECTURE}
-        /usr/X11R6/lib
+            "${GLFW_LIBRARY_DIR}"
+            "${GLFW_ROOT}/lib"
+            "${GLFW_ROOT}/lib/x11"
+            "$ENV{GLFW_LIBRARY_DIR}"
+            "$ENV{GLFW_ROOT}/lib"
+            "$ENV{GLFW_ROOT}/lib/x11"
+            /usr/lib64
+            /usr/lib
+            /usr/lib/${CMAKE_LIBRARY_ARCHITECTURE}
+            /usr/local/lib64
+            /usr/local/lib
+            /usr/local/lib/${CMAKE_LIBRARY_ARCHITECTURE}
+            /usr/X11R6/lib
     )
     if(APPLE)
         list(APPEND GLFW_LIBRARIES

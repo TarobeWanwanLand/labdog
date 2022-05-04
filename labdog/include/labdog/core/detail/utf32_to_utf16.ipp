@@ -7,10 +7,8 @@ namespace ld
 {
     namespace detail
     {
-        template <std::input_iterator InputIterator, class OutputIterator>
-        requires
-               std::same_as<std::iter_value_t<InputIterator>, char32_t>
-            && (std::output_iterator<OutputIterator, char16_t> || std::output_iterator<OutputIterator, wchar_t>)
+        template <std::input_iterator InputIterator, std::output_iterator<char16_t> OutputIterator>
+        requires std::same_as<std::iter_value_t<InputIterator>, char32_t>
         OutputIterator utf16_encode(InputIterator first, InputIterator last, OutputIterator dest)
         {
             if (*first > code_point_max)
@@ -31,10 +29,8 @@ namespace ld
         }
     }
 
-    template <std::input_iterator InputIterator, class OutputIterator>
-    requires
-           std::same_as<std::iter_value_t<InputIterator>, char32_t>
-        && (std::output_iterator<OutputIterator, char16_t> || std::output_iterator<OutputIterator, wchar_t>)
+    template <std::input_iterator InputIterator, std::output_iterator<char16_t> OutputIterator>
+    requires std::same_as<std::iter_value_t<InputIterator>, char32_t>
     inline OutputIterator utf32_to_utf16(InputIterator first, InputIterator last, OutputIterator dest)
     {
         while (first < last)

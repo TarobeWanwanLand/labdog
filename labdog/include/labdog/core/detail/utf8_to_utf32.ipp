@@ -31,7 +31,7 @@ namespace ld
             return 0;
         }
 
-        template <std::input_iterator InputIterator, std::output_iterator<char32_t> OutputIterator>
+        template<std::input_iterator InputIterator, std::output_iterator<char32_t> OutputIterator>
         requires
                std::same_as<std::iter_value_t<InputIterator>, char8_t>
             || std::same_as<std::iter_value_t<InputIterator>, char>

@@ -16,7 +16,7 @@ set_target_properties(${EXAMPLE_NAME} PROPERTIES
 
 # ライブラリをリンク
 target_link_libraries(${EXAMPLE_NAME} PRIVATE
-    -static gcc stdc++ winpthread
+    -static gcc stdc++
     ${PROJECT_NAME}::${PROJECT_NAME}
 )
 

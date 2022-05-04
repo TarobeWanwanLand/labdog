@@ -5,10 +5,11 @@ set(LABDOG_SOURCE_DIR "${CMAKE_SOURCE_DIR}/labdog/source")
 # ヘッダファイル
 set(LABDOG_HEADERS
     "${LABDOG_HEADER_DIR}/labdog/core/assertion.hpp"
+    "${LABDOG_HEADER_DIR}/labdog/core/charset_convert.hpp"
     "${LABDOG_HEADER_DIR}/labdog/core/common.hpp"
+    "${LABDOG_HEADER_DIR}/labdog/core/logger.hpp"
     "${LABDOG_HEADER_DIR}/labdog/core/string.hpp"
     "${LABDOG_HEADER_DIR}/labdog/core/string_view.hpp"
-    "${LABDOG_HEADER_DIR}/labdog/core/charset_convert.hpp"
 
     "${LABDOG_HEADER_DIR}/labdog/core/detail/utf8_to_utf32.ipp"
     "${LABDOG_SOURCE_DIR}/labdog/core/detail/utf16_to_utf32.ipp"
@@ -24,6 +25,7 @@ set(LABDOG_HEADERS
 set(LABDOG_SOURCES
     "${LABDOG_SOURCE_DIR}/core/string.cpp"
     "${LABDOG_SOURCE_DIR}/core/string_view.cpp"
+    "${LABDOG_SOURCE_DIR}/core/logger.cpp"
 
     "${LABDOG_SOURCE_DIR}/graphics/graphics.cpp"
     "${LABDOG_SOURCE_DIR}/graphics/window.cpp"
@@ -58,11 +60,6 @@ target_sources(${PROJECT_NAME} PRIVATE ${LABDOG_SOURCES})
 target_include_directories(${PROJECT_NAME} PUBLIC
     "$<BUILD_INTERFACE:${LABDOG_HEADER_DIR}>"
     "$<INSTALL_INTERFACE:include>"
-)
-
-# 外部ライブラリをリンク
-target_link_libraries(${PROJECT_NAME} PRIVATE
-    spdlog::spdlog
 )
 
 # ヘッダファイルをインストール

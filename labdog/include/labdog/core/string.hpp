@@ -1110,17 +1110,10 @@ namespace ld
             return string_.substr(pos, npos);
         }
 
-        [[nodiscard]] std::string to_str() const
+        [[nodiscard]] std::string to_multi_byte() const
         {
             std::string result;
             utf32_to_utf8(begin(), end(), std::back_inserter(result));
-            return result;
-        }
-
-        [[nodiscard]] std::wstring to_wstr() const
-        {
-            std::wstring result;
-            utf32_to_utf16(begin(), end(), std::back_inserter(result));
             return result;
         }
 
