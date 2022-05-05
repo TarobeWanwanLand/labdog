@@ -28,8 +28,10 @@ int main(int argc, char *argv[])
     catch(std::exception exception)
     {
         std::cerr << exception.what();
+        std::getchar();
         return EXIT_FAILURE;
     }
 
-	return EXIT_SUCCESS;
+    std::getchar();
+    return EXIT_SUCCESS;
 }

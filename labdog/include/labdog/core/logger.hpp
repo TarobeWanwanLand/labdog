@@ -10,10 +10,13 @@ namespace ld
     class logger final
     {
     public:
-        static constexpr std::size_t MAX_FILE = 3;
         static constexpr const char* FILE_DIR = ".\\log";
 
         static void trace(const string& msg);
+        static void info(const string& msg);
+        static void debug(const string& msg);
+        static void warning(const string& msg);
+        static void critical(const string& msg);
 
     private:
         class impl;

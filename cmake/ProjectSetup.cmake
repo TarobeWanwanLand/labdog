@@ -1,3 +1,11 @@
+# インソースビルドを禁止
+set(CMAKE_DISABLE_IN_SOURCE_BUILD ON)
+
+# vcpkgを利用するようにする
+if(DEFINED $ENV{VCPKG_ROOT} AND NOT DEFINED ${CMAKE_TOOLCHAIN_FILE})
+    set(CMAKE_TOOLCHAIN_FILE $ENV{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake CACHE STRING "")
+endif()
+
 # アッパーケースとローワ―ケースのプロジェクト名を定義
 string(TOUPPER ${PROJECT_NAME} PROJECT_NAME_UPPERCASE)
 string(TOLOWER ${PROJECT_NAME} PROJECT_NAME_LOWERCASE)

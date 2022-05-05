@@ -6,6 +6,8 @@ build/
 install/
 out/
 .idea/
+cmake-build-*/
+cmake-install-*/
 *.stackdump
 
 ### C++ ###

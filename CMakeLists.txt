@@ -7,9 +7,14 @@ project(labdog VERSION 1.0.0)
 include(cmake/ProjectSetup.cmake)
 
 # 外部ライブラリをビルド
-include(cmake/FindVulkan.cmake)
 include(cmake/FindGLFW.cmake)
-include(cmake/FindSpdlog.cmake)
+
+find_package(Vulkan REQUIRED)
+find_package(spdlog REQUIRED)
+
+message(STATUS "spdlog_FOUND = ${spdlog_FOUND}")
+message(STATUS "spdlog_INCLUDE_DIRS = ${spdlog_INCLUDE_DIRS}")
+message(STATUS "spdlog_LIBRARIES = ${spdlog_LIBRARIES}")
 
 # 外部ライブラリのインクルードディレクトリを設定
 include_directories(
