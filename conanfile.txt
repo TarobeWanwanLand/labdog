@@ -1,0 +1,17 @@
+[requires]
+gtest/1.11.0
+boost/1.78.0
+glfw/3.3.7
+fmt/8.1.1
+spdlog/1.10.0
+
+[generators]
+cmake
+
+[imports]
+bin, *.dll -> ./build/bin
+lib, *.dylib* -> ./build/bin
+
+[options]
+boost:shared=False
+boost:multithreading=True

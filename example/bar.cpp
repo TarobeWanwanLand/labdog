@@ -5,7 +5,7 @@
 #include <labdog/graphics/graphics.hpp>
 #include <labdog/core/string.hpp>
 #include <labdog/core/charset_convert.hpp>
-#include <labdog/core/logger.hpp>
+//#include <labdog/core/logger.hpp>
 
 int main(int argc, char *argv[])
 {
@@ -13,7 +13,7 @@ int main(int argc, char *argv[])
     {
         ld::string str(U"aあbc🥰def🦴");
 
-        ld::logger::trace(str);
+        //ld::logger::trace(str);
 
         for (ld::int32 i = 0; i < 3; ++i)
         {

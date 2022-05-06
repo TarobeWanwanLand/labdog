@@ -7,7 +7,7 @@ set(LABDOG_HEADERS
     "${LABDOG_HEADER_DIR}/labdog/core/assertion.hpp"
     "${LABDOG_HEADER_DIR}/labdog/core/charset_convert.hpp"
     "${LABDOG_HEADER_DIR}/labdog/core/common.hpp"
-    "${LABDOG_HEADER_DIR}/labdog/core/logger.hpp"
+#    "${LABDOG_HEADER_DIR}/labdog/core/logger.hpp"
     "${LABDOG_HEADER_DIR}/labdog/core/string.hpp"
     "${LABDOG_HEADER_DIR}/labdog/core/string_view.hpp"
 
@@ -25,7 +25,7 @@ set(LABDOG_HEADERS
 set(LABDOG_SOURCES
     "${LABDOG_SOURCE_DIR}/core/string.cpp"
     "${LABDOG_SOURCE_DIR}/core/string_view.cpp"
-    "${LABDOG_SOURCE_DIR}/core/logger.cpp"
+#    "${LABDOG_SOURCE_DIR}/core/logger.cpp"
 
     "${LABDOG_SOURCE_DIR}/graphics/graphics.cpp"
     "${LABDOG_SOURCE_DIR}/graphics/window.cpp"
