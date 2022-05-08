@@ -21,6 +21,11 @@ set_target_properties(${TESTS_NAME} PROPERTIES
     RELWITHDEBINFO_POSTFIX "-rd"
 )
 
+# googletestを探す
+find_package(GTest REQUIRED)
+
+message(TRACE "GTest_LIB = ${GTest_LIBRARY}")
+
 # ライブラリをリンク
 target_link_libraries(${TESTS_NAME} PRIVATE
     ${PROJECT_NAME}::${PROJECT_NAME}

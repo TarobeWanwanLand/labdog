@@ -8,6 +8,7 @@ out/
 .idea/
 cmake-build-*/
 cmake-install-*/
+hunter/
 *.stackdump
 
 ### C++ ###

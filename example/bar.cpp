@@ -1,37 +1,18 @@
-﻿#include <exception>
+﻿#include <boost/asio/io_service.hpp>
+#include <boost/asio/steady_timer.hpp>
+#include <chrono>
 #include <iostream>
-#include <random>
-#include <labdog/graphics/window_manager.hpp>
-#include <labdog/graphics/graphics.hpp>
-#include <labdog/core/string.hpp>
-#include <labdog/core/charset_convert.hpp>
-//#include <labdog/core/logger.hpp>
+#include <spdlog/spdlog.h>
 
-int main(int argc, char *argv[])
+using namespace boost::asio;
+
+int main()
 {
-    try
-    {
-        ld::string str(U"aあbc🥰def🦴");
+    io_service ioservice;
 
-        //ld::logger::trace(str);
+    steady_timer timer1{ioservice, std::chrono::seconds{3}};
+    timer1.async_wait([](const boost::system::error_code &ec)
+                      { spdlog::info("3 sec"); });
 
-        for (ld::int32 i = 0; i < 3; ++i)
-        {
-            ld::window_manager::create(600, 400);
-        }
-
-        while (ld::window_manager::exists())
-        {
-            ld::window_manager::update();
-        }
-    }
-    catch(std::exception exception)
-    {
-        std::cerr << exception.what();
-        std::getchar();
-        return EXIT_FAILURE;
-    }
-
-    std::getchar();
-    return EXIT_SUCCESS;
+    ioservice.run();
 }
