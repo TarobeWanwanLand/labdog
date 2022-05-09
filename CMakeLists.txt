@@ -1,9 +1,10 @@
 cmake_minimum_required(VERSION 3.7)
 
-# Hunterを利用するようにする
+# Hunterを利用できるようにする
+set(HUNTER_STATUS_DEBUG ON)
 include(cmake/HunterGate.cmake)
 
-set(HUNTER_ROOT "${CMAKE_SOURCE_DIR}/hunter")
+set(HUNTER_ROOT "${CMAKE_SOURCE_DIR}/.hunter")
 HunterGate(
     URL "https://github.com/cpp-pm/hunter/archive/v0.24.2.tar.gz"
     SHA1 "17fd3b9f0b8c271eac9b71e30a6aa1b9fecab299"
@@ -30,6 +31,7 @@ find_package(fmt CONFIG REQUIRED)
 hunter_add_package(spdlog)
 find_package(spdlog CONFIG REQUIRED)
 
+# 外部ライブラリのリスト
 set(EXTERNAL_LIBRARIES
     Boost::system
     Boost::thread
@@ -41,6 +43,6 @@ set(EXTERNAL_LIBRARIES
 )
 
 # サブディレクトリ
-#add_subdirectory(cmake/labdog)
+add_subdirectory(cmake/labdog)
 add_subdirectory(example)
-#add_subdirectory(test)
+add_subdirectory(test)

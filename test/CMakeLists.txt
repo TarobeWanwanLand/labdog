@@ -22,13 +22,13 @@ set_target_properties(${TESTS_NAME} PROPERTIES
 )
 
 # googletestを探す
-find_package(GTest REQUIRED)
-
-message(TRACE "GTest_LIB = ${GTest_LIBRARY}")
+hunter_add_package(GTest)
+find_package(GTest CONFIG REQUIRED)
 
 # ライブラリをリンク
 target_link_libraries(${TESTS_NAME} PRIVATE
     ${PROJECT_NAME}::${PROJECT_NAME}
+    ${EXTERNAL_LIBRARIES}
     GTest::gmock
     GTest::gtest
     GTest::gmock_main

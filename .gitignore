@@ -6,9 +6,9 @@ build/
 install/
 out/
 .idea/
+.hunter/
 cmake-build-*/
 cmake-install-*/
-hunter/
 *.stackdump
 
 ### C++ ###

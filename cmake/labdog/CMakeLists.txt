@@ -18,7 +18,6 @@ set(LABDOG_HEADERS
 
     "${LABDOG_HEADER_DIR}/labdog/graphics/graphics.hpp"
     "${LABDOG_HEADER_DIR}/labdog/graphics/window.hpp"
-    "${LABDOG_HEADER_DIR}/labdog/graphics/window_manager.hpp"
 )
 
 # ソースファイル
@@ -29,7 +28,6 @@ set(LABDOG_SOURCES
 
     "${LABDOG_SOURCE_DIR}/graphics/graphics.cpp"
     "${LABDOG_SOURCE_DIR}/graphics/window.cpp"
-    "${LABDOG_SOURCE_DIR}/graphics/window_manager.cpp"
 )
 
 # ライブラリを作成
@@ -60,6 +58,11 @@ target_sources(${PROJECT_NAME} PRIVATE ${LABDOG_SOURCES})
 target_include_directories(${PROJECT_NAME} PUBLIC
     "$<BUILD_INTERFACE:${LABDOG_HEADER_DIR}>"
     "$<INSTALL_INTERFACE:include>"
+)
+
+# ライブラリをリンク
+target_link_libraries(${PROJECT_NAME} PRIVATE
+    ${EXTERNAL_LIBRARIES}
 )
 
 # ヘッダファイルをインストール

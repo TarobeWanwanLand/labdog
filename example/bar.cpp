@@ -1,18 +1,24 @@
-﻿#include <boost/asio/io_service.hpp>
-#include <boost/asio/steady_timer.hpp>
-#include <chrono>
-#include <iostream>
-#include <spdlog/spdlog.h>
-
-using namespace boost::asio;
+﻿#include <labdog/graphics/window.hpp>
+#include <vector>
+#include <memory>
+#include <algorithm>
+#include <string>
 
 int main()
 {
-    io_service ioservice;
+    using namespace ld;
 
-    steady_timer timer1{ioservice, std::chrono::seconds{3}};
-    timer1.async_wait([](const boost::system::error_code &ec)
-                      { spdlog::info("3 sec"); });
+    std::vector<std::unique_ptr<window>> windows;
+    auto& main = windows.emplace_back(std::make_unique<window>());
 
-    ioservice.run();
+    std::u8string a(u8"🥰aaあ🦴菅");
+
+    while(!windows.empty())
+    {
+        window::update_all();
+
+        std::erase_if(windows, [](const auto& x){ return x->should_close(); });
+    }
+
+    return 0;
 }

@@ -12,6 +12,7 @@
 #define LABDOG_WINDOW_HPP
 
 #include "../core/common.hpp"
+#include <atomic>
 #include <GLFW/glfw3.h>
 
 namespace ld
@@ -22,6 +23,9 @@ namespace ld
     public:
         /// @brief ウィンドウハンドル型
         using handle_type = GLFWwindow*;
+
+        window()
+            : window(600, 400) {};
 
         /// @brief ウィンドウを構築する
         /// @param width ウィンドウの横幅
@@ -36,6 +40,8 @@ namespace ld
         window(window&&) = delete;
         window& operator=(window&&) = delete;
 
+        void close() noexcept;
+
         /// @brief ウィンドウ座標を変更する
         /// @param x_pos X軸座標
         /// @param y_pos Y軸座標
@@ -46,11 +52,20 @@ namespace ld
         /// @param height ウィンドウ縦幅
         void set_size(int32 width, int32 height) noexcept;
 
-        /// @brief ウィンドウを閉じるべきかを返す
+        /// @brief ウィンドウが閉じられているかを返す
+        /// @return ウィンドウが閉じられているか
+        [[nodiscard]] bool is_closed() const noexcept;
+
+        /// @brief ウィンドウが閉じるべき状態かを返す
         /// @return ウィンドウを閉じるべきか
-        [[nodiscard]] bool should_close() noexcept;
+        [[nodiscard]] bool should_close() const noexcept;
+
+        /// @brief 全てのウィンドウを更新する
+        static void update_all() noexcept;
 
     private:
+        static std::atomic_size_t window_count; //!< ウィンドウの総数
+
         handle_type handle_;    //!< ウィンドウハンドル
 
         // TODO: タイトルメンバ変数を追加

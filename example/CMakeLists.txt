@@ -14,12 +14,9 @@ set_target_properties(${EXAMPLE_NAME} PROPERTIES
     RELWITHDEBINFO_POSTFIX "-rd"
 )
 
-#find_package(GTest REQUIRED)
-#find_package(Boost REQUIRED COMPONENTS system)
-
 # ライブラリをリンク
 target_link_libraries(${EXAMPLE_NAME} PRIVATE
-    #${PROJECT_NAME}::${PROJECT_NAME}
+    ${PROJECT_NAME}::${PROJECT_NAME}
     ${EXTERNAL_LIBRARIES}
 )
 
