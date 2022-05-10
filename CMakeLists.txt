@@ -35,7 +35,6 @@ find_package(spdlog CONFIG REQUIRED)
 set(EXTERNAL_LIBRARIES
     Boost::system
     Boost::thread
-    $<$<BOOL:${MINGW}>:ws2_32> # boost::asio
     Vulkan::Vulkan
     glfw
     fmt::fmt
