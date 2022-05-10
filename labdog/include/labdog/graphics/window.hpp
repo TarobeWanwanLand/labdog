@@ -12,6 +12,7 @@
 #define LABDOG_WINDOW_HPP
 
 #include "../core/common.hpp"
+#include "../core/string.hpp"
 #include <atomic>
 #include <GLFW/glfw3.h>
 
@@ -24,13 +25,10 @@ namespace ld
         /// @brief ウィンドウハンドル型
         using handle_type = GLFWwindow*;
 
-        window()
-            : window(600, 400) {};
-
         /// @brief ウィンドウを構築する
         /// @param width ウィンドウの横幅
         /// @param width ウィンドウの縦幅
-        window(int32 width, int32 height);
+        window(const string_view title, const int32 width, const int32 height);
 
         /// @brief ウィンドウを破棄する
         ~window();
@@ -40,17 +38,22 @@ namespace ld
         window(window&&) = delete;
         window& operator=(window&&) = delete;
 
+        /// @brief ウィンドウを閉じる
         void close() noexcept;
+
+        /// @brief ウィンドウタイトルを変更する
+        /// @param title ウィンドウタイトル
+        void set_title(const string_view title) noexcept;
 
         /// @brief ウィンドウ座標を変更する
         /// @param x_pos X軸座標
         /// @param y_pos Y軸座標
-        void set_position(int32 x_pos, int32 y_pos) noexcept;
+        void set_position(const int32 x_pos, const int32 y_pos) noexcept;
 
         /// @brief ウィンドウサイズを変更する
         /// @param width ウィンドウ横幅
         /// @param height ウィンドウ縦幅
-        void set_size(int32 width, int32 height) noexcept;
+        void set_size(const int32 width, const int32 height) noexcept;
 
         /// @brief ウィンドウが閉じられているかを返す
         /// @return ウィンドウが閉じられているか
@@ -64,12 +67,14 @@ namespace ld
         static void update_all() noexcept;
 
     private:
+        static void on_position_changed(handle_type handle, int32 x_pos, int32 y_pos);
+        static void on_size_changed(handle_type handle, int32 width, int32 height);
+
         static std::atomic_size_t window_count; //!< ウィンドウの総数
 
         handle_type handle_;    //!< ウィンドウハンドル
 
-        // TODO: タイトルメンバ変数を追加
-        //string title_;
+        string title_;  //!< ウィンドウタイトル
         int32 x_pos_;   //!< ウィンドウX座標
         int32 y_pos_;   //!< ウィンドウY座標
         int32 width_;   //!< ウィンドウ横幅

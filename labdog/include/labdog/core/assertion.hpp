@@ -12,7 +12,7 @@
 #define LABDOG_ASSERTION_HPP
 
 #include "common.hpp"
-#include <source_location>
+#include "logger.hpp"
 #include <iostream>
 
 #if LD_DEBUG
@@ -20,18 +20,18 @@
         do                          \
         {                           \
             LD_LIKELY (!!(expr))    \
-                ? (void(0))         \
-                : (ld::detail::assertion_failed(#expr, __FILE__, __func__, __LINE__), __debugbreak());  \
+                ? (static_cast<void>(0))    \
+                : (ld::detail::assertion_failed(#expr, __FILE__, __func__, __LINE__), debugbreak());  \
         } while(false)
 #else
-    #define LD_ASSERT(expr) ((void)0)
+    #define LD_ASSERT(expr) (static_cast<void>(0))
 #endif
 
 namespace ld
 {
     namespace detail
     {
-        inline void assertion_failed(const char* expr, const char* file, const char* func, const uint32 line) noexcept
+        inline void assertion_failed(const char* expr, const char* file, const char* func, const size_t line) noexcept
         {
             std::cerr <<
                 "==============< Assertion failed ! >==============\n"

@@ -12,6 +12,7 @@
 #define LABDOG_STRING_HPP
 
 #include <string>
+#include <fmt/format.h>
 #include "common.hpp"
 #include "string_view.hpp"
 #include "charset_convert.hpp"
@@ -19,7 +20,6 @@
 namespace ld
 {
     class string;
-    class string_view;
 
     namespace detail
     {
@@ -28,7 +28,7 @@ namespace ld
         {
             std::is_convertible_v<const Type&, string_view>;
             std::negation_v<std::is_convertible<const Type*, const string*>>;
-            std::negation_v<std::is_convertible<const Type&, const char32*>>;
+            std::negation_v<std::is_convertible<const Type&, const char8*>>;
         };
     }
 
@@ -40,7 +40,7 @@ namespace ld
         //  エイリアス
         //=========================================================
         /// @brief 文字列型
-        using string_type = std::u32string;
+        using string_type = std::basic_string<char8>;
         /// @brief 文字特性型
         using traits_type = string_type::traits_type;
         /// @brief アロケータ型
@@ -1110,27 +1110,6 @@ namespace ld
             return string_.substr(pos, npos);
         }
 
-        [[nodiscard]] std::string to_multi_byte() const
-        {
-            std::string result;
-            utf32_to_utf8(begin(), end(), std::back_inserter(result));
-            return result;
-        }
-
-        [[nodiscard]] std::u8string to_utf8() const
-        {
-            std::u8string result;
-            utf32_to_utf8(begin(), end(), std::back_inserter(result));
-            return result;
-        }
-
-        [[nodiscard]] std::u16string to_utf16() const
-        {
-            std::u16string result;
-            utf32_to_utf16(begin(), end(), std::back_inserter(result));
-            return result;
-        }
-
         [[nodiscard]] int32 compare(const string& str) const noexcept
         {
             return string_.compare(str.string_);
@@ -1283,7 +1262,7 @@ namespace ld
     {
         inline namespace string_literals
         {
-            [[nodiscard]] inline string operator""_s(const char32* const ptr, const size_t n)
+            [[nodiscard]] inline string operator""_s(const char8* const ptr, const size_t n)
             {
                 return string(ptr, n);
             }
@@ -1302,7 +1281,17 @@ struct std::hash<ld::string>
 {
     [[nodiscard]] size_t operator()(const ld::string& str) const noexcept
     {
-        return std::hash<std::u32string>{}(str);
+        return std::hash<std::u8string>{}(str);
+    }
+};
+
+template <>
+struct fmt::formatter<ld::string> : fmt::formatter<std::string_view>
+{
+    template <typename FormatContext>
+    constexpr auto parse(const ld::string& str, FormatContext& ctx)
+    {
+        return formatter<std::string_view>(reinterpret_cast<const char*>(str.c_str()), ctx);
     }
 };
 

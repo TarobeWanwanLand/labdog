@@ -12,6 +12,7 @@
 #define LABDOG_STRING_VIEW_HPP
 
 #include <string_view>
+#include <fmt/format.h>
 #include "common.hpp"
 
 namespace ld
@@ -19,7 +20,7 @@ namespace ld
     class string_view final
     {
     public:
-        using string_view_type = std::u32string_view;
+        using string_view_type = std::basic_string_view<char8>;
         using traits_type = string_view_type::traits_type;
         using value_type = string_view_type::value_type;
         using pointer = string_view_type::pointer;
@@ -439,7 +440,7 @@ namespace ld
     {
         inline namespace string_view_literals
         {
-            [[nodiscard]] inline constexpr string_view operator""_sv(const char32* const ptr, const size_t length)
+            [[nodiscard]] inline constexpr string_view operator""_sv(const char8* const ptr, const size_t length)
             {
                 return { ptr, length };
             }
@@ -458,7 +459,17 @@ struct std::hash<ld::string_view>
 {
     [[nodiscard]] size_t operator()(const ld::string_view& sv) const noexcept
     {
-        return std::hash<std::u32string_view>{}({sv.begin(), sv.end()});
+        return std::hash<std::u8string_view>{}({ sv.begin(), sv.end() });
+    }
+};
+
+template <>
+struct fmt::formatter<ld::string_view> : fmt::formatter<std::string_view>
+{
+    template <typename FormatContext>
+    constexpr auto parse(const ld::string_view& sv, FormatContext& ctx)
+    {
+        return formatter<std::string_view>(reinterpret_cast<const char*>(sv.data()), ctx);
     }
 };
 

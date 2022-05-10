@@ -111,7 +111,7 @@ namespace ld
     static_assert(sizeof(uint16) == 2);
     static_assert(sizeof(uint32) == 4);
 
-    using char8 = char;
+    using char8 = char8_t;
     using char16 = char16_t;
     using char32 = char32_t;
 

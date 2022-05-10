@@ -37,28 +37,28 @@ namespace ld
 
     std::unique_ptr<logger::impl> logger::impl_{ std::make_unique<logger::impl>() };
 
-    void logger::trace(const string& msg)
+    void logger::trace(const string_view msg)
     {
-        spdlog::trace(msg.to_multi_byte());
+        spdlog::trace(msg);
     }
 
-    void logger::info(const string &msg)
+    void logger::info(const string_view msg)
     {
-        spdlog::info(msg.to_multi_byte());
+        spdlog::info(msg);
     }
 
-    void logger::debug(const string &msg)
+    void logger::debug(const string_view msg)
     {
-        spdlog::debug(msg.to_multi_byte());
+        spdlog::debug(msg);
     }
 
-    void logger::warning(const string &msg)
+    void logger::warning(const string_view msg)
     {
-        spdlog::warn(msg.to_multi_byte());
+        spdlog::warn(msg);
     }
 
-    void logger::critical(const string &msg)
+    void logger::critical(const string_view msg)
     {
-        spdlog::critical(msg.to_multi_byte());
+        spdlog::critical(msg);
     }
 }

@@ -15,8 +15,9 @@ namespace ld
 {
     std::atomic_size_t window::window_count{ 0 };
 
-    window::window(int32 width, int32 height)
+    window::window(const string_view title, const int32 width, const int32 height)
         : handle_(nullptr)
+        , title_(title)
         , x_pos_(0)
         , y_pos_(0)
         , width_(width)
@@ -39,9 +40,9 @@ namespace ld
 
         // ウィンドウを作成する
         handle_ = glfwCreateWindow(
-            static_cast<int32>(width),
-            static_cast<int32>(height),
-            "App",
+            static_cast<int32>(width_),
+            static_cast<int32>(height_),
+            reinterpret_cast<const char*>(title_.c_str()),
             nullptr,
             nullptr);
         if(!handle_)
@@ -56,22 +57,10 @@ namespace ld
         glfwSetWindowUserPointer(handle_, this);
 
         // ウィンドウ座標変更時のコールバックをセット
-        glfwSetWindowPosCallback(handle_, [](handle_type handle, int32 x_pos, int32 y_pos)
-        {
-            auto& data = *static_cast<window*>(glfwGetWindowUserPointer(handle));
-
-            data.x_pos_ = x_pos;
-            data.y_pos_ = y_pos;
-        });
+        glfwSetWindowPosCallback(handle_, on_position_changed);
 
         // ウィンドウサイズ変更時のコールバックをセット
-        glfwSetWindowSizeCallback(handle_, [](handle_type handle, int32 width, int32 height)
-        {
-            auto& data = *static_cast<window*>(glfwGetWindowUserPointer(handle));
-
-            data.width_ = width;
-            data.height_ = height;
-        });
+        glfwSetWindowSizeCallback(handle_, on_size_changed);
     }
 
     window::~window()
@@ -80,14 +69,21 @@ namespace ld
         close();
     }
 
-    void window::set_position(int32 x_pos, int32 y_pos) noexcept
+    void window::set_title(const string_view title) noexcept
+    {
+        // ウィンドウタイトルを変更する
+        title_ = title;
+        glfwSetWindowTitle(handle_, reinterpret_cast<const char*>(title_.data()));
+    }
+
+    void window::set_position(const int32 x_pos, const int32 y_pos) noexcept
     {
         // ウィンドウ座標を変更する
         // コールバックでメンバにも変更が反映される
         glfwSetWindowPos(handle_, x_pos, y_pos);
     }
 
-    void window::set_size(int32 width, int32 height) noexcept
+    void window::set_size(const int32 width, const int32 height) noexcept
     {
         // ウィンドウサイズを変更する
         // コールバックでメンバにも変更が反映される
@@ -96,6 +92,7 @@ namespace ld
 
     bool window::is_closed() const noexcept
     {
+        // ウィンドウハンドルが有効か
         return !handle_;
     }
 
@@ -127,5 +124,21 @@ namespace ld
         // 総ウィンドウ数が0の場合、GLFWの終了処理を行う
         if(window_count == 0)
             glfwTerminate();
+    }
+
+    void window::on_size_changed(handle_type handle, int32 width, int32 height)
+    {
+        auto& data = *static_cast<window*>(glfwGetWindowUserPointer(handle));
+
+        data.width_ = width;
+        data.height_ = height;
+    }
+
+    void window::on_position_changed(handle_type handle, int32 x_pos, int32 y_pos)
+    {
+        auto& data = *static_cast<window*>(glfwGetWindowUserPointer(handle));
+
+        data.x_pos_ = x_pos;
+        data.y_pos_ = y_pos;
     }
 } // namespace ld
