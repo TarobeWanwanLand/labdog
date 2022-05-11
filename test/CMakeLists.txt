@@ -8,7 +8,7 @@ set(TESTS_SOURCES
     # ソース
     "${CMAKE_CURRENT_SOURCE_DIR}/string_test.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/charset_convert_test.cpp"
-        ../labdog/include/labdog/core/event.hpp)
+)
 
 # テストプログラムを作成
 add_executable(${TESTS_NAME} ${TESTS_SOURCES})
