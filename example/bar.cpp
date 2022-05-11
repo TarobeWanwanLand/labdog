@@ -9,9 +9,8 @@ int main()
     using namespace ld;
 
     std::vector<std::unique_ptr<window>> windows;
-    auto& main = windows.emplace_back(std::make_unique<window>());
-
-    std::u8string a(u8"🥰aaあ🦴菅");
+    auto& main = windows.emplace_back(
+        std::make_unique<window>(u8"🐕LabDog🦴", 600, 400));
 
     while(!windows.empty())
     {
