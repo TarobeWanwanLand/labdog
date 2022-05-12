@@ -3,10 +3,44 @@
 #include <memory>
 #include <algorithm>
 #include <string>
+#include <labdog/core/signal.hpp>
+
+struct event
+{
+    int a = 0;
+};
+
+void listenter(const event& event)
+{
+    std::cout << event.a << '\n';
+}
+
+void listenter2(const event& event)
+{
+    std::cout << event.a * event.a << '\n';
+}
+
+void listenter3(const event& event)
+{
+    std::cout << event.a * event.a << '\n';
+}
 
 int main()
 {
     using namespace ld;
+
+    signal<void(event)> sig;
+    signal<int(event)> sig2;
+
+//    signal.connect(listenter);
+//    signal.connect(listenter2);
+//    signal.connect(listenter2);
+//
+//    signal.dispatch(event{3 });
+//
+//    signal.disconnect(listenter2);
+//
+//    signal.dispatch(event{2 });
 
     std::vector<std::unique_ptr<window>> windows;
     auto& main = windows.emplace_back(

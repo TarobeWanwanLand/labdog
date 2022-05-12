@@ -1,9 +1,31 @@
-hunter_config(
-    Boost
-    VERSION 1.65.0
-    CMAKE_ARGS
-        Boost_USE_STATIC=ON
-)
+if(${MINGW})
+    hunter_config(
+        Boost
+        VERSION 1.64.0
+        CMAKE_ARGS
+            Boost_USE_STATIC=ON
+    )
+else()
+    if(${WIN32})
+        hunter_config(
+            Boost
+            VERSION 1.79.0
+            URL https://boostorg.jfrog.io/artifactory/main/release/1.79.0/source/boost_1_79_0.zip
+            SHA1 1C9715FDD9A503FD0576F0FB6DCAF965AD5BDF04
+            CMAKE_ARGS
+                Boost_USE_STATIC=ON
+        )
+    else()
+        hunter_config(
+            Boost
+            VERSION 1.79.0-unix
+            URL https://boostorg.jfrog.io/artifactory/main/release/1.79.0/source/boost_1_79_0.tar.gz
+            SHA1 28B4C71B7D9B8E323D40748F14E5C6D390E19720
+            CMAKE_ARGS
+                Boost_USE_STATIC=ON
+        )
+    endif()
+endif()
 
 hunter_config(
     glfw
@@ -32,11 +54,22 @@ hunter_config(
         SPDLOG_FMT_EXTERNAL=ON
 )
 
-hunter_config(
-    GTest
-    VERSION 1.11.0
-    CMAKE_ARGS
-        gmock_build_tests=OFF
-        gtest_build_samples=OFF
-        gtest_build_tests=OFF
-)
+if(${MSVC80})
+    hunter_config(
+        GTest
+        VERSION 1.7.0-hunter-6
+        CMAKE_ARGS
+            gmock_build_tests=OFF
+            gtest_build_samples=OFF
+            gtest_build_tests=OFF
+    )
+else()
+    hunter_config(
+        GTest
+        VERSION 1.11.0
+        CMAKE_ARGS
+            gmock_build_tests=OFF
+            gtest_build_samples=OFF
+            gtest_build_tests=OFF
+    )
+endif()
