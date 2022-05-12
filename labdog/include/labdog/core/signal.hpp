@@ -12,106 +12,97 @@
 #define LABDOG_SIGNAL_HPP
 
 #include <boost/signals2.hpp>
+#include <boost/functional.hpp>
 #include <span>
+#include "concepts.hpp"
 
 namespace ld
 {
-    template <class Function>
-    class signal final
+    namespace detail
     {
-    private:
-        template <class>
-        static constexpr bool always_false = false;
+        template <class Function> struct signal_impl;
 
-        template <class T>
-        struct function_impl
+        template <class Return, class... Types>
+        requires std::is_same_v<Return, void>
+        struct signal_impl<Return(*)(Types...)>
         {
-            static_assert(always_false<T>, "Do not accept non-functional types as template arguments.");
+            using function_type = Return(*)(Types...);
+            using function_traits = boost::function_traits<function_type>;
+            using result_type = typename function_traits::result_type;
+            using sink_type = boost::signals2::signal<function_type>;
         };
 
-        template <class Result, class... Args>
-        struct function_impl<Result (Args...)>
+        template <class Return, class... Types>
+        requires std::negation_v<std::is_same<Return, void>>
+        struct signal_impl<Return(*)(Types...)>
         {
-            using result_type = Result;
-            using arg_types = std::tuple<Args...>;
-        };
-
-        template <class View>
-        struct aggregate_values
-        {
-            using result_type = View;
-
-            template <class InputIterator>
-            [[nodiscard]] result_type operator()(InputIterator first, InputIterator last) const noexcept
+            template <class View>
+            struct aggregate_values
             {
-                return View{ first, last };
-            }
+                using result_type = View;
+
+                template <class InputIterator>
+                [[nodiscard]] result_type operator()(InputIterator first, InputIterator last) const noexcept
+                {
+                    return View{ first, last };
+                }
+            };
+
+            using function_type = Return(*)(Types...);
+            using function_traits = boost::function_traits<function_type>;
+            using result_type = typename function_traits::result_type;
+            using sink_type = boost::signals2::signal<function_type, aggregate_values<std::span<result_type>>>;
         };
 
-    public:
-        using function_trait = function_impl<Function>;
-        using result_type = typename function_trait::result_type;
-        using arg_types = typename function_trait::arg_types;
-        using sink_type = std::conditional<std::is_void_v<result_type>,
-            boost::signals2::signal<Function>,
-            boost::signals2::signal<Function, aggregate_values<std::span<result_type>>>>;
+        template <class Function>
+        struct signal_impl_handler : signal_impl<std::add_pointer_t<Function>> {};
+    }
 
-        signal() = default;
-        ~signal() = default;
-
-        signal(const signal& signal) = default;
-        signal(signal&& signal) = default;
-        signal& operator=(const signal& signal) = default;
-        signal& operator=(signal&& signal) = default;
-
-//        template <class Func>
-//        void connect(Func&& subscriver)
+//    template <class Function>
+//    class signal final : public detail::signal_impl<Function>
+//    {
+//        using impl_type = detail::signal_impl<Function>;
+//
+//    public:
+//        signal() = default;
+//        ~signal() = default;
+//
+//        signal(const signal& signal) = default;
+//        signal(signal&& signal) noexcept = default;
+//        signal& operator=(const signal& signal) = default;
+//        signal& operator=(signal&& signal)  noexcept = default;
+//
+//        void connect(const impl_type::function_type& subscriber)
 //        {
-//            sink_.connect(std::forward<Func>(subscriver));
+//            sink_.connect(subscriber);
 //        }
 //
 //        template <class Func>
-//        void disconnect(Func&& subscriver)
+//        void disconnect(Func&& subscriber)
 //        {
-//            sink_.disconnect(std::forward<Func>(subscriver));
+//            sink_.disconnect(std::forward<Func>(subscriber));
 //        }
 //
 //        template <class... Args>
-//        void dispatch(Args&&... args)
+//        impl_type::result_type dispatch(Args&&... args)
 //        {
-//            static_cast<void>(sink_(std::forward<Args>(args)...));
+//            return sink_(std::forward<Args>(args)...);
 //        }
 //
 //        template <class... Args>
-//        void dispatch(Args&&... args) const
+//        impl_type::result_type dispatch(Args&&... args) const
 //        {
-//            static_cast<void>(sink_(std::forward<Args>(args)...));
-//        }
-//
-//        template <class... Args, std::output_iterator<result_type> OutputIterator>
-//        requires (!requires { std::is_void_v<result_type>; })
-//        void collect(Args&&... args, OutputIterator dest)
-//        {
-//            const auto results = sink_(std::forward<Args>(args)...);
-//            std::copy(results.begin(), results.end(), dest);
-//        }
-//
-//        template <class... Args, std::output_iterator<result_type> OutputIterator>
-//        requires (!requires { std::is_void_v<result_type>; })
-//        void collect(Args&&... args, OutputIterator dest) const
-//        {
-//            const auto results = sink_(std::forward<Args>(args)...);
-//            std::copy(results.begin(), results.end(), dest);
+//            return sink_(std::forward<Args>(args)...);
 //        }
 //
 //        void clear()
 //        {
 //            sink_.disconnect_all_slots();
 //        }
-
-    private:
-        sink_type sink_;
-    };
+//
+//    private:
+//        sink_type sink_;
+//    };
 }
 
 #endif // LABDOG_SIGNAL_HPP

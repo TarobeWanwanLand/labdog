@@ -20,27 +20,33 @@ void listenter2(const event& event)
     std::cout << event.a * event.a << '\n';
 }
 
-void listenter3(const event& event)
+int listenter3(const event& event)
 {
-    std::cout << event.a * event.a << '\n';
+    const int val = event.a;
+    std::cout << val << '\n';
+    return val;
+}
+
+int listenter4(const event& event)
+{
+    const int val = event.a * 2;
+    std::cout << val << '\n';
+    return val;
 }
 
 int main()
 {
     using namespace ld;
 
-    signal<void(event)> sig;
-    signal<int(event)> sig2;
+//    ld::signal<int(event)> sig;
+//
+//    sig.connect(listenter3);
+//    sig.connect(listenter4);
+//    sig.connect(listenter3);
+//
+//    auto res = sig.dispatch(event{ 10 });
 
-//    signal.connect(listenter);
-//    signal.connect(listenter2);
-//    signal.connect(listenter2);
-//
-//    signal.dispatch(event{3 });
-//
-//    signal.disconnect(listenter2);
-//
-//    signal.dispatch(event{2 });
+    detail::signal_impl_handler<listenter>;
 
     std::vector<std::unique_ptr<window>> windows;
     auto& main = windows.emplace_back(
