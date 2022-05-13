@@ -1,6 +1,6 @@
 //=========================================================
 //
-//  signal.hpp is part of the labdog project.
+//  type_traits.hpp is part of the labdog project.
 //  Copyright (C) 2022 TarobeWanwanLand.
 //
 //  Released under the MIT license.
@@ -8,7 +8,9 @@
 //
 //=========================================================
 
-#ifndef LABDOG_SIGNAL_HPP
-#define LABDOG_SIGNAL_HPP
+#ifndef LABDOG_CONCEPTS_HPP
+#define LABDOG_CONCEPTS_HPP
 
-#endif // LABDOG_SIGNAL_HPP
+#include <concepts>
+
+#endif //LABDOG_CONCEPTS_HPP

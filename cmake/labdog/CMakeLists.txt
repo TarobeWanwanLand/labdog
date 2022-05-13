@@ -7,6 +7,7 @@ set(LABDOG_HEADERS
     "${LABDOG_HEADER_DIR}/labdog/core/assertion.hpp"
     "${LABDOG_HEADER_DIR}/labdog/core/charset_convert.hpp"
     "${LABDOG_HEADER_DIR}/labdog/core/common.hpp"
+    "${LABDOG_HEADER_DIR}/labdog/core/concept.hpp"
     "${LABDOG_HEADER_DIR}/labdog/core/signal.hpp"
         #    "${LABDOG_HEADER_DIR}/labdog/core/logger.hpp"
     "${LABDOG_HEADER_DIR}/labdog/core/string.hpp"
