@@ -54,6 +54,15 @@ hunter_config(
         SPDLOG_FMT_EXTERNAL=ON
 )
 
+hunter_config(
+    EnTT
+    VERSION 3.10.0
+    URL https://github.com/skypjack/entt/archive/refs/tags/v3.10.1.tar.gz
+    SHA1 B7E287CB691B2A741C01CB757BAE5702319D3B34
+    CMAKE_ARGS
+        ENTT_USE_ATOMIC=ON
+)
+
 if(${MSVC80})
     hunter_config(
         GTest
