@@ -23,7 +23,7 @@ namespace ld
         ~graphics() = default;
 
     private:
-        VkInstance instance_;
+        VkInstance instance_{};
     };
 } // namespace ld
 

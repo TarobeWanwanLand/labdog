@@ -16,7 +16,7 @@ struct Test
     }
 };
 
-int main()
+int main(ld::int32 argc, char* argv[])
 {
     using namespace ld;
     
