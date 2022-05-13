@@ -2,6 +2,7 @@
 #include <vector>
 #include <memory>
 #include <labdog/core/dispatcher.hpp>
+#include <labdog/core/point.hpp>
 
 struct Event
 {
@@ -19,7 +20,9 @@ struct Test
 int main(ld::int32 argc, char* argv[])
 {
     using namespace ld;
-    
+
+    point p1(2, 3);
+
     std::vector<std::unique_ptr<window>> windows;
     auto& main = windows.emplace_back(
         std::make_unique<window>(u8"🐕LabDog🦴", 600, 400));

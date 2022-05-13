@@ -22,12 +22,12 @@ namespace ld
 {
     namespace detail
     {
-        const uint16_t lead_surrogate_min { 0xD800 }; //!< 先頭サロゲートの最小値
-        const uint16_t lead_surrogate_max { 0xDBFF }; //!< 先頭サロゲートの最大値
-        const uint16_t trail_surrogate_min{ 0xDC00 }; //!< 後続サロゲートの最小値
-        const uint16_t trail_surrogate_max{ 0xDFFF }; //!< 後続サロゲートの最大値
+        const uint16 lead_surrogate_min { 0xD800 }; //!< 先頭サロゲートの最小値
+        const uint16 lead_surrogate_max { 0xDBFF }; //!< 先頭サロゲートの最大値
+        const uint16 trail_surrogate_min{ 0xDC00 }; //!< 後続サロゲートの最小値
+        const uint16 trail_surrogate_max{ 0xDFFF }; //!< 後続サロゲートの最大値
 
-        static constexpr uint32_t code_point_max{ 0x10FFFF }; //!< コードポイントの最大値
+        static constexpr uint32 code_point_max{ 0x10FFFF }; //!< コードポイントの最大値
 
         template <typename U16>
         [[nodiscard]] constexpr bool is_lead_surrogate(const U16 cp) noexcept
@@ -54,30 +54,30 @@ namespace ld
         }
     }
 
-    template<std::input_iterator InputIterator, std::output_iterator<char32_t> OutputIterator>
+    template<std::input_iterator InputIterator, std::output_iterator<char32> OutputIterator>
     requires
-           std::same_as<std::iter_value_t<InputIterator>, char8_t>
+           std::same_as<std::iter_value_t<InputIterator>, char8>
         || std::same_as<std::iter_value_t<InputIterator>, char>
     OutputIterator utf8_to_utf32(InputIterator first, InputIterator last, OutputIterator dest);
 
-    template<std::input_iterator InputIterator, std::output_iterator<char32_t> OutputIterator>
-    requires std::same_as<std::iter_value_t<InputIterator>, char16_t>
+    template<std::input_iterator InputIterator, std::output_iterator<char32> OutputIterator>
+    requires std::same_as<std::iter_value_t<InputIterator>, char16>
     OutputIterator utf16_to_utf32(InputIterator first, InputIterator last, OutputIterator dest);
 
     template <std::input_iterator InputIterator, class OutputIterator>
     requires
-           std::same_as<std::iter_value_t<InputIterator>, char32_t>
-        && (std::output_iterator<OutputIterator, char8_t> || std::output_iterator<OutputIterator, char>)
+           std::same_as<std::iter_value_t<InputIterator>, char32>
+        && (std::output_iterator<OutputIterator, char8> || std::output_iterator<OutputIterator, char>)
     OutputIterator utf32_to_utf8(InputIterator first, InputIterator last, OutputIterator dest);
 
-    template <std::input_iterator InputIterator, std::output_iterator<char16_t> OutputIterator>
-    requires std::same_as<std::iter_value_t<InputIterator>, char32_t>
+    template <std::input_iterator InputIterator, std::output_iterator<char16> OutputIterator>
+    requires std::same_as<std::iter_value_t<InputIterator>, char32>
     OutputIterator utf32_to_utf16(InputIterator first, InputIterator last, OutputIterator dest);
 
-    template<std::input_iterator InputIterator, std::output_iterator<char8_t> OutputIterator>
+    template<std::input_iterator InputIterator, std::output_iterator<char8> OutputIterator>
     requires
-           std::same_as<std::iter_value_t<InputIterator>, char16_t>
-        && (std::output_iterator<OutputIterator, char8_t> || std::output_iterator<OutputIterator, char>)
+           std::same_as<std::iter_value_t<InputIterator>, char16>
+        && (std::output_iterator<OutputIterator, char8> || std::output_iterator<OutputIterator, char>)
     OutputIterator utf16_to_utf8(InputIterator first, InputIterator last, OutputIterator dest)
     {
         std::u32string temp;
@@ -85,9 +85,9 @@ namespace ld
         return utf32_to_utf8(temp.begin(), temp.end(), dest);
     }
 
-    template<std::input_iterator InputIterator, std::output_iterator<char16_t> OutputIterator>
+    template<std::input_iterator InputIterator, std::output_iterator<char16> OutputIterator>
     requires
-           std::same_as<std::iter_value_t<InputIterator>, char8_t>
+           std::same_as<std::iter_value_t<InputIterator>, char8>
         || std::same_as<std::iter_value_t<InputIterator>, char>
     OutputIterator utf8_to_utf16(InputIterator first, InputIterator last, OutputIterator dest)
     {

@@ -32,7 +32,7 @@ namespace ld
         };
     }
 
-    /// @brief Unicode文字列クラス
+    /// @brief Unicode文字列
     class string final
     {
     public:

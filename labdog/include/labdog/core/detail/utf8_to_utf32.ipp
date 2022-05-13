@@ -31,15 +31,15 @@ namespace ld
             return 0;
         }
 
-        template<std::input_iterator InputIterator, std::output_iterator<char32_t> OutputIterator>
+        template<std::input_iterator InputIterator, std::output_iterator<char32> OutputIterator>
         requires
-               std::same_as<std::iter_value_t<InputIterator>, char8_t>
+               std::same_as<std::iter_value_t<InputIterator>, char8>
             || std::same_as<std::iter_value_t<InputIterator>, char>
         InputIterator utf32_encode(InputIterator first, InputIterator last, OutputIterator dest)
         {
             const size_t bytes = utf8_bytes(static_cast<uint8>(*first));
 
-            char32_t result = 0;
+            char32 result = 0;
 
             switch (bytes)
             {
@@ -68,9 +68,9 @@ namespace ld
         }
     }
 
-    template<std::input_iterator InputIterator, std::output_iterator<char32_t> OutputIterator>
+    template<std::input_iterator InputIterator, std::output_iterator<char32> OutputIterator>
     requires
-           std::same_as<std::iter_value_t<InputIterator>, char8_t>
+           std::same_as<std::iter_value_t<InputIterator>, char8>
         || std::same_as<std::iter_value_t<InputIterator>, char>
     inline OutputIterator utf8_to_utf32(InputIterator first, InputIterator last, OutputIterator dest)
     {

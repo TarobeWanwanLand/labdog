@@ -12,6 +12,7 @@ set(LABDOG_HEADERS
     "${LABDOG_HEADER_DIR}/labdog/core/dispatcher.hpp"
         #    "${LABDOG_HEADER_DIR}/labdog/core/logger.hpp"
     "${LABDOG_HEADER_DIR}/labdog/core/mouse.hpp"
+    "${LABDOG_HEADER_DIR}/labdog/core/point.hpp"
     "${LABDOG_HEADER_DIR}/labdog/core/string.hpp"
     "${LABDOG_HEADER_DIR}/labdog/core/string_view.hpp"
 
