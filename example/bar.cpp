@@ -1,11 +1,25 @@
 ﻿#include <labdog/graphics/window.hpp>
 #include <vector>
 #include <memory>
+#include <labdog/core/dispatcher.hpp>
+
+struct Event
+{
+    int val;
+};
+
+struct Test
+{
+    void OnEvent(const Event& ev)
+    {
+        std::cout << ev.val << '\n';
+    }
+};
 
 int main()
 {
     using namespace ld;
-
+    
     std::vector<std::unique_ptr<window>> windows;
     auto& main = windows.emplace_back(
         std::make_unique<window>(u8"🐕LabDog🦴", 600, 400));
