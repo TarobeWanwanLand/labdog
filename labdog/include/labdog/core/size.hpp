@@ -43,18 +43,13 @@ namespace ld
         size(auto, auto) = delete;
 
         /// @brief デフォルトコピーコンストラクタ
-        constexpr size(const size&) noexcept = default;
+        [[nodiscard]] constexpr size(const size&) noexcept = default;
 
         /// @brief デフォルトムーブコンストラクタ
-        constexpr size(size&&) noexcept = default;
+        [[nodiscard]] constexpr size(size&&) noexcept = default;
 
         /// @brief デフォルトコピー代入
-        constexpr size& operator=(const size& s) noexcept
-        {
-            width = s.width;
-            height = s.height;
-            return *this;
-        }
+        constexpr size& operator=(const size& s) noexcept = default;
 
         /// @brief デフォルトムーブ代入
         constexpr size& operator=(size&&) noexcept = default;

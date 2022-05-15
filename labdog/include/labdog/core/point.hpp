@@ -58,18 +58,13 @@ namespace ld
         point(auto, auto) = delete;
 
         /// @brief デフォルトコピーコンストラクタ
-        constexpr point(const point&) noexcept = default;
+        [[nodiscard]] constexpr point(const point&) noexcept = default;
 
         /// @brief デフォルトムーブコンストラクタ
-        constexpr point(point&&) noexcept = default;
+        [[nodiscard]] constexpr point(point&&) noexcept = default;
 
         /// @brief デフォルトコピー代入
-        constexpr point& operator=(const point& p) noexcept
-        {
-            x = p.x;
-            y = p.y;
-            return *this;
-        }
+        constexpr point& operator=(const point& p) noexcept = default;
 
         /// @brief デフォルトムーブ代入
         constexpr point& operator=(point&&) noexcept = default;
