@@ -61,21 +61,6 @@ namespace ld
             create();
         }
 
-        void apply_optional_arg(const args::title title) noexcept
-        {
-            title_ = *title;
-        }
-
-        void apply_optional_arg(const args::position position) noexcept
-        {
-            position_ = *position;
-        }
-
-        void apply_optional_arg(const args::size size) noexcept
-        {
-            size_ = *size;
-        }
-
         /// @brief ウィンドウを破棄する
         ~window();
 
@@ -114,6 +99,21 @@ namespace ld
     private:
         /// @brief ウィンドウを作成する
         void create();
+
+        void apply_optional_arg(const args::title title) noexcept
+        {
+            title_ = *title;
+        }
+
+        void apply_optional_arg(const args::position position) noexcept
+        {
+            position_ = *position;
+        }
+
+        void apply_optional_arg(const args::size size) noexcept
+        {
+            size_ = *size;
+        }
 
         static void on_position_changed(handle_type handle, int32 x_pos, int32 y_pos);
         static void on_size_changed(handle_type handle, int32 width, int32 height);
