@@ -25,6 +25,9 @@ find_package(Vulkan REQUIRED)
 hunter_add_package(glfw)
 find_package(glfw3 REQUIRED)
 
+hunter_add_package(glm)
+find_package(glm CONFIG REQUIRED)
+
 hunter_add_package(fmt)
 find_package(fmt CONFIG REQUIRED)
 
@@ -40,6 +43,7 @@ set(EXTERNAL_LIBRARIES
     Boost::thread
     Vulkan::Vulkan
     glfw
+    glm
     fmt::fmt
     spdlog::spdlog
     EnTT::EnTT

@@ -37,6 +37,24 @@ hunter_config(
         GLFW_BUILD_TESTS=OFF
 )
 
+if(${ANDROID})
+    hunter_config(
+        glm
+        VERSION 0.9.9.8
+        URL https://github.com/g-truc/glm/releases/download/0.9.9.8/glm-0.9.9.8.zip
+        SHA1 45408897F419944FB28D8FD835791F237BE2EC19
+        CMAKE_ARGS
+            BUILD_STATIC_LIBS=ON
+    )
+else()
+    hunter_config(
+        glm
+        VERSION 0.9.9.2
+        CMAKE_ARGS
+            BUILD_STATIC_LIBS=ON
+    )
+endif()
+
 hunter_config(
     fmt
     VERSION 8.1.1

@@ -13,8 +13,11 @@ set(LABDOG_HEADERS
         #    "${LABDOG_HEADER_DIR}/labdog/core/logger.hpp"
     "${LABDOG_HEADER_DIR}/labdog/core/mouse.hpp"
     "${LABDOG_HEADER_DIR}/labdog/core/point.hpp"
+    "${LABDOG_HEADER_DIR}/labdog/core/size.hpp"
     "${LABDOG_HEADER_DIR}/labdog/core/string.hpp"
     "${LABDOG_HEADER_DIR}/labdog/core/string_view.hpp"
+    "${LABDOG_HEADER_DIR}/labdog/core/strong_type.hpp"
+    "${LABDOG_HEADER_DIR}/labdog/core/window.hpp"
 
     "${LABDOG_HEADER_DIR}/labdog/core/detail/utf8_to_utf32.ipp"
     "${LABDOG_SOURCE_DIR}/labdog/core/detail/utf16_to_utf32.ipp"
@@ -22,7 +25,6 @@ set(LABDOG_HEADERS
     "${LABDOG_HEADER_DIR}/labdog/core/detail/utf32_to_utf16.ipp"
 
     "${LABDOG_HEADER_DIR}/labdog/graphics/graphics.hpp"
-    "${LABDOG_HEADER_DIR}/labdog/graphics/window.hpp"
 )
 
 # ソースファイル
@@ -32,9 +34,9 @@ set(LABDOG_SOURCES
 #    "${LABDOG_SOURCE_DIR}/core/logger.cpp"
     "${LABDOG_SOURCE_DIR}/core/string.cpp"
     "${LABDOG_SOURCE_DIR}/core/string_view.cpp"
+    "${LABDOG_SOURCE_DIR}/core/window.cpp"
 
     "${LABDOG_SOURCE_DIR}/graphics/graphics.cpp"
-    "${LABDOG_SOURCE_DIR}/graphics/window.cpp"
 )
 
 # ライブラリを作成

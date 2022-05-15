@@ -34,13 +34,13 @@ namespace ld
         using size_type = string_view_type::size_type;
         using difference_type = string_view_type::difference_type;
 
-        static constexpr auto npos{string_view_type::npos};
+        static constexpr auto npos{ string_view_type::npos };
 
         [[nodiscard]] constexpr string_view() noexcept
             : view_() {}
 
         [[nodiscard]] constexpr string_view(const string_view& sv) noexcept
-            : view_(sv.view_) {}
+            : view_(sv) {}
 
         [[nodiscard]] constexpr /* implicit */ string_view(const string_view_type& sv) noexcept
             : view_(sv) {}
@@ -52,31 +52,29 @@ namespace ld
             : view_(ptr, n) {}
 
         template <std::contiguous_iterator Iterator, std::sized_sentinel_for<Iterator> Sentinel>
-        requires (
-               std::is_same_v<std::iter_value_t<Iterator>, value_type>
-            && !std::is_convertible_v<Sentinel, size_type>)
+        requires std::is_same_v<std::iter_value_t<Iterator>, value_type>
+              && std::negation_v<std::is_convertible<Sentinel, size_type>>
         [[nodiscard]] constexpr string_view(Iterator first, Sentinel last)
         noexcept(noexcept(string_view_type(first, last)))
             : view_(first, last) {}
 
         template <class Range>
-        requires (
-               !std::same_as<std::remove_cvref_t<Range>, string_view>
-            && !std::same_as<std::remove_cvref_t<Range>, string_view_type>
-            && std::ranges::contiguous_range<Range>
-            && std::ranges::sized_range<Range>
-            && std::same_as<std::ranges::range_value_t<Range>, value_type>
-            && (!std::is_convertible_v<Range, const value_type*>)
-            && (!requires(std::remove_cvref_t<Range>& range) {
-                range.operator std::basic_string_view<value_type, traits_type>(); })
-            && (!requires { typename std::remove_reference_t<Range>::traits_type; }
-                || std::same_as<typename std::remove_reference_t<Range>::traits_type, traits_type>))
+        requires (!std::same_as<std::remove_cvref_t<Range>, string_view>
+              && !std::same_as<std::remove_cvref_t<Range>, string_view_type>
+              && std::ranges::contiguous_range<Range>
+              && std::ranges::sized_range<Range>
+              && std::same_as<std::ranges::range_value_t<Range>, value_type>
+              && (!std::is_convertible_v<Range, const value_type*>)
+              && (!requires(std::remove_cvref_t<Range>& range) {
+                     range.operator std::basic_string_view<value_type, traits_type>(); })
+              && (!requires { typename std::remove_reference_t<Range>::traits_type; }
+                     || std::same_as<typename std::remove_reference_t<Range>::traits_type, traits_type>))
         [[nodiscard]] constexpr explicit string_view(Range&& range) noexcept(noexcept(string_view_type(range)))
-            : view_(range) {}
+            : view_(std::forward<Range>(range)) {}
 
         ~string_view() noexcept = default;
 
-        [[nodiscard]] constexpr operator string_view_type() const noexcept
+        [[nodiscard]] constexpr /* implicit */ operator string_view_type() const noexcept
         {
             return view_;
         }
@@ -200,7 +198,7 @@ namespace ld
 
         [[nodiscard]] constexpr string_view substr(const size_type pos = 0, const size_type n = npos) const
         {
-            return view_.substr(pos, npos);
+            return view_.substr(pos, n);
         }
 
         [[nodiscard]] constexpr int32 compare(const string_view sv) const
