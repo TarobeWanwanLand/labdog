@@ -9,7 +9,7 @@ else()
     if(${WIN32})
         hunter_config(
             Boost
-            VERSION 1.79.0
+            VERSION 1.79.0-win
             URL https://boostorg.jfrog.io/artifactory/main/release/1.79.0/source/boost_1_79_0.zip
             SHA1 1C9715FDD9A503FD0576F0FB6DCAF965AD5BDF04
             CMAKE_ARGS

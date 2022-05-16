@@ -13,7 +13,14 @@
 
 namespace ld
 {
-    std::atomic_size_t window::instance_count{0 };
+    window::window()
+        : handle_()
+        , title_()
+        , position_(100, 100)
+        , size_(600, 400)
+    {
+        create();
+    }
 
     window::~window()
     {
@@ -68,14 +75,7 @@ namespace ld
             // ウィンドウを破棄
             glfwDestroyWindow(handle_);
             handle_ = nullptr;
-
-            // ウィンドウの総数をデクリメント
-            --instance_count;
         }
-
-        // 総ウィンドウ数が0の場合、GLFWの終了処理を行う
-        if(instance_count == 0)
-            glfwTerminate();
     }
 
     void window::create()
@@ -88,16 +88,8 @@ namespace ld
         if(size_.width <= 0 && size_.height <= 0)
             throw std::out_of_range("Window size cannot be less than zero.");
 
-        // 総ウィンドウ数が0の場合、GLFWの初期化を行う
-        if(instance_count == 0)
-        {
-            // GLFWの初期化
-            if(glfwInit() == GLFW_FALSE)
-                throw std::runtime_error("Failed to initialize GLFW.");
-
-            // ウィンドウの設定
-            glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
-        }
+        // ウィンドウの設定
+        glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
 
         // ウィンドウを作成する
         handle_ = glfwCreateWindow(
@@ -108,9 +100,6 @@ namespace ld
             nullptr);
         if(!handle_)
             throw std::runtime_error("Failed to create window.");
-
-        // 総ウィンドウ数をインクリメント
-        ++instance_count;
 
         // ウィンドウ座標をセット
         glfwSetWindowPos(handle_, position_.x, position_.y);

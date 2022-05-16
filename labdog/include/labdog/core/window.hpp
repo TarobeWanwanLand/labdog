@@ -19,6 +19,8 @@
 #include "strong_type.hpp"
 #include "size.hpp"
 #include "point.hpp"
+#include "type_traits.hpp"
+#include "detail/glfw_init.hpp"
 
 namespace ld
 {
@@ -31,8 +33,11 @@ namespace ld
 
     namespace args
     {
+        /// @brief ウィンドウのタイトル名
         using title = strong_type<string_view, detail::title_tag>;
+        /// @brief ウィンドウの位置
         using position = strong_type<point, detail::position_tag>;
+        /// @brief ウィンドウのサイズ
         using size = strong_type<size, detail::size_tag>;
     }
 
@@ -43,10 +48,17 @@ namespace ld
         /// @brief ウィンドウハンドル型
         using handle_type = GLFWwindow*;
 
+        /// @brief ウィンドウをデフォルト構築する
+        [[nodiscard]] window();
+
         /// @brief オプション引数を基にウィンドウを構築する
         /// @tparam OptionalArgs オプションの可変長引数型
         /// @param options オプションの可変長引数
+        /// @arg args::title ウィンドウのタイトル名
+        /// @arg args::position ウィンドウの位置
+        /// @arg args::size ウィンドウのサイズ
         template <class... OptionalArgs>
+        requires is_all_not_same_v<OptionalArgs...>
         [[nodiscard]] explicit window(OptionalArgs&&... options)
             : handle_()
             , title_(u8"labdog")
@@ -55,7 +67,11 @@ namespace ld
         {
             if constexpr(sizeof...(OptionalArgs) > 0)
                 std::apply(
-                    [this](auto&&... opt) { (apply_optional_arg(opt), ...); },
+                    [this](auto&&... opt)
+                    {
+                        static_cast<void>(this); // thisキャプチャが不要な場合の警告抑止
+                        (apply_optional_arg(opt), ...);
+                    },
                     std::make_tuple(std::forward<OptionalArgs>(options)...));
 
             create();
@@ -118,7 +134,7 @@ namespace ld
         static void on_position_changed(handle_type handle, int32 x_pos, int32 y_pos);
         static void on_size_changed(handle_type handle, int32 width, int32 height);
 
-        static std::atomic_size_t instance_count; //!< ウィンドウの総数
+        detail::glfw_init glfw_initializer_;   //!< GLFWの初期化クラス
 
         handle_type handle_;    //!< ウィンドウハンドル
 

@@ -17,8 +17,10 @@ set(LABDOG_HEADERS
     "${LABDOG_HEADER_DIR}/labdog/core/string.hpp"
     "${LABDOG_HEADER_DIR}/labdog/core/string_view.hpp"
     "${LABDOG_HEADER_DIR}/labdog/core/strong_type.hpp"
+    "${LABDOG_HEADER_DIR}/labdog/core/type_traits.hpp"
     "${LABDOG_HEADER_DIR}/labdog/core/window.hpp"
 
+    "${LABDOG_HEADER_DIR}/labdog/core/glfw_init.hpp"
     "${LABDOG_HEADER_DIR}/labdog/core/detail/utf8_to_utf32.ipp"
     "${LABDOG_SOURCE_DIR}/labdog/core/detail/utf16_to_utf32.ipp"
     "${LABDOG_HEADER_DIR}/labdog/core/detail/utf32_to_utf8.ipp"

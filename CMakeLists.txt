@@ -17,8 +17,8 @@ project(labdog VERSION 1.0.0)
 # 環境を構築する
 include(cmake/ProjectSetup.cmake)
 
-hunter_add_package(Boost COMPONENTS system thread)
-find_package(Boost CONFIG REQUIRED system thread)
+hunter_add_package(Boost COMPONENTS system)
+find_package(Boost CONFIG REQUIRED system)
 
 find_package(Vulkan REQUIRED)
 
@@ -40,7 +40,6 @@ find_package(EnTT CONFIG REQUIRED)
 # 外部ライブラリのリスト
 set(EXTERNAL_LIBRARIES
     Boost::system
-    Boost::thread
     Vulkan::Vulkan
     glfw
     glm
