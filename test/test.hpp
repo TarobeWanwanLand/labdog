@@ -13,6 +13,7 @@
 
 #include <gtest/gtest.h>
 #include <labdog/core/string.hpp>
+
 using namespace ld;
 using namespace ld::string_literals;
 
