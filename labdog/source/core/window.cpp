@@ -19,6 +19,7 @@ namespace ld
         , position_(100, 100)
         , size_(600, 400)
     {
+        // ウィンドウを作成
         create();
     }
 
@@ -49,6 +50,23 @@ namespace ld
         glfwSetWindowSize(handle_, size.width, size.height);
     }
 
+    string_view window::get_title() const noexcept
+    {
+        return title_;
+    }
+
+    const point &window::get_position() const noexcept
+    {
+        // ウィンドウ座標を返す
+        return position_;
+    }
+
+    const size &window::get_size() const noexcept
+    {
+        // ウィンドウサイズを返す
+        return size_;
+    }
+
     bool window::is_closed() const noexcept
     {
         // ウィンドウハンドルが有効か
@@ -59,12 +77,6 @@ namespace ld
     {
         // ウィンドウを閉じるべきか調べる
         return glfwWindowShouldClose(handle_) == GLFW_TRUE;
-    }
-
-    void window::update_all() noexcept
-    {
-        // ウィンドウのイベント処理を行う
-        glfwPollEvents();
     }
 
     void window::close() noexcept
@@ -114,19 +126,23 @@ namespace ld
         glfwSetWindowSizeCallback(handle_, on_size_changed);
     }
 
-    void window::on_size_changed(handle_type handle, int32 width, int32 height)
-    {
-        auto& data = *static_cast<window*>(glfwGetWindowUserPointer(handle));
-
-        data.size_.width = width;
-        data.size_.height = height;
-    }
-
     void window::on_position_changed(handle_type handle, int32 x_pos, int32 y_pos)
     {
-        auto& data = *static_cast<window*>(glfwGetWindowUserPointer(handle));
+        // 変更されたウィンドウのポインタにキャスト
+        auto* data = static_cast<window*>(glfwGetWindowUserPointer(handle));
 
-        data.position_.x = x_pos;
-        data.position_.y = y_pos;
+        // 変更後のウィンドウ座標を代入
+        data->position_.x = x_pos;
+        data->position_.y = y_pos;
     }
-} // namespace ld
+
+    void window::on_size_changed(handle_type handle, int32 width, int32 height)
+    {
+        // 変更されたウィンドウのポインタにキャスト
+        auto* data = static_cast<window*>(glfwGetWindowUserPointer(handle));
+
+        // 変更後のウィンドウサイズを代入
+        data->size_.width = width;
+        data->size_.height = height;
+    }
+}

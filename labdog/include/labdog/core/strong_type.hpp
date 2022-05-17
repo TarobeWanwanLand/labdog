@@ -68,39 +68,14 @@ namespace ld
             return *this;
         }
 
-        [[nodiscard]] constexpr explicit operator value_type&()
-        {
-            return value_;
-        }
-
-        [[nodiscard]] constexpr explicit operator const value_type&() const
-        {
-            return value_;
-        }
-
-        [[nodiscard]] constexpr value_type& operator*() noexcept
-        {
-            return value_;
-        }
-
         [[nodiscard]] constexpr const value_type& operator*() const noexcept
         {
             return value_;
         }
 
-        [[nodiscard]] constexpr value_type* operator->() noexcept
-        {
-            return std::addressof(value_);
-        }
-
         [[nodiscard]] constexpr const value_type* operator->() const noexcept
         {
             return std::addressof(value_);
-        }
-
-        [[nodiscard]] constexpr value_type& value() noexcept
-        {
-            return value_;
         }
 
         [[nodiscard]] constexpr const value_type& value() const noexcept

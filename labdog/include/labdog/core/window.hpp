@@ -35,7 +35,7 @@ namespace ld
     {
         /// @brief ウィンドウのタイトル名
         using title = strong_type<string_view, detail::title_tag>;
-        /// @brief ウィンドウの位置
+        /// @brief ウィンドウの座標
         using position = strong_type<point, detail::position_tag>;
         /// @brief ウィンドウのサイズ
         using size = strong_type<size, detail::size_tag>;
@@ -55,7 +55,7 @@ namespace ld
         /// @tparam OptionalArgs オプションの可変長引数型
         /// @param options オプションの可変長引数
         /// @arg args::title ウィンドウのタイトル名
-        /// @arg args::position ウィンドウの位置
+        /// @arg args::position ウィンドウの座標
         /// @arg args::size ウィンドウのサイズ
         template <class... OptionalArgs>
         requires is_all_not_same_v<OptionalArgs...>
@@ -101,6 +101,18 @@ namespace ld
         /// @param size ウィンドウ幅
         void set_size(size size) noexcept;
 
+        /// @brief ウィンドウタイトルを取得する
+        /// @return ウィンドウタイトル
+        [[nodiscard]] string_view get_title() const noexcept;
+
+        /// @brief ウィンドウ座標を取得する
+        /// @return ウィンドウ座標
+        [[nodiscard]] const point& get_position() const noexcept;
+
+        /// @brief ウィンドウサイズを取得する
+        /// @return ウィンドウサイズ
+        [[nodiscard]] const size& get_size() const noexcept;
+
         /// @brief ウィンドウが閉じられているかを返す
         /// @return ウィンドウが閉じられているか
         [[nodiscard]] bool is_closed() const noexcept;
@@ -109,30 +121,33 @@ namespace ld
         /// @return ウィンドウを閉じるべきか
         [[nodiscard]] bool should_close() const noexcept;
 
-        /// @brief 全てのウィンドウを更新する
-        static void update_all() noexcept;
-
     private:
         /// @brief ウィンドウを作成する
         void create();
 
+        /// @brief オプション引数からウィンドウのタイトルをセットする
         void apply_optional_arg(const args::title title) noexcept
         {
             title_ = *title;
         }
 
+        /// @brief オプション引数からウィンドウの座標をセットする
         void apply_optional_arg(const args::position position) noexcept
         {
             position_ = *position;
         }
 
+        /// @brief オプション引数からウィンドウのサイズをセットする
         void apply_optional_arg(const args::size size) noexcept
         {
             size_ = *size;
         }
 
-        static void on_position_changed(handle_type handle, int32 x_pos, int32 y_pos);
+        /// @brief ウィンドウサイズ変更時のコールバック
         static void on_size_changed(handle_type handle, int32 width, int32 height);
+
+        /// @brief ウィンドウ座標変更時のコールバック
+        static void on_position_changed(handle_type handle, int32 x_pos, int32 y_pos);
 
         detail::glfw_init glfw_initializer_;   //!< GLFWの初期化クラス
 
@@ -142,6 +157,6 @@ namespace ld
         point position_;    //!< ウィンドウ座標
         size size_;         //!< ウィンドウ幅
     };
-} // namespace ld
+}
 
 #endif // LABDOG_WINDOW_HPP
