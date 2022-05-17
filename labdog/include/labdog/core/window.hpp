@@ -29,6 +29,7 @@ namespace ld
         struct title_tag{};
         struct size_tag{};
         struct position_tag{};
+        struct opacity_tag{};
     }
 
     namespace args
@@ -39,6 +40,8 @@ namespace ld
         using position = strong_type<point, detail::position_tag>;
         /// @brief ウィンドウのサイズ
         using size = strong_type<size, detail::size_tag>;
+        /// @brief ウィンドウの透明度
+        using opacity = strong_type<float, detail::opacity_tag>;
     }
 
     /// @brief ウィンドウを管理する
@@ -58,32 +61,39 @@ namespace ld
         /// @arg args::position ウィンドウの座標
         /// @arg args::size ウィンドウのサイズ
         template <class... OptionalArgs>
-        requires is_all_not_same_v<OptionalArgs...>
         [[nodiscard]] explicit window(OptionalArgs&&... options)
-            : handle_()
-            , title_(u8"labdog")
-            , position_(100, 100)
-            , size_(600, 400)
+            : handle_{}
+            , title_{ default_title }
         {
-            if constexpr(sizeof...(OptionalArgs) > 0)
-                std::apply(
-                    [this](auto&&... opt)
-                    {
-                        static_cast<void>(this); // thisキャプチャが不要な場合の警告抑止
-                        (apply_optional_arg(opt), ...);
-                    },
-                    std::make_tuple(std::forward<OptionalArgs>(options)...));
+            // 同じオプション引数が複数渡された場合エラー
+            static_assert(is_all_not_same_v<OptionalArgs...>, "Multiple identical option arguments are passed.");
 
+            // ウィンドウを作成
             create();
+
+            // 全てのオプション引数を適応する
+            std::apply(
+                [this](auto&&... opt)
+                {
+                    static_cast<void>(this); // thisキャプチャが不要な場合の警告抑止
+                    (apply_optional_arg(opt), ...); // オプションを一つずつ適応
+                },
+                std::make_tuple(std::forward<OptionalArgs>(options)...));
         }
 
         /// @brief ウィンドウを破棄する
         ~window();
 
+        /// @brief コピーコンストラクタを削除
         window(const window&) = delete;
+
+        /// @brief コポー代入演算子を削除
         window& operator=(const window&) = delete;
 
+        /// @brief デフォルトムーブコンストラクタ
         window(window&&) noexcept = default;
+
+        /// @brief デフォルトムーブ代入演算子
         window& operator=(window&&) noexcept = default;
 
         /// @brief ウィンドウを閉じる
@@ -99,7 +109,11 @@ namespace ld
 
         /// @brief ウィンドウサイズを変更する
         /// @param size ウィンドウ幅
-        void set_size(size size) noexcept;
+        void set_size(size size);
+
+        /// @brief ウィンドウの透明度を変更する
+        /// @param opacity ウィンドウの透明度
+        void set_opacity(float opacity) noexcept;
 
         /// @brief ウィンドウタイトルを取得する
         /// @return ウィンドウタイトル
@@ -107,11 +121,15 @@ namespace ld
 
         /// @brief ウィンドウ座標を取得する
         /// @return ウィンドウ座標
-        [[nodiscard]] const point& get_position() const noexcept;
+        [[nodiscard]] point get_position() const noexcept;
 
         /// @brief ウィンドウサイズを取得する
         /// @return ウィンドウサイズ
-        [[nodiscard]] const size& get_size() const noexcept;
+        [[nodiscard]] size get_size() const noexcept;
+
+        /// @brief ウィンドウの透明度を取得する
+        /// @return ウィンドウの透明度
+        [[nodiscard]] float get_opacity() const noexcept;
 
         /// @brief ウィンドウが閉じられているかを返す
         /// @return ウィンドウが閉じられているか
@@ -128,19 +146,25 @@ namespace ld
         /// @brief オプション引数からウィンドウのタイトルをセットする
         void apply_optional_arg(const args::title title) noexcept
         {
-            title_ = *title;
+            set_title(*title);
         }
 
         /// @brief オプション引数からウィンドウの座標をセットする
         void apply_optional_arg(const args::position position) noexcept
         {
-            position_ = *position;
+            set_position(*position);
         }
 
         /// @brief オプション引数からウィンドウのサイズをセットする
         void apply_optional_arg(const args::size size) noexcept
         {
-            size_ = *size;
+            set_size(*size);
+        }
+
+        /// @brief オプション引数からウィンドウの透明度をセットする
+        void apply_optional_arg(const args::opacity opacity) noexcept
+        {
+            set_opacity(*opacity);
         }
 
         /// @brief ウィンドウサイズ変更時のコールバック
@@ -149,13 +173,12 @@ namespace ld
         /// @brief ウィンドウ座標変更時のコールバック
         static void on_position_changed(handle_type handle, int32 x_pos, int32 y_pos);
 
-        detail::glfw_init glfw_initializer_;   //!< GLFWの初期化クラス
+        static constexpr string_view default_title{ u8"" };     //!< デフォルトのタイトル名
+        static constexpr size default_size{ 600, 400 }; //!< デフォルトのサイズ
 
-        handle_type handle_;    //!< ウィンドウハンドル
-
-        string title_;      //!< ウィンドウタイトル
-        point position_;    //!< ウィンドウ座標
-        size size_;         //!< ウィンドウ幅
+        detail::glfw_init glfw_initializer_;   //!< GLFWの初期化＆解放
+        handle_type handle_;    //!< ハンドル
+        string title_;  //<! タイトル
     };
 }
 

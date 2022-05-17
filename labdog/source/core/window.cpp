@@ -11,13 +11,10 @@
 #include "labdog/core/window.hpp"
 #include "labdog/core/assertion.hpp"
 
-namespace ld
-{
+namespace ld {
     window::window()
-        : handle_()
-        , title_()
-        , position_(100, 100)
-        , size_(600, 400)
+        : handle_{}
+        , title_{ default_title }
     {
         // ウィンドウを作成
         create();
@@ -33,38 +30,57 @@ namespace ld
     {
         // ウィンドウタイトルを変更する
         title_ = title;
-        glfwSetWindowTitle(handle_, reinterpret_cast<const char*>(title_.data()));
+        glfwSetWindowTitle(handle_, reinterpret_cast<const char *>(title_.c_str()));
     }
 
     void window::set_position(const point position) noexcept
     {
         // ウィンドウ座標を変更する
-        // コールバックでメンバにも変更が反映される
         glfwSetWindowPos(handle_, position.x, position.y);
     }
 
-    void window::set_size(const size size) noexcept
+    void window::set_size(const size size)
     {
+        // ウィンドウサイズの幅に0以下の値を設定した場合エラー
+        if (size.width <= 0 && size.height <= 0)
+            throw std::out_of_range("Window size cannot be less than zero.");
+
         // ウィンドウサイズを変更する
-        // コールバックでメンバにも変更が反映される
         glfwSetWindowSize(handle_, size.width, size.height);
+    }
+
+    void window::set_opacity(float opacity) noexcept
+    {
+        // ウィンドウの透明度を変更する
+        glfwSetWindowOpacity(handle_, opacity);
     }
 
     string_view window::get_title() const noexcept
     {
+        // ウィンドウタイトルを返す
         return title_;
     }
 
-    const point &window::get_position() const noexcept
+    point window::get_position() const noexcept
     {
         // ウィンドウ座標を返す
-        return position_;
+        point result;
+        glfwGetWindowPos(handle_, &result.x, &result.y);
+        return result;
     }
 
-    const size &window::get_size() const noexcept
+    size window::get_size() const noexcept
     {
         // ウィンドウサイズを返す
-        return size_;
+        size result;
+        glfwGetWindowSize(handle_, &result.width, &result.height);
+        return result;
+    }
+
+    float window::get_opacity() const noexcept
+    {
+        // ウィンドウの透明度を返す
+        return glfwGetWindowOpacity(handle_);
     }
 
     bool window::is_closed() const noexcept
@@ -82,8 +98,7 @@ namespace ld
     void window::close() noexcept
     {
         // ウィンドウ作成に成功していた場合、ウィンドウを破棄する
-        if(handle_)
-        {
+        if (handle_) {
             // ウィンドウを破棄
             glfwDestroyWindow(handle_);
             handle_ = nullptr;
@@ -93,28 +108,22 @@ namespace ld
     void window::create()
     {
         // ウィンドウが既に作成されていた場合エラー
-        if(handle_)
+        if (handle_)
             throw std::logic_error("The window has already been created.");
-
-        // ウィンドウサイズの幅に0以下の値を設定した場合エラー
-        if(size_.width <= 0 && size_.height <= 0)
-            throw std::out_of_range("Window size cannot be less than zero.");
 
         // ウィンドウの設定
         glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
+        glfwWindowHint(GLFW_TRANSPARENT_FRAMEBUFFER, GLFW_TRUE);
 
         // ウィンドウを作成する
         handle_ = glfwCreateWindow(
-            size_.width,
-            size_.height,
+            default_size.width,
+            default_size.height,
             reinterpret_cast<const char*>(title_.c_str()),
             nullptr,
             nullptr);
-        if(!handle_)
+        if (!handle_)
             throw std::runtime_error("Failed to create window.");
-
-        // ウィンドウ座標をセット
-        glfwSetWindowPos(handle_, position_.x, position_.y);
 
         // ウィンドウコールバックに使用するユーザーデータをセット
         glfwSetWindowUserPointer(handle_, this);
@@ -128,21 +137,11 @@ namespace ld
 
     void window::on_position_changed(handle_type handle, int32 x_pos, int32 y_pos)
     {
-        // 変更されたウィンドウのポインタにキャスト
-        auto* data = static_cast<window*>(glfwGetWindowUserPointer(handle));
-
-        // 変更後のウィンドウ座標を代入
-        data->position_.x = x_pos;
-        data->position_.y = y_pos;
+        // TODO: イベント発行
     }
 
     void window::on_size_changed(handle_type handle, int32 width, int32 height)
     {
-        // 変更されたウィンドウのポインタにキャスト
-        auto* data = static_cast<window*>(glfwGetWindowUserPointer(handle));
-
-        // 変更後のウィンドウサイズを代入
-        data->size_.width = width;
-        data->size_.height = height;
+        // TODO: イベント発行
     }
 }

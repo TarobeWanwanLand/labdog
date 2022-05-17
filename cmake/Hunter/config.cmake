@@ -81,6 +81,18 @@ hunter_config(
         ENTT_USE_ATOMIC=ON
 )
 
+hunter_config(
+    magic_enum
+    VERSION 0.8.0
+    URL https://github.com/Neargye/magic_enum/archive/refs/tags/v0.8.0.tar.gz
+    SHA1 C77709F80C72A545DF83738838A64F6F2438AE25
+    CMAKE_ARGS
+        MAGIC_ENUM_OPT_ENABLE_NONASCII=ON
+        MAGIC_ENUM_OPT_BUILD_EXAMPLES=OFF
+        MAGIC_ENUM_OPT_BUILD_TESTS=OFF
+        MAGIC_ENUM_OPT_INSTALL=ON
+)
+
 if(${MSVC80})
     hunter_config(
         GTest

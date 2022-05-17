@@ -37,6 +37,9 @@ find_package(spdlog CONFIG REQUIRED)
 hunter_add_package(EnTT)
 find_package(EnTT CONFIG REQUIRED)
 
+hunter_add_package(magic_enum)
+find_package(magic_enum CONFIG REQUIRED)
+
 # 外部ライブラリのリスト
 set(EXTERNAL_LIBRARIES
     Boost::system
@@ -46,6 +49,7 @@ set(EXTERNAL_LIBRARIES
     fmt::fmt
     spdlog::spdlog
     EnTT::EnTT
+    magic_enum::magic_enum
 )
 
 # サブディレクトリ
