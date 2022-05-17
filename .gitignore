@@ -5,9 +5,7 @@
 build/
 install/
 out/
-.idea/
 .hunter/
-cmake-build-*/
 cmake-install-*/
 *.stackdump
 
