@@ -97,7 +97,7 @@ namespace ld {
 
     void window::close() noexcept
     {
-        // ウィンドウ作成に成功していた場合、ウィンドウを破棄する
+        // ウィンドウが開いている場合、ウィンドウを閉じる
         if (handle_) {
             // ウィンドウを破棄
             glfwDestroyWindow(handle_);

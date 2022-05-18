@@ -12,32 +12,43 @@
 #define LABDOG_LOCATOR_HPP
 
 #include <stdexcept>
+#include <type_traits>
+#include <entt/entt.hpp>
 #include "dispatcher.hpp"
 
 namespace ld
 {
     /// @brief サービスロケータ
+    template <class Service>
     class locator final
     {
+        static_assert(
+            std::is_same_v<Service, std::remove_cvref_t<Service>>,
+            "Must be a non-const, non-volatile type.");
+
     public:
-        static void provide_dispatcher(dispatcher* dispatcher)
-        {
-            if(!dispatcher)
-                throw std::invalid_argument("The pointer to the dispatcher is nullptr.");
+        using service_type = Service;
+        using locator_type = entt::locator<Service>;
 
-            dispatcher_ = dispatcher;
+        locator() = delete;
+        ~locator() = delete;
+
+        template <class... Args>
+        static void provide(Args&&... args)
+        {
+            locator_type::emplace(std::forward<Args>(args)...);
         }
 
-        [[nodiscard]] static dispatcher& dispatcher_service()
+        static Service& service() noexcept
         {
-            if(!dispatcher_)
-                throw std::logic_error("The pointer to the dispatcher is nullptr.");
-
-            return *dispatcher_;
+            return locator_type::value();
         }
 
-    private:
-        static inline dispatcher* dispatcher_{};
+        template <class... Args>
+        static Service& service_or(Args&&... args) noexcept
+        {
+            return locator_type ::value_or(std::forward<Args>(args)...);
+        }
     };
 }
 

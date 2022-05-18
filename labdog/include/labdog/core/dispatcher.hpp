@@ -11,7 +11,7 @@
 #ifndef LABDOG_DISPATCHER_HPP
 #define LABDOG_DISPATCHER_HPP
 
-#include <entt/signal/dispatcher.hpp>
+#include <entt/entt.hpp>
 
 namespace ld
 {
@@ -104,7 +104,7 @@ namespace ld
         /// @brief イベントキュー内のイベントの総数
         [[nodiscard]] size_type size() const noexcept
         {
-            dispatcher_.size();
+            return dispatcher_.size();
         }
 
         /// @brief イベントキュー内の特定のイベントの総数
@@ -112,7 +112,7 @@ namespace ld
         template <class Event>
         [[nodiscard]] size_type size() const noexcept
         {
-            dispatcher_.size<Event>();
+            return dispatcher_.size<Event>();
         }
 
     private:

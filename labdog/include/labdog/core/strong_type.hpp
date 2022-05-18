@@ -17,54 +17,75 @@
 namespace ld
 {
     template<class Type, class Tag>
-    struct strong_type
+    struct strong_type final
     {
+        static_assert(
+            std::is_same_v<Type, std::remove_cvref_t<Type>>,
+            "It must be a non-const, non-volatile type.");
+
     public:
         using value_type = Type;
 
-        [[nodiscard]] constexpr strong_type()
-        noexcept(noexcept(std::is_nothrow_default_constructible_v<value_type>))
-        requires std::is_default_constructible_v<value_type>
-        {
-        }
+        [[nodiscard]] constexpr strong_type() = default;
 
         template <class... Args>
         requires std::is_constructible_v<value_type, Args...>
-              && std::negation_v<std::disjunction<std::is_same<Args, const value_type&>...>>
-              && std::negation_v<std::disjunction<std::is_same<Args, value_type&&>...>>
         [[nodiscard]] constexpr explicit strong_type(Args&&... args)
-        noexcept(noexcept(std::is_nothrow_constructible_v<value_type, Args...>))
+        noexcept(std::is_nothrow_constructible_v<value_type, Args...>)
             : value_{ std::forward<Args>(args)... }
-        {
-        }
+        { }
 
-        [[nodiscard]] constexpr explicit strong_type(const value_type& v)
-        noexcept(noexcept(std::is_nothrow_copy_constructible_v<value_type>))
+        [[nodiscard]] constexpr strong_type(const strong_type& other)
+        noexcept(std::is_nothrow_copy_constructible_v<value_type>)
         requires std::is_copy_constructible_v<value_type>
-            : value_{ v }
+            : value_{ other.value_ }
+        { }
+
+        [[nodiscard]] constexpr strong_type(strong_type&& other)
+        noexcept(std::is_nothrow_move_constructible_v<value_type>)
+        requires std::is_move_constructible_v<value_type>
+                 && std::negation_v<std::is_reference<value_type>>
+            : value_{ std::move(other.value_) }
+        { }
+
+        ~strong_type() = default;
+
+        [[nodiscard]] constexpr value_type& value() noexcept
         {
+            return value_;
         }
 
-        [[nodiscard]] constexpr explicit strong_type(value_type&& v)
-        noexcept(noexcept(std::is_nothrow_move_constructible_v<value_type>))
-        requires std::is_move_constructible_v<value_type> && std::negation_v<std::is_reference<value_type>>
-            : value_{ std::move(v) }
+        constexpr strong_type& operator=(const strong_type& rhs)
+        noexcept(std::is_nothrow_copy_assignable_v<value_type>)
+        requires std::is_copy_assignable_v<value_type>
         {
-        }
-
-        constexpr strong_type& operator=(const value_type& v)
-        noexcept(noexcept(std::is_nothrow_copy_assignable_v<Type>))
-        requires std::is_copy_assignable_v<Type>
-        {
-            value_ = v;
+            value_ = rhs.value_;
             return *this;
         }
 
-        constexpr strong_type& operator=(value_type&& v)
-        noexcept(noexcept(std::is_nothrow_move_assignable_v<Type>))
-        requires std::is_move_assignable_v<Type> && std::negation_v<std::is_reference<value_type>>
+        constexpr strong_type& operator=(strong_type&& rhs)
+        noexcept(std::is_nothrow_move_assignable_v<value_type>)
+        requires std::is_move_assignable_v<value_type>
+                 && std::negation_v<std::is_reference<value_type>>
         {
-            value_ = v;
+            value_ = std::move(rhs.value_);
+            return *this;
+        }
+
+        constexpr strong_type& operator=(const value_type& rhs)
+        noexcept(std::is_nothrow_copy_assignable_v<value_type>)
+        requires std::is_copy_assignable_v<value_type>
+        {
+            value_ = rhs;
+            return *this;
+        }
+
+        constexpr strong_type& operator=(value_type&& rhs)
+        noexcept(std::is_nothrow_move_assignable_v<value_type>)
+        requires std::is_move_assignable_v<value_type>
+                 && std::negation_v<std::is_reference<value_type>>
+        {
+            value_ = rhs;
             return *this;
         }
 

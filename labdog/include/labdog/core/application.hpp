@@ -11,9 +11,11 @@
 #ifndef LABDOG_APPLICATION_HPP
 #define LABDOG_APPLICATION_HPP
 
+#include <chrono>
+#include <atomic>
+#include <GLFW/glfw3.h>
 #include "common.hpp"
 #include "locator.hpp"
-#include <chrono>
 
 namespace ld {
     class application
@@ -34,16 +36,24 @@ namespace ld {
 
         void run()
         {
-            dispatcher dispatcher;
-            locator::provide_dispatcher(&dispatcher);
+            locator<dispatcher>::provide();
+
+            start();
 
             const auto start_time = std::chrono::system_clock::now();
             auto current_time = start_time;
 
             while (!should_terminate_)
             {
+                glfwPollEvents();
+
                 tick();
             }
+        }
+
+        void terminate()
+        {
+            should_terminate_ = true;
         }
 
     private:
