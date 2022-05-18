@@ -34,10 +34,10 @@ namespace ld
         dispatcher& operator=(dispatcher&&) = default;
 
         /// @brief 中身を入れ替える
-        /// @param dispr 他のイベント発行クラス
-        void swap(dispatcher& dispr)
+        /// @param dispatcher 他のイベント発行クラス
+        void swap(dispatcher& dispatcher)
         {
-            dispatcher_.swap(dispr.dispatcher_);
+            dispatcher_.swap(dispatcher.dispatcher_);
         }
 
         /// @brief イベントを購読する
@@ -48,7 +48,7 @@ namespace ld
         template <typename Event, auto Candidate, typename Receiver>
         void subscribe(Receiver&& receiver)
         {
-            dispatcher_.sink<Event>().connect<Candidate>(&std::forward<Receiver>(receiver));
+            dispatcher_.sink<Event>().connect<Candidate>(std::forward<Receiver>(receiver));
         }
 
         /// @brief イベントを購読解除する
@@ -58,7 +58,7 @@ namespace ld
         template <typename Event, typename Receiver>
         void unsubscribe(Receiver&& receiver)
         {
-            dispatcher_.sink<Event>().disconnect(&std::forward<Receiver>(receiver));
+            dispatcher_.sink<Event>().disconnect(std::forward<Receiver>(receiver));
         }
 
         /// @brief イベントを発行する

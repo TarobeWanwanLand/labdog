@@ -12,14 +12,14 @@
 #define LABDOG_APPLICATION_HPP
 
 #include "common.hpp"
-#include "dispatcher.hpp"
-#include <boost/program_options.hpp>
+#include "locator.hpp"
+#include <chrono>
 
 namespace ld {
-    class application final
+    class application
     {
     public:
-        application(int32 argc, char *argv[])
+        application()
         {
             if(instance_)
                 std::logic_error("The application is already instantiated.");
@@ -27,28 +27,32 @@ namespace ld {
             instance_ = this;
         }
 
-        ~application()
+        virtual ~application() noexcept
         {
             instance_ = nullptr;
         }
 
-        [[nodiscard]] dispatcher& dispatcher() noexcept
+        void run()
         {
-            return dispatcher_;
-        }
+            dispatcher dispatcher;
+            locator::provide_dispatcher(&dispatcher);
 
-        [[nodiscard]] static application& get()
-        {
-            if (!instance_)
-                throw std::logic_error("The application instance does not exist.");
+            const auto start_time = std::chrono::system_clock::now();
+            auto current_time = start_time;
 
-            return *instance_;
+            while (!should_terminate_)
+            {
+                tick();
+            }
         }
 
     private:
-        ld::dispatcher dispatcher_; //<! イベント発行
+        virtual void start() {};
+        virtual void tick() {};
 
-        static application* instance_; //<! アプリケーションのインスタンス
+    private:
+        static std::atomic<application*> instance_; //<! アプリケーションのインスタンス
+        static std::atomic_bool should_terminate_;
     };
 }
 
