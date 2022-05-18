@@ -53,7 +53,7 @@ namespace ld
             , previous_axes_states_{}
             , dispatcher_{}
         {
-            dispatcher_ = locator::dispatcher_service();
+            dispatcher_ = &locator::dispatcher_service();
 
             dispatcher_->subscribe<detail::button_state_changed_event, &mouse::on_button_state_changed>(*this);
             dispatcher_->subscribe<detail::axis_value_changed_event, &mouse::on_axis_value_changed>(*this);

@@ -16,8 +16,6 @@
 
 namespace ld
 {
-    class dispatcher;
-
     /// @brief サービスロケータ
     class locator final
     {
@@ -30,9 +28,12 @@ namespace ld
             dispatcher_ = dispatcher;
         }
 
-        [[nodiscard]] static dispatcher* dispatcher_service()
+        [[nodiscard]] static dispatcher& dispatcher_service()
         {
-            return dispatcher_;
+            if(!dispatcher_)
+                throw std::logic_error("The pointer to the dispatcher is nullptr.");
+
+            return *dispatcher_;
         }
 
     private:
