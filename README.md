@@ -3,5 +3,5 @@
 ⚠️under development!!⚠️\
 ⚠️開発中!!⚠️
 
-A multi-platform game library using C++20.\
-C++20を使用したマルチプラットフォームゲームライブラリです。
+A multi-platform game library using C++23.\
+C++23を使用したマルチプラットフォームゲームライブラリです。
