@@ -1,6 +1,6 @@
 //=========================================================
 //
-//  monitor.hpp is part of the labdog project.
+//  input_key_code.hpp is part of the labdog project.
 //  Copyright (C) 2022 TarobeWanwanLand.
 //
 //  Released under the MIT license.
@@ -8,15 +8,19 @@
 //
 //=========================================================
 
-#ifndef LABDOG_MONITOR_HPP
-#define LABDOG_MONITOR_HPP
+#ifndef LABDOG_INPUT_KEY_CODE_HPP
+#define LABDOG_INPUT_KEY_CODE_HPP
 
 namespace ld
 {
-    class Monitor
+    enum class key_code
     {
-
+        left = 0,
+        right,
+        middle,
+        x1,
+        x2
     };
 }
 
-#endif // LABDOG_MONITOR_HPP
+#endif //LABDOG_INPUT_KEY_CODE_HPP

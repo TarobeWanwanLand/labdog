@@ -24,7 +24,7 @@ namespace ld {
         application()
         {
             if(instance_)
-                std::logic_error("The application is already instantiated.");
+                throw std::logic_error("The application is already instantiated.");
 
             instance_ = this;
         }
@@ -40,9 +40,6 @@ namespace ld {
 
             start();
 
-            const auto start_time = std::chrono::system_clock::now();
-            auto current_time = start_time;
-
             while (!should_terminate_)
             {
                 glfwPollEvents();
@@ -51,7 +48,7 @@ namespace ld {
             }
         }
 
-        void terminate()
+        static void terminate()
         {
             should_terminate_ = true;
         }

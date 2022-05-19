@@ -39,15 +39,15 @@ namespace ld
             locator_type::emplace(std::forward<Args>(args)...);
         }
 
-        static Service& service() noexcept
+        static service_type& service() noexcept
         {
             return locator_type::value();
         }
 
         template <class... Args>
-        static Service& service_or(Args&&... args) noexcept
+        static service_type& service_or(Args&&... args)
         {
-            return locator_type ::value_or(std::forward<Args>(args)...);
+            return locator_type::value_or(std::forward<Args>(args)...);
         }
     };
 }

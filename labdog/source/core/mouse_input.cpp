@@ -1,6 +1,6 @@
 //=========================================================
 //
-//  mouse.cpp is part of the labdog project.
+//  mouse_input.cpp is part of the labdog project.
 //  Copyright (C) 2022 TarobeWanwanLand.
 //
 //  Released under the MIT license.
@@ -8,7 +8,7 @@
 //
 //=========================================================
 
-#include "labdog/core/mouse.hpp"
+#include "labdog/core/mouse_input.hpp"
 
 namespace ld
 {

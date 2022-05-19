@@ -39,26 +39,26 @@ namespace ld
 
     void logger::trace(const string_view msg)
     {
-        spdlog::trace(msg);
+        spdlog::trace(reinterpret_cast<const char*>(msg.data()));
     }
 
     void logger::info(const string_view msg)
     {
-        spdlog::info(msg);
+        spdlog::info(reinterpret_cast<const char*>(msg.data()));
     }
 
     void logger::debug(const string_view msg)
     {
-        spdlog::debug(msg);
+        spdlog::debug(reinterpret_cast<const char*>(msg.data()));
     }
 
     void logger::warning(const string_view msg)
     {
-        spdlog::warn(msg);
+        spdlog::warn(reinterpret_cast<const char*>(msg.data()));
     }
 
     void logger::critical(const string_view msg)
     {
-        spdlog::critical(msg);
+        spdlog::critical(reinterpret_cast<const char*>(msg.data()));
     }
 }

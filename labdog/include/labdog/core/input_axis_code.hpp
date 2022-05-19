@@ -1,6 +1,6 @@
 //=========================================================
 //
-//  axis_code.hpp is part of the labdog project.
+//  input_axis_code.hpp is part of the labdog project.
 //  Copyright (C) 2022 TarobeWanwanLand.
 //
 //  Released under the MIT license.
@@ -8,8 +8,8 @@
 //
 //=========================================================
 
-#ifndef LABDOG_AXIS_CODE_HPP
-#define LABDOG_AXIS_CODE_HPP
+#ifndef LABDOG_INPUT_AXIS_CODE_HPP
+#define LABDOG_INPUT_AXIS_CODE_HPP
 
 namespace ld
 {
@@ -21,4 +21,4 @@ namespace ld
     };
 }
 
-#endif //LABDOG_AXIS_CODE_HPP
+#endif //LABDOG_INPUT_AXIS_CODE_HPP

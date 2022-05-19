@@ -1,6 +1,6 @@
 //=========================================================
 //
-//  mouse.hpp is part of the labdog project.
+//  mouse_input.hpp is part of the labdog project.
 //  Copyright (C) 2022 TarobeWanwanLand.
 //
 //  Released under the MIT license.
@@ -8,8 +8,8 @@
 //
 //=========================================================
 
-#ifndef LABDOG_MOUSE_HPP
-#define LABDOG_MOUSE_HPP
+#ifndef LABDOG_MOUSE_INPUT_HPP
+#define LABDOG_MOUSE_INPUT_HPP
 
 #include <memory>
 #include <bitset>
@@ -19,8 +19,8 @@
 #include "window.hpp"
 #include "dispatcher.hpp"
 #include "point.hpp"
-#include "key_code.hpp"
-#include "axis_code.hpp"
+#include "input_key_code.hpp"
+#include "input_axis_code.hpp"
 #include "locator.hpp"
 
 namespace ld
@@ -43,7 +43,7 @@ namespace ld
     }
 
     /// @brief マウスクラス
-    class mouse
+    class mouse final
     {
     public:
         mouse()
@@ -89,4 +89,4 @@ namespace ld
     };
 }
 
-#endif //LABDOG_MOUSE_HPP
+#endif //LABDOG_MOUSE_INPUT_HPP

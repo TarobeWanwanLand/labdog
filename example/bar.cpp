@@ -5,7 +5,7 @@
 #include <mutex>
 #include <cmath>
 #include <numbers>
-#include <labdog/core/mouse.hpp>
+#include <labdog/core/mouse_input.hpp>
 #include <labdog/core/application.hpp>
 #include <optional>
 
@@ -41,7 +41,7 @@ int main(ld::int32 argc, char* argv[])
     using namespace ld;
 
     example app;
-    app.run();
+//    app.run();
 
     return 0;
 }
