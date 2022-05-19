@@ -10,11 +10,13 @@ namespace ld
     public:
         impl()
         {
-            std::vector<spdlog::sink_ptr> logger_sinks;
-            logger_sinks.emplace_back(std::make_shared<spdlog::sinks::stdout_color_sink_mt>());
-            logger_sinks.emplace_back(std::make_shared<spdlog::sinks::basic_file_sink_mt>("labdog.log", true));
+            spdlog::sink_ptr logger_sinks[] {
+                std::make_shared<spdlog::sinks::stdout_color_sink_mt>(),
+                std::make_shared<spdlog::sinks::basic_file_sink_mt>("labdog.log", true)
+            };
 
-            logger_ = std::make_shared<spdlog::logger>("logger", logger_sinks.begin(), logger_sinks.end());
+            logger_ = std::make_shared<spdlog::logger>(
+                "logger", std::begin(logger_sinks), std::end(logger_sinks));
             logger_->set_level(spdlog::level::trace);
             logger_->flush_on(spdlog::level::trace);
 
@@ -39,26 +41,31 @@ namespace ld
 
     void logger::trace(const string_view msg)
     {
-        spdlog::trace(msg);
+        spdlog::trace(std::string_view(
+            reinterpret_cast<const char*>(msg.data()), msg.size()));
     }
 
     void logger::info(const string_view msg)
     {
-        spdlog::info(msg);
+        spdlog::info(std::string_view(
+            reinterpret_cast<const char*>(msg.data()), msg.size()));
     }
 
     void logger::debug(const string_view msg)
     {
-        spdlog::debug(msg);
+        spdlog::debug(std::string_view(
+            reinterpret_cast<const char*>(msg.data()), msg.size()));
     }
 
     void logger::warning(const string_view msg)
     {
-        spdlog::warn(msg);
+        spdlog::warn(std::string_view(
+            reinterpret_cast<const char*>(msg.data()), msg.size()));
     }
 
     void logger::critical(const string_view msg)
     {
-        spdlog::critical(msg);
+        spdlog::critical(std::string_view(
+            reinterpret_cast<const char*>(msg.data()), msg.size()));
     }
 }

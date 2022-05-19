@@ -22,9 +22,10 @@ namespace ld {
     {
     public:
         application()
+            : should_terminate_{ false }
         {
             if(instance_)
-                std::logic_error("The application is already instantiated.");
+                throw std::logic_error("The application is already instantiated.");
 
             instance_ = this;
         }
@@ -62,7 +63,8 @@ namespace ld {
 
     private:
         static std::atomic<application*> instance_; //<! アプリケーションのインスタンス
-        static std::atomic_bool should_terminate_;
+
+        std::atomic_bool should_terminate_;
     };
 }
 

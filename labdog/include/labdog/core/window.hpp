@@ -16,10 +16,13 @@
 #include <GLFW/glfw3.h>
 #include "common.hpp"
 #include "string.hpp"
+#include "string_view.hpp"
 #include "strong_type.hpp"
 #include "size.hpp"
 #include "point.hpp"
 #include "type_traits.hpp"
+#include "dispatcher.hpp"
+#include "locator.hpp"
 #include "detail/glfw_init.hpp"
 
 namespace ld
@@ -64,21 +67,18 @@ namespace ld
         [[nodiscard]] explicit window(OptionalArgs&&... options)
             : handle_{}
             , title_{ default_title }
+            , dispatcher_{ &locator<dispatcher>::service() }
         {
             // 同じオプション引数が複数渡された場合エラー
-            static_assert(is_all_not_same_v<OptionalArgs...>, "Multiple identical option arguments are passed.");
+            static_assert(is_none_of_v<OptionalArgs...>, "Multiple identical option arguments are passed.");
 
             // ウィンドウを作成
             create();
 
             // 全てのオプション引数を適応する
-            std::apply(
-                [this](auto&&... opt)
-                {
-                    static_cast<void>(this); // thisキャプチャが不要な場合の警告抑止
-                    (apply_optional_arg(opt), ...); // オプションを一つずつ適応
-                },
-                std::make_tuple(std::forward<OptionalArgs>(options)...));
+            static_cast<void>(std::initializer_list<int>{
+                (static_cast<void>(apply_optional_arg(options)), 0)... }
+            );
         }
 
         /// @brief ウィンドウを破棄する
@@ -101,11 +101,11 @@ namespace ld
 
         /// @brief ウィンドウタイトルを変更する
         /// @param title ウィンドウタイトル
-        void set_title(string_view title) noexcept;
+        void set_title(string_view title);
 
         /// @brief ウィンドウ座標を変更する
         /// @param position 座標
-        void set_position(point position) noexcept;
+        void set_position(point position);
 
         /// @brief ウィンドウサイズを変更する
         /// @param size ウィンドウ幅
@@ -113,23 +113,23 @@ namespace ld
 
         /// @brief ウィンドウの透明度を変更する
         /// @param opacity ウィンドウの透明度
-        void set_opacity(float opacity) noexcept;
+        void set_opacity(float opacity);
 
         /// @brief ウィンドウタイトルを取得する
         /// @return ウィンドウタイトル
-        [[nodiscard]] string_view get_title() const noexcept;
+        [[nodiscard]] string_view get_title() const;
 
         /// @brief ウィンドウ座標を取得する
         /// @return ウィンドウ座標
-        [[nodiscard]] point get_position() const noexcept;
+        [[nodiscard]] point get_position() const;
 
         /// @brief ウィンドウサイズを取得する
         /// @return ウィンドウサイズ
-        [[nodiscard]] size get_size() const noexcept;
+        [[nodiscard]] size get_size() const;
 
         /// @brief ウィンドウの透明度を取得する
         /// @return ウィンドウの透明度
-        [[nodiscard]] float get_opacity() const noexcept;
+        [[nodiscard]] float get_opacity() const;
 
         /// @brief ウィンドウが閉じられているかを返す
         /// @return ウィンドウが閉じられているか
@@ -137,7 +137,7 @@ namespace ld
 
         /// @brief ウィンドウが閉じるべき状態かを返す
         /// @return ウィンドウを閉じるべきか
-        [[nodiscard]] bool should_close() const noexcept;
+        [[nodiscard]] bool should_close() const;
 
     private:
         /// @brief ウィンドウを作成する
@@ -177,8 +177,9 @@ namespace ld
         static constexpr size default_size{ 600, 400 }; //!< デフォルトのサイズ
 
         detail::glfw_init glfw_initializer_;   //!< GLFWの初期化＆解放
-        handle_type handle_;    //!< ハンドル
-        string title_;  //<! タイトル
+        handle_type handle_;        //!< ハンドル
+        string title_;              //<! タイトル
+        dispatcher* dispatcher_;    //<! イベント発行
     };
 }
 

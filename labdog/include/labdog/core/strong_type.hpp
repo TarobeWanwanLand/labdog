@@ -50,11 +50,6 @@ namespace ld
 
         ~strong_type() = default;
 
-        [[nodiscard]] constexpr value_type& value() noexcept
-        {
-            return value_;
-        }
-
         constexpr strong_type& operator=(const strong_type& rhs)
         noexcept(std::is_nothrow_copy_assignable_v<value_type>)
         requires std::is_copy_assignable_v<value_type>

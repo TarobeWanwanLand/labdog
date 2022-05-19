@@ -15,7 +15,7 @@ class example final : public application
 {
 public:
     example()
-        : main_window{ args::title(u8"🐕"), args::size(800, 1000), args::position(100, 100) }
+        : main_window{ args::title(u8"🐕"), args::position(100, 100) }
     {
     }
 

@@ -17,39 +17,39 @@
 namespace ld
 {
     template <class T, class... Types>
-    struct is_all_same : std::false_type
+    struct is_all_of : std::false_type
     { };
 
     template <class T>
-    struct is_all_same<T> : std::true_type
+    struct is_all_of<T> : std::true_type
     { };
 
     template <class T, class U, class... Ts>
-    struct is_all_same<T, U, Ts...> :
-        std::conjunction<std::is_same<T, U>, is_all_same<T, Ts...>>
+    struct is_all_of<T, U, Ts...> :
+        std::conjunction<std::is_same<T, U>, is_all_of<T, Ts...> >
     { };
 
     template <class T, class... Ts>
-    struct is_all_not_same : std::false_type
+    struct is_none_of : std::false_type
     { };
 
     template <class T>
-    struct is_all_not_same<T> : std::true_type
+    struct is_none_of<T> : std::true_type
     { };
 
     template <class T, class U, class... Ts>
-    struct is_all_not_same<T, U, Ts...> :
+    struct is_none_of<T, U, Ts...> :
         std::conditional_t<
             std::negation_v<std::disjunction<std::is_same<T, U>, std::is_same<T, Ts>...>>,
-            is_all_not_same<U, Ts...>,
+            is_none_of<U, Ts...>,
             std::false_type>
     { };
 
     template <class T, class... Ts>
-    inline constexpr bool is_all_same_v = is_all_same<T, Ts...>::value;
+    inline constexpr bool is_all_of_v = is_all_of<T, Ts...>::value;
 
     template <class T, class... Ts>
-    inline constexpr bool is_all_not_same_v = is_all_not_same<T, Ts...>::value;
+    inline constexpr bool is_none_of_v = is_none_of<T, Ts...>::value;
 }
 
 #endif // LABDOG_TYPE_TRAITS_HPP

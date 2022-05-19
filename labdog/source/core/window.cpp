@@ -10,6 +10,7 @@
 
 #include "labdog/core/window.hpp"
 #include "labdog/core/assertion.hpp"
+#include "labdog/core/event.hpp"
 
 namespace ld {
     window::window()
@@ -26,21 +27,33 @@ namespace ld {
         close();
     }
 
-    void window::set_title(const string_view title) noexcept
+    void window::set_title(const string_view title)
     {
+        // ウィンドウが既に閉じれれていればエラー
+        if(is_closed())
+            throw std::logic_error("The window is already closed.");
+
         // ウィンドウタイトルを変更する
         title_ = title;
         glfwSetWindowTitle(handle_, reinterpret_cast<const char *>(title_.c_str()));
     }
 
-    void window::set_position(const point position) noexcept
+    void window::set_position(const point position)
     {
+        // ウィンドウが既に閉じれれていればエラー
+        if(is_closed())
+            throw std::logic_error("The window is already closed.");
+
         // ウィンドウ座標を変更する
         glfwSetWindowPos(handle_, position.x, position.y);
     }
 
     void window::set_size(const size size)
     {
+        // ウィンドウが既に閉じれれていればエラー
+        if(is_closed())
+            throw std::logic_error("The window is already closed.");
+
         // ウィンドウサイズの幅に0以下の値を設定した場合エラー
         if (size.width <= 0 && size.height <= 0)
             throw std::out_of_range("Window size cannot be less than zero.");
@@ -49,36 +62,56 @@ namespace ld {
         glfwSetWindowSize(handle_, size.width, size.height);
     }
 
-    void window::set_opacity(float opacity) noexcept
+    void window::set_opacity(float opacity)
     {
+        // ウィンドウが既に閉じれれていればエラー
+        if(is_closed())
+            throw std::logic_error("The window is already closed.");
+
         // ウィンドウの透明度を変更する
         glfwSetWindowOpacity(handle_, opacity);
     }
 
-    string_view window::get_title() const noexcept
+    string_view window::get_title() const
     {
+        // ウィンドウが既に閉じれれていればエラー
+        if(is_closed())
+            throw std::logic_error("The window is already closed.");
+
         // ウィンドウタイトルを返す
         return title_;
     }
 
-    point window::get_position() const noexcept
+    point window::get_position() const
     {
+        // ウィンドウが既に閉じれれていればエラー
+        if(is_closed())
+            throw std::logic_error("The window is already closed.");
+
         // ウィンドウ座標を返す
         point result;
         glfwGetWindowPos(handle_, &result.x, &result.y);
         return result;
     }
 
-    size window::get_size() const noexcept
+    size window::get_size() const
     {
+        // ウィンドウが既に閉じれれていればエラー
+        if(is_closed())
+            throw std::logic_error("The window is already closed.");
+
         // ウィンドウサイズを返す
         size result;
         glfwGetWindowSize(handle_, &result.width, &result.height);
         return result;
     }
 
-    float window::get_opacity() const noexcept
+    float window::get_opacity() const
     {
+        // ウィンドウが既に閉じれれていればエラー
+        if(is_closed())
+            throw std::logic_error("The window is already closed.");
+
         // ウィンドウの透明度を返す
         return glfwGetWindowOpacity(handle_);
     }
@@ -89,8 +122,12 @@ namespace ld {
         return !handle_;
     }
 
-    bool window::should_close() const noexcept
+    bool window::should_close() const
     {
+        // ウィンドウが既に閉じれれていればエラー
+        if(is_closed())
+            throw std::logic_error("The window is already closed.");
+
         // ウィンドウを閉じるべきか調べる
         return glfwWindowShouldClose(handle_) == GLFW_TRUE;
     }
@@ -137,7 +174,13 @@ namespace ld {
 
     void window::on_position_changed(handle_type handle, int32 x_pos, int32 y_pos)
     {
-        // TODO: イベント発行
+        auto* self = reinterpret_cast<window*>(glfwGetWindowUserPointer(handle));
+
+        self->dispatcher_->dispatch<event::axis_value_changed>(
+            self, axis_code::cursor_x, static_cast<float>(x_pos));
+
+        self->dispatcher_->dispatch<event::axis_value_changed>(
+            self, axis_code::cursor_y, static_cast<float>(y_pos));
     }
 
     void window::on_size_changed(handle_type handle, int32 width, int32 height)

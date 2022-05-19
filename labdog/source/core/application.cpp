@@ -12,6 +12,5 @@
 
 namespace ld
 {
-    std::atomic<application*> application::instance_{};
-    std::atomic_bool application::should_terminate_{};
+    std::atomic<application*> application::instance_{ nullptr };
 }

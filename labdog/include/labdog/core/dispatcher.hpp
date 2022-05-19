@@ -45,27 +45,29 @@ namespace ld
         /// @tparam Candidate 購読するメソッドのポインタ型
         /// @tparam Receiver 購読するクラス型
         /// @param receiver 購読するクラス
-        template <typename Event, auto Candidate, typename Receiver>
+        template <class Event, auto Candidate, class Receiver>
         void subscribe(Receiver&& receiver)
         {
-            dispatcher_.sink<Event>().connect<Candidate>(std::forward<Receiver>(receiver));
+            dispatcher_.sink<Event>().template connect<Candidate>(
+                std::forward<Receiver>(receiver));
         }
 
         /// @brief イベントを購読解除する
         /// @tparam Event イベント型
         /// @tparam Receiver 購読解除するクラス型
         /// @param  receiver 購読解除するクラス
-        template <typename Event, typename Receiver>
+        template <class Event, class Receiver>
         void unsubscribe(Receiver&& receiver)
         {
-            dispatcher_.sink<Event>().disconnect(std::forward<Receiver>(receiver));
+            dispatcher_.sink<Event>().disconnect(
+                std::forward<Receiver>(receiver));
         }
 
         /// @brief イベントを発行する
         /// @tparam Event イベント型
         /// @tparam Args イベントを構築する引数型
         /// @param  args イベントを構築する引数
-        template <typename Event, typename... Args>
+        template <class Event, class... Args>
         void dispatch(Args&&... args)
         {
             dispatcher_.trigger(Event{ std::forward<Args>(args)... });
@@ -75,7 +77,7 @@ namespace ld
         /// @tparam Event イベント型
         /// @tparam Args イベントを構築する引数型
         /// @param  args イベントを構築する引数
-        template <typename Event, typename... Args>
+        template <class Event, class... Args>
         void enqueue(Args&&... args)
         {
             dispatcher_.enqueue<Event>(Event{ std::forward<Args>(args)... });
@@ -95,7 +97,7 @@ namespace ld
 
         /// @brief 特定のイベントのリスナーを全て登録解除
         /// @tparam Event リスナーを解除するイベント型
-        template <typename Event>
+        template <class Event>
         void clear()
         {
             dispatcher_.clear<Event>();

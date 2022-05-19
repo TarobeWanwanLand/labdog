@@ -11,7 +11,7 @@ set(LABDOG_HEADERS
     "${LABDOG_HEADER_DIR}/labdog/core/concept.hpp"
     "${LABDOG_HEADER_DIR}/labdog/core/dispatcher.hpp"
     "${LABDOG_HEADER_DIR}/labdog/core/locator.hpp"
-        #    "${LABDOG_HEADER_DIR}/labdog/core/logger.hpp"
+    "${LABDOG_HEADER_DIR}/labdog/core/logger.hpp"
     "${LABDOG_HEADER_DIR}/labdog/core/mouse.hpp"
     "${LABDOG_HEADER_DIR}/labdog/core/point.hpp"
     "${LABDOG_HEADER_DIR}/labdog/core/size.hpp"
@@ -34,7 +34,7 @@ set(LABDOG_HEADERS
 set(LABDOG_SOURCES
     "${LABDOG_SOURCE_DIR}/core/application.cpp"
     "${LABDOG_SOURCE_DIR}/core/mouse.cpp"
-#    "${LABDOG_SOURCE_DIR}/core/logger.cpp"
+    "${LABDOG_SOURCE_DIR}/core/logger.cpp"
     "${LABDOG_SOURCE_DIR}/core/string.cpp"
     "${LABDOG_SOURCE_DIR}/core/string_view.cpp"
     "${LABDOG_SOURCE_DIR}/core/window.cpp"
